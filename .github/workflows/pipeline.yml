@@ -20,7 +20,7 @@ jobs:
 #
   build-linux-binaries-and-push-github:
     name: build Linux binaries/packages
-    if: github.event_name != 'push'
+#    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     env:
       GITHUB_PUSH_RELEASE_ASSETS: false
