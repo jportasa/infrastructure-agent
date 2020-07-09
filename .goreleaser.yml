@@ -47,7 +47,27 @@ builds:
 #    - s390x
 
 archives:
-  - replacements:
+  - id: newrelic-infra
+    builds:
+      - newrelic-infra
+    replacements:
+      linux: Linux
+      x86_64: amd64
+    name_template: "{{ .ProjectName }}_{{ .Env.TAG }}_{{ .Arch }}"
+    format: tar.gz
+    files:
+    - licence*
+    - LICENCE*
+    - license*
+    - LICENSE*
+    - readme*
+    - README*
+    - changelog*
+    - CHANGELOG*
+  - id: newrelic-infra-ctl
+    builds:
+      - newrelic-infra-ctl
+    replacements:
       linux: Linux
       x86_64: amd64
     name_template: "{{ .ProjectName }}_{{ .Env.TAG }}_{{ .Arch }}"
