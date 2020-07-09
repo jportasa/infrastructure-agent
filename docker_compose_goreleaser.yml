@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+
+  release:
+    build:
+      context: docker/dockerfiles/goreleaser/
+      dockerfile: Dockerfile
+    volumes:
+      - ${PWD}:/go/src/github.com/${REPO_FULL_NAME}/
+    working_dir: /go/src/github.com/${REPO_FULL_NAME}
+    environment:
+      - GITHUB_TOKEN=$GITHUB_TOKEN
+      - GITHUB_REF=$GITHUB_REF
+      - GITHUB_PUSH_RELEASE_ASSETS=$GITHUB_PUSH_RELEASE_ASSETS
+      - TAG=$TAG
+      - REPO_FULL_NAME=$REPO_FULL_NAME
+      - PROJECTNAME=$PROJECTNAME
+      - GOPATH=$GOPATH
+      - GPG_PRIVATE_KEY=$GPG_PRIVATE_KEY
+      - GPG_PASSPHRASE=$GPG_PASSPHRASE
+      - GPG_MAIL=$GPG_MAIL
+
+
+
+
