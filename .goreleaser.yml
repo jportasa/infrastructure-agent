@@ -50,7 +50,7 @@ archives:
   - replacements:
       linux: Linux
       x86_64: amd64
-    name_template: "{{ .Env.PROJECTNAME }}_{{ .Env.TAG }}_{{ .Arch }}"
+    name_template: "{{ .ProjectName }}_{{ .Env.TAG }}_{{ .Arch }}"
     format: tar.gz
     files:
     - licence*
