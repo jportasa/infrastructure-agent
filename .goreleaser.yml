@@ -7,8 +7,8 @@ before:
     #- make validate
 
 builds:
-  binaries:
   - main: ./cmd/newrelic-infra
+    id: newrelic-infra
     env:
     - CGO_ENABLED=0
     goos:
@@ -27,6 +27,7 @@ builds:
 #    - ppc64le
 #    - s390x
   - main: ./cmd/newrelic-infra-ctl
+    id: newrelic-infra-ctl
     env:
     - CGO_ENABLED=0
     goos:
