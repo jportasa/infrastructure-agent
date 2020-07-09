@@ -7,7 +7,27 @@ before:
     #- make validate
 
 builds:
+  newrelic-infra:
   - main: ./cmd/newrelic-infra
+    env:
+    - CGO_ENABLED=0
+    goos:
+    - linux
+    ldflags:
+    - -s -w -X main.integrationVersion={{.Version}}
+    goarch:
+    - amd64
+#    - arm
+#    - arm64
+#    - 386
+#    - mips
+#    - mips64
+#    - mipsle
+#    - mips64le
+#    - ppc64le
+#    - s390x
+  newrelic-infra-ctl:
+  - main: ./cmd/newrelic-infra-ctl
     env:
     - CGO_ENABLED=0
     goos:
