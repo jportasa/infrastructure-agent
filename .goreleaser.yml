@@ -69,14 +69,14 @@ nfpms:
     # Override default /usr/local/bin destination for binaries
     bindir: "../var/db/newrelic-infra/newrelic-integrations/bin"
 
-    files:
-      "./*-config.yml.sample": "../etc/newrelic-infra/integrations.d"
-      "CHANGELOG.md": "../usr/share/doc/nri-kafka"
-      "README.md":  "../usr/share/doc/nri-kafka"
-      "LICENSE": "../usr/share/doc/nri-kafka"
+#    files:
+#      "./*-config.yml.sample": "../etc/newrelic-infra/integrations.d"
+#      "CHANGELOG.md": "../usr/share/doc/nri-kafka"
+#      "README.md":  "../usr/share/doc/nri-kafka"
+#      "LICENSE": "../usr/share/doc/nri-kafka"
 
-    config_files:
-      "kafka-definition.yml": "../var/db/newrelic-infra/newrelic-integrations/kafka-definition.yml"
+#    config_files:
+#      "kafka-definition.yml": "../var/db/newrelic-infra/newrelic-integrations/kafka-definition.yml"
 
     dependencies:
       - "newrelic-infra"
