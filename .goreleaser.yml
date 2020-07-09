@@ -26,6 +26,7 @@ builds:
 #    - mips64le
 #    - ppc64le
 #    - s390x
+
   - main: ./cmd/newrelic-infra-ctl
     id: newrelic-infra-ctl
     env:
@@ -53,7 +54,7 @@ archives:
     replacements:
       linux: Linux
       x86_64: amd64
-    name_template: "{{ .ProjectName }}_{{ .Env.TAG }}_{{ .Arch }}"
+    name_template: "newrelic-infra_{{ .Env.TAG }}_{{ .Arch }}"
     format: tar.gz
     files:
     - licence*
@@ -64,13 +65,14 @@ archives:
     - README*
     - changelog*
     - CHANGELOG*
+
   - id: newrelic-infra-ctl
     builds:
       - newrelic-infra-ctl
     replacements:
       linux: Linux
       x86_64: amd64
-    name_template: "{{ .ProjectName }}_{{ .Env.TAG }}_{{ .Arch }}"
+    name_template: "newrelic-infra-ctl_{{ .Env.TAG }}_{{ .Arch }}"
     format: tar.gz
     files:
     - licence*
