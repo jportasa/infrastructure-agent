@@ -9,9 +9,9 @@ NRI_DOCKER_ARCH=amd64
 # NRI_FLEX_ARCH=x86_64
 
 echo "===> Get binaries from other repos and put them in binaries/"
-mkdir -p binaries/{nri-docker,nri-flex}
-curl -SL "https://download.newrelic.com/infrastructure_agent/binaries/linux/${NRI_DOCKER_ARCH}/nri-docker_linux_${NRI_DOCKER_VERSION}_${NRI_DOCKER_ARCH}.tar.gz" | tar xz -C binaries/nri-docker
-# curl -SL "https://github.com/newrelic/nri-flex/releases/download/v${NRI_FLEX_VERSION}/nri-flex_${NRI_FLEX_VERSION}_${NRI_FLEX_OS}_x86_64.tar.gz" | tar xz -C binaries/nri-flex
+mkdir -p /tmp/binaries/{nri-docker,nri-flex}
+curl -SL "https://download.newrelic.com/infrastructure_agent/binaries/linux/${NRI_DOCKER_ARCH}/nri-docker_linux_${NRI_DOCKER_VERSION}_${NRI_DOCKER_ARCH}.tar.gz" | tar xz -C /tmp/binaries/nri-docker
+# curl -SL "https://github.com/newrelic/nri-flex/releases/download/v${NRI_FLEX_VERSION}/nri-flex_${NRI_FLEX_VERSION}_${NRI_FLEX_OS}_x86_64.tar.gz" | tar xz -C /tmp/binaries/nri-flex
 
 echo "===> Importing GPG private key from GHA secrets..."
 printf %s ${GPG_PRIVATE_KEY} | base64 -d | gpg --batch --import -
