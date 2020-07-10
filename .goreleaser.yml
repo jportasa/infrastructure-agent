@@ -169,26 +169,25 @@ nfpms:
     bindir: ./usr/bin
     files:
        "build/package/systemd/newrelic-infra.service": "./etc/systemd/system/newrelic-infra.service"
+       "binaries/nri-docker/etc/newrelic-infra/integrations.d/docker-config.yml": "/etc/newrelic-infra/integrations.d/docker-config.yml"
        "binaries/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker": "./var/db/newrelic-infra/newrelic-integrations/bin/nri-docker"
     empty_folders:
       - /var/db/newrelic-infra/custom-integrations
       - /var/db/newrelic-infra/integrations.d
       - /var/log/newrelic-infra
       - /var/run/newrelic-infra
-
-    dependencies:
-      - "newrelic-infra"
-      - "nrjmx"
     overrides:
       rpm:
         replacements:
           amd64: x86_64 # Exceptions in the name, .deb are amd64, .rpm are x86_64
+
+###################################################
   - id: newrelic-infra_upstart
     builds:
       - newrelic-infra
       - newrelic-infra-ctl
       - newrelic-infra-service
-    file_name_template: "newrelic-infra_upstart_{{ .Env.TAG }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    file_name_template: "newrelic-infra_systemd_{{ .Env.TAG }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
     vendor: "New Relic, Inc."
     homepage: "https://docs.newrelic.com/docs/release-notes/infrastructure-release-notes/infrastructure-agent-release-notes/new-relic-infrastructure-agent-197"
     maintainer: "caos-team@newrelic.com"
@@ -199,27 +198,28 @@ nfpms:
       - deb
       - rpm
     # Override default /usr/local/bin destination for binaries
-    bindir: "../var/db/newrelic-infra/newrelic-integrations/bin"
-#    files:
-#      "./*-config.yml.sample": "../etc/newrelic-infra/integrations.d"
-#      "CHANGELOG.md": "../usr/share/doc/nri-kafka"
-#      "README.md":  "../usr/share/doc/nri-kafka"
-#      "LICENSE": "../usr/share/doc/nri-kafka"
-#    config_files:
-#      "kafka-definition.yml": "../var/db/newrelic-infra/newrelic-integrations/kafka-definition.yml"
-    dependencies:
-      - "newrelic-infra"
-      - "nrjmx"
+    bindir: ./usr/bin
+    files:
+       "build/package/sysv/deb/newrelic-infra": "./etc/init/newrelic-infra.conf"
+       "binaries/nri-docker/etc/newrelic-infra/integrations.d/docker-config.yml": "./etc/newrelic-infra/integrations.d/docker-config.yml"
+       "build/package/upstart/newrelic-infra": "./etc/init.d/newrelic-infra"
+       "binaries/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker": "./var/db/newrelic-infra/newrelic-integrations/bin/nri-docker"
+    empty_folders:
+      - /var/db/newrelic-infra/custom-integrations
+      - /var/db/newrelic-infra/integrations.d
+      - /var/log/newrelic-infra
+      - /var/run/newrelic-infra
     overrides:
       rpm:
         replacements:
           amd64: x86_64 # Exceptions in the name, .deb are amd64, .rpm are x86_64
+###################################################
   - id: newrelic-infra_sysv
     builds:
       - newrelic-infra
       - newrelic-infra-ctl
       - newrelic-infra-service
-    file_name_template: "newrelic-infra_sysv_{{ .Env.TAG }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    file_name_template: "newrelic-infra_systemd_{{ .Env.TAG }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
     vendor: "New Relic, Inc."
     homepage: "https://docs.newrelic.com/docs/release-notes/infrastructure-release-notes/infrastructure-agent-release-notes/new-relic-infrastructure-agent-197"
     maintainer: "caos-team@newrelic.com"
@@ -230,17 +230,16 @@ nfpms:
       - deb
       - rpm
     # Override default /usr/local/bin destination for binaries
-    bindir: "../var/db/newrelic-infra/newrelic-integrations/bin"
-#    files:
-#      "./*-config.yml.sample": "../etc/newrelic-infra/integrations.d"
-#      "CHANGELOG.md": "../usr/share/doc/nri-kafka"
-#      "README.md":  "../usr/share/doc/nri-kafka"
-#      "LICENSE": "../usr/share/doc/nri-kafka"
-#    config_files:
-#      "kafka-definition.yml": "../var/db/newrelic-infra/newrelic-integrations/kafka-definition.yml"
-    dependencies:
-      - "newrelic-infra"
-      - "nrjmx"
+    bindir: ./usr/bin
+    files:
+       "binaries/nri-docker/etc/newrelic-infra/integrations.d/docker-config.yml": "./etc/newrelic-infra/integrations.d/docker-config.yml"
+       "build/package/upstart/newrelic-infra": "./etc/init.d/newrelic-infra"
+       "binaries/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker": "./var/db/newrelic-infra/newrelic-integrations/bin/nri-docker"
+    empty_folders:
+      - /var/db/newrelic-infra/custom-integrations
+      - /var/db/newrelic-infra/integrations.d
+      - /var/log/newrelic-infra
+      - /var/run/newrelic-infra
     overrides:
       rpm:
         replacements:
