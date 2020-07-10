@@ -142,39 +142,103 @@ changelog:
     - '^test:'
 
 nfpms:
-  - file_name_template: "{{ .Env.PROJECTNAME }}_{{ .Env.TAG }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
-
+  - id: newrelic-infra_systemd
+    builds:
+      - newrelic-infra
+      - newrelic-infra-ctl
+      - newrelic-infra-service
+    file_name_template: "newrelic-infra_systemd_{{ .Env.TAG }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
     vendor: "New Relic, Inc."
     homepage: "https://www.newrelic.com/infrastructure"
     maintainer: "New Relic Infrastructure Team <infrastructure-eng@newrelic.com>"
     description: "New Relic Infrastructure kafka Integration extend the core New Relic\nInfrastructure agent's capabilities to allow you to collect metric and\nlive state data from kafka components."
     license: "https://newrelic.com/terms (also see LICENSE.txt installed with this package)"
-
     # Formats to be generated.
     formats:
       - deb
       - rpm
-
     # Override default /usr/local/bin destination for binaries
     bindir: "../var/db/newrelic-infra/newrelic-integrations/bin"
-
 #    files:
 #      "./*-config.yml.sample": "../etc/newrelic-infra/integrations.d"
 #      "CHANGELOG.md": "../usr/share/doc/nri-kafka"
 #      "README.md":  "../usr/share/doc/nri-kafka"
 #      "LICENSE": "../usr/share/doc/nri-kafka"
-
 #    config_files:
 #      "kafka-definition.yml": "../var/db/newrelic-infra/newrelic-integrations/kafka-definition.yml"
-
     dependencies:
       - "newrelic-infra"
       - "nrjmx"
-
     overrides:
       rpm:
         replacements:
           amd64: x86_64 # Exceptions in the name, .deb are amd64, .rpm are x86_64
+
+  - id: newrelic-infra_upstart
+    builds:
+      - newrelic-infra
+      - newrelic-infra-ctl
+      - newrelic-infra-service
+    file_name_template: "newrelic-infra_upstart_{{ .Env.TAG }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    vendor: "New Relic, Inc."
+    homepage: "https://www.newrelic.com/infrastructure"
+    maintainer: "New Relic Infrastructure Team <infrastructure-eng@newrelic.com>"
+    description: "New Relic Infrastructure kafka Integration extend the core New Relic\nInfrastructure agent's capabilities to allow you to collect metric and\nlive state data from kafka components."
+    license: "https://newrelic.com/terms (also see LICENSE.txt installed with this package)"
+    # Formats to be generated.
+    formats:
+      - deb
+      - rpm
+    # Override default /usr/local/bin destination for binaries
+    bindir: "../var/db/newrelic-infra/newrelic-integrations/bin"
+#    files:
+#      "./*-config.yml.sample": "../etc/newrelic-infra/integrations.d"
+#      "CHANGELOG.md": "../usr/share/doc/nri-kafka"
+#      "README.md":  "../usr/share/doc/nri-kafka"
+#      "LICENSE": "../usr/share/doc/nri-kafka"
+#    config_files:
+#      "kafka-definition.yml": "../var/db/newrelic-infra/newrelic-integrations/kafka-definition.yml"
+    dependencies:
+      - "newrelic-infra"
+      - "nrjmx"
+    overrides:
+      rpm:
+        replacements:
+          amd64: x86_64 # Exceptions in the name, .deb are amd64, .rpm are x86_64
+
+  - id: newrelic-infra_sysv
+    builds:
+      - newrelic-infra
+      - newrelic-infra-ctl
+      - newrelic-infra-service
+    file_name_template: "newrelic-infra_sysv_{{ .Env.TAG }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    vendor: "New Relic, Inc."
+    homepage: "https://www.newrelic.com/infrastructure"
+    maintainer: "New Relic Infrastructure Team <infrastructure-eng@newrelic.com>"
+    description: "New Relic Infrastructure kafka Integration extend the core New Relic\nInfrastructure agent's capabilities to allow you to collect metric and\nlive state data from kafka components."
+    license: "https://newrelic.com/terms (also see LICENSE.txt installed with this package)"
+    # Formats to be generated.
+    formats:
+      - deb
+      - rpm
+    # Override default /usr/local/bin destination for binaries
+    bindir: "../var/db/newrelic-infra/newrelic-integrations/bin"
+#    files:
+#      "./*-config.yml.sample": "../etc/newrelic-infra/integrations.d"
+#      "CHANGELOG.md": "../usr/share/doc/nri-kafka"
+#      "README.md":  "../usr/share/doc/nri-kafka"
+#      "LICENSE": "../usr/share/doc/nri-kafka"
+#    config_files:
+#      "kafka-definition.yml": "../var/db/newrelic-infra/newrelic-integrations/kafka-definition.yml"
+    dependencies:
+      - "newrelic-infra"
+      - "nrjmx"
+    overrides:
+      rpm:
+        replacements:
+          amd64: x86_64 # Exceptions in the name, .deb are amd64, .rpm are x86_64
+
+
 
 release:
   prerelease: true
