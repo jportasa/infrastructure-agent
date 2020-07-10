@@ -9,6 +9,7 @@ before:
 builds:
   - main: ./cmd/newrelic-infra
     id: newrelic-infra
+    binary: newrelic-infra
     env:
     - CGO_ENABLED=0
     goos:
@@ -29,6 +30,7 @@ builds:
 
   - main: ./cmd/newrelic-infra-ctl
     id: newrelic-infra-ctl
+    binary: newrelic-infra-ctl
     env:
     - CGO_ENABLED=0
     goos:
@@ -49,6 +51,7 @@ builds:
 
   - main: ./cmd/newrelic-infra-service
     id: newrelic-infra-service
+    binary: newrelic-infra-service
     env:
     - CGO_ENABLED=0
     goos:
