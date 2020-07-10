@@ -47,14 +47,36 @@ builds:
 #    - ppc64le
 #    - s390x
 
+  - main: ./cmd/newrelic-infra-service
+    id: newrelic-infra-service
+    env:
+    - CGO_ENABLED=0
+    goos:
+    - linux
+    ldflags:
+    - -s -w -X main.integrationVersion={{.Version}}
+    goarch:
+    - amd64
+#    - arm
+#    - arm64
+#    - 386
+#    - mips
+#    - mips64
+#    - mipsle
+#    - mips64le
+#    - ppc64le
+#    - s390x
+
 archives:
-  - id: newrelic-infra
+  - id: newrelic-infra_systemd
     builds:
       - newrelic-infra
+      - newrelic-infra-ctl
+      - newrelic-infra-service
     replacements:
       linux: Linux
       x86_64: amd64
-    name_template: "newrelic-infra_{{ .Env.TAG }}_{{ .Arch }}"
+    name_template: "newrelic-infra_systemd_{{ .Env.TAG }}_{{ .Arch }}"
     format: tar.gz
     files:
     - licence*
@@ -66,13 +88,35 @@ archives:
     - changelog*
     - CHANGELOG*
 
-  - id: newrelic-infra-ctl
+  - id: newrelic-infra_upstart
     builds:
+      - newrelic-infra
       - newrelic-infra-ctl
+      - newrelic-infra-service
     replacements:
       linux: Linux
       x86_64: amd64
-    name_template: "newrelic-infra-ctl_{{ .Env.TAG }}_{{ .Arch }}"
+    name_template: "newrelic-infra_upstart_{{ .Env.TAG }}_{{ .Arch }}"
+    format: tar.gz
+    files:
+    - licence*
+    - LICENCE*
+    - license*
+    - LICENSE*
+    - readme*
+    - README*
+    - changelog*
+    - CHANGELOG*
+
+  - id: newrelic-infra_sysv
+    builds:
+      - newrelic-infra
+      - newrelic-infra-ctl
+      - newrelic-infra-service
+    replacements:
+      linux: Linux
+      x86_64: amd64
+    name_template: "newrelic-infra_sysv_{{ .Env.TAG }}_{{ .Arch }}"
     format: tar.gz
     files:
     - licence*
