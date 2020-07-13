@@ -37,3 +37,4 @@ else
     echo "===> Run Goreleaser and push them to GH Workflow Cache Assets";
     goreleaser release --config=.goreleaser.yml --rm-dist --snapshot
 fi
+

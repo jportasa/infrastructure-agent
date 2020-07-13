@@ -46,11 +46,11 @@ jobs:
       - name: Create binaries & Push to GH Release Assets if Release/Prerelease
         env:
           GITHUB_REF: $GITHUB_REF
-          PROJECTNAME: ${{ github.event.repository.name }}
+          PROJECTNAME: $REPO_NAME
           GOPATH: '/go'
         run: |
           docker-compose --file docker_compose_goreleaser.yml run release
-      - name: Upload Linux artifacts to Workflow Artifacts Cache
+      - name: Upload Linux artifacts to GH Workflow Artifacts Cache
         if: github.event.pull_request.merged
         uses: actions/upload-artifact@v2
         with:

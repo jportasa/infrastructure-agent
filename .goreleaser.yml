@@ -151,6 +151,7 @@ changelog:
 #
 #
 nfpms:
+  ######## SYSTEMD ########
   - id: newrelic-infra_systemd
     builds:
       - newrelic-infra
@@ -182,7 +183,7 @@ nfpms:
         replacements:
           amd64: x86_64 # Exceptions in the name, .deb are amd64, .rpm are x86_64
 
-###################################################
+    ######## UPSTART ########
   - id: newrelic-infra_upstart
     builds:
       - newrelic-infra
@@ -215,7 +216,7 @@ nfpms:
         replacements:
           amd64: x86_64 # Exceptions in the name, .deb are amd64, .rpm are x86_64
 
-###################################################
+  ######## SYSV ########
   - id: newrelic-infra_sysv
     builds:
       - newrelic-infra
