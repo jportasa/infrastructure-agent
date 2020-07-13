@@ -189,7 +189,7 @@ nfpms:
       - newrelic-infra
       - newrelic-infra-ctl
       - newrelic-infra-service
-    file_name_template: "newrelic-infra_systemd_{{ .Env.TAG }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    file_name_template: "newrelic-infra_upstart_{{ .Env.TAG }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
     vendor: "New Relic, Inc."
     homepage: "https://docs.newrelic.com/docs/release-notes/infrastructure-release-notes/infrastructure-agent-release-notes/new-relic-infrastructure-agent-197"
     maintainer: "caos-team@newrelic.com"
@@ -222,7 +222,7 @@ nfpms:
       - newrelic-infra
       - newrelic-infra-ctl
       - newrelic-infra-service
-    file_name_template: "newrelic-infra_systemd_{{ .Env.TAG }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    file_name_template: "newrelic-infra_sysv_{{ .Env.TAG }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
     vendor: 'New Relic, Inc.'
     homepage: 'https://docs.newrelic.com/docs/release-notes/infrastructure-release-notes/infrastructure-agent-release-notes/new-relic-infrastructure-agent-197'
     maintainer: 'caos-team@newrelic.com'
