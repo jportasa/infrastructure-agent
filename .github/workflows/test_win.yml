@@ -13,16 +13,16 @@ jobs:
 #
 #
   job1:
-    name: Install Go-MSI
+  - name: Install Go-MSI
     runs-on: windows-latest
     shell: pwsh
     run: |
       choco install go-msi
 
-    name: Checkout
-    - uses: actions/checkout@v2
+  - name: Checkout
+    uses: actions/checkout@v2
 
-    name: Create .msi
+  - name: Create .msi
     shell: pwsh
     run: |
       go-msi -v
