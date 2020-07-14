@@ -83,8 +83,8 @@ archives:
   - id: newrelic-infra_linux
     builds:
       - newrelic-infra
-      - newrelic-infra-ctl
-      - newrelic-infra-service
+#      - newrelic-infra-ctl
+#      - newrelic-infra-service
     name_template: "newrelic-infra_linux_{{ .Env.TAG }}_{{ .Arch }}"
     format: tar.gz
     files:
