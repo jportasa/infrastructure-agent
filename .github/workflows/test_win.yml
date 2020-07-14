@@ -14,14 +14,13 @@ jobs:
 #
   job1:
     name: create win msi
-    runs-on: windows-latest
+    runs-on: windows-2019
     steps:
     - name: Install Go-MSI
       shell: pwsh
       run: |
         choco install go-msi
-        $env:Path += ";C:\Program Files\go-msi"
-        choco list -lo
+
 
     - name: Checkout
       uses: actions/checkout@v2
@@ -29,4 +28,5 @@ jobs:
     - name: Create .msi
       shell: pwsh
       run: |
+        $env:Path += ";C:\Program Files\go-msi"
         go-msi -v
