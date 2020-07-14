@@ -80,23 +80,23 @@ builds:
 #
 archives:
     ######## LINUX ########
-  - id: newrelic-infra_linux
-    builds:
-      - newrelic-infra
-      - newrelic-infra-ctl
-      - newrelic-infra-service
-    name_template: "newrelic-infra_linux_{{ .Env.TAG }}_{{ .Arch }}"
-    format: tar.gz
-    files:
-    - licence*
-    - LICENCE*
-    - license*
-    - LICENSE*
-    - readme*
-    - README*
-    - changelog*
-    - CHANGELOG*
-    - build/package/binaries/windows/installer.ps1
+#  - id: newrelic-infra_linux
+#    builds:
+#      - newrelic-infra
+#      - newrelic-infra-ctl
+#      - newrelic-infra-service
+#    name_template: "newrelic-infra_linux_{{ .Env.TAG }}_{{ .Arch }}"
+#    format: tar.gz
+#    files:
+#    - licence*
+#    - LICENCE*
+#    - license*
+#    - LICENSE*
+#    - readme*
+#    - README*
+#    - changelog*
+#    - CHANGELOG*
+#    - build/package/binaries/windows/installer.ps1
     ######## WINDOWS ########
   - id: newrelic-infra_windows
     builds:
