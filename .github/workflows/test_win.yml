@@ -20,6 +20,7 @@ jobs:
       shell: pwsh
       run: |
         choco install go-msi
+        $env:Path += ";C:\Program Files\go-msi"
         choco list -lo
 
     - name: Checkout
