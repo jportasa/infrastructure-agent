@@ -87,7 +87,8 @@ archives:
       - newrelic-infra
       - newrelic-infra-ctl
       - newrelic-infra-service
-    name_template: "newrelic-infra_linux_{{ .Env.TAG }}_{{ .Arch }}"
+    #name_template: "newrelic-infra_linux_{{ .Env.TAG }}_{{ .Arch }}"
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     format: tar.gz
     files:
     - licence*
