@@ -18,6 +18,7 @@ builds:
     - CGO_ENABLED=0
     goos:
     - linux
+    - windows
     ldflags:
     - -s -w -X main.integrationVersion={{.Version}}
     goarch:
