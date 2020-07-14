@@ -22,7 +22,7 @@ jobs:
     - name: Build MSI
       shell: pwsh
       run: |
-        Push-Location -Path "build\package\windows\newrelic-infra-amd64-installer"
+        Push-Location -Path "build/package/windows/newrelic-infra-amd64-installer/newrelic-infra"
         $msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath
         . $msBuild/MSBuild.exe newrelic-infra-installer.wixproj
 
