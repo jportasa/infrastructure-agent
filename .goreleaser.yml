@@ -79,7 +79,8 @@ builds:
 #
 #
 archives:
-  - id: newrelic-infra_systemd
+    ######## LINUX ########
+  - id: newrelic-infra_linux
     builds:
       - newrelic-infra
       - newrelic-infra-ctl
@@ -87,7 +88,7 @@ archives:
     replacements:
       linux: Linux
       x86_64: amd64
-    name_template: "newrelic-infra_systemd_{{ .Env.TAG }}_{{ .Arch }}"
+    name_template: "newrelic-infra_linux_{{ .Env.TAG }}_{{ .Arch }}"
     format: tar.gz
     files:
     - licence*
@@ -98,16 +99,16 @@ archives:
     - README*
     - changelog*
     - CHANGELOG*
-  - id: newrelic-infra_upstart
+    ######## WINDOWS ########
+  - id: newrelic-infra_windows
     builds:
       - newrelic-infra
       - newrelic-infra-ctl
       - newrelic-infra-service
     replacements:
-      linux: Linux
       x86_64: amd64
-    name_template: "newrelic-infra_upstart_{{ .Env.TAG }}_{{ .Arch }}"
-    format: tar.gz
+    name_template: "newrelic-infra-{{ .Arch }}.{{ .Env.TAG }}"
+    format: zip
     files:
     - licence*
     - LICENCE*
@@ -117,25 +118,7 @@ archives:
     - README*
     - changelog*
     - CHANGELOG*
-  - id: newrelic-infra_sysv
-    builds:
-      - newrelic-infra
-      - newrelic-infra-ctl
-      - newrelic-infra-service
-    replacements:
-      linux: Linux
-      x86_64: amd64
-    name_template: "newrelic-infra_sysv_{{ .Env.TAG }}_{{ .Arch }}"
-    format: tar.gz
-    files:
-    - licence*
-    - LICENCE*
-    - license*
-    - LICENSE*
-    - readme*
-    - README*
-    - changelog*
-    - CHANGELOG*
+
 
 checksum:
   name_template: 'checksums.txt'
