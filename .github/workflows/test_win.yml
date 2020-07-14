@@ -20,6 +20,7 @@ jobs:
       shell: pwsh
       run: |
         choco install go-msi
+        choco list -lo
 
     - name: Checkout
       uses: actions/checkout@v2
