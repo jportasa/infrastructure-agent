@@ -1,0 +1,46 @@
+name: Pipeline
+
+on:
+  push:
+
+env:
+  TAG: ${{ github.event.release.tag_name }}
+
+jobs:
+#
+#
+#  Build binaries/packages
+#
+#
+  job1:
+    name: create win msi
+    runs-on: windows-2019
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Build MSI
+      shell: pwsh
+      run: |
+        Push-Location -Path "build/package/windows/newrelic-infra-amd64-installer/newrelic-infra"
+        $msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath
+        . $msBuild/MSBuild.exe newrelic-infra-installer.wixproj
+
+
+#
+#
+#
+#    - name: Install Go-MSI
+#      shell: pwsh
+#      run: |
+#        choco install go-msi
+#
+#
+#    - name: Checkout
+#      uses: actions/checkout@v2
+#
+#    - name: Create .msi
+#      shell: pwsh
+#      run: |
+#        $env:Path += ";C:\Program Files\go-msi"
+#        go-msi -v
