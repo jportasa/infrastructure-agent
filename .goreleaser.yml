@@ -119,7 +119,6 @@ archives:
     - changelog*
     - CHANGELOG*
 
-
 checksum:
   name_template: 'checksums.txt'
 snapshot:
