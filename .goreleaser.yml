@@ -39,6 +39,7 @@ builds:
     - CGO_ENABLED=0
     goos:
     - linux
+    - windows
     ldflags:
     - -s -w -X main.integrationVersion={{.Version}}
     goarch:
@@ -59,6 +60,7 @@ builds:
     - CGO_ENABLED=0
     goos:
     - linux
+    - windows
     ldflags:
     - -s -w -X main.version={{.Version}}
     - -s -w -X main.commit={{.Commit}}
