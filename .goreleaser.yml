@@ -88,7 +88,7 @@ archives:
       - newrelic-infra-ctl
       - newrelic-infra-service
     #name_template: "newrelic-infra_linux_{{ .Env.TAG }}_{{ .Arch }}"
-    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}_lin"
     format: tar.gz
     files:
     - licence*
@@ -101,22 +101,23 @@ archives:
     - CHANGELOG*
     - build/package/binaries/windows/installer.ps1
     ######## WINDOWS ########
-#  - id: newrelic-infra_windows
-#    builds:
-#      - newrelic-infra
-#      - newrelic-infra-ctl
-#      - newrelic-infra-service
-#    name_template: "newrelic-infra-{{ .Arch }}.{{ .Env.TAG }}"
-#    format: zip
-#    files:
-#    - licence*
-#    - LICENCE*
-#    - license*
-#    - LICENSE*
-#    - readme*
-#    - README*
-#    - changelog*
-#    - CHANGELOG*
+  - id: newrelic-infra_windows
+    builds:
+      - newrelic-infra
+      - newrelic-infra-ctl
+      - newrelic-infra-service
+    #name_template: "newrelic-infra-{{ .Arch }}.{{ .Env.TAG }}_win"
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}_win"
+    format: zip
+    files:
+    - licence*
+    - LICENCE*
+    - license*
+    - LICENSE*
+    - readme*
+    - README*
+    - changelog*
+    - CHANGELOG*
 
 checksum:
   name_template: 'checksums.txt'
