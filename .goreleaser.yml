@@ -11,8 +11,8 @@ before:
 #
 #
 builds:
-  - main: ./cmd/newrelic-infra
-    id: newrelic-infra
+  - id: newrelic-infra
+    main: ./cmd/newrelic-infra
     binary: newrelic-infra
     env:
     - CGO_ENABLED=0
@@ -32,8 +32,8 @@ builds:
 #    - mips64le
 #    - ppc64le
 #    - s390x
-  - main: ./cmd/newrelic-infra-ctl
     id: newrelic-infra-ctl
+    main: ./cmd/newrelic-infra-ctl
     binary: newrelic-infra-ctl
     env:
     - CGO_ENABLED=0
@@ -53,8 +53,8 @@ builds:
 #    - mips64le
 #    - ppc64le
 #    - s390x
-  - main: ./cmd/newrelic-infra-service
-    id: newrelic-infra-service
+  - id: newrelic-infra-service
+    main: ./cmd/newrelic-infra-service
     binary: newrelic-infra-service
     env:
     - CGO_ENABLED=0
@@ -82,12 +82,12 @@ builds:
 #
 archives:
     ######## LINUX ########
-  - id: newrelic-infra_linux
+  - id: newrelic-infra
     builds:
       - newrelic-infra
       - newrelic-infra-ctl
       - newrelic-infra-service
-    name_template: "newrelic-infra_linux_{{ .Env.TAG }}_{{ .Arch }}"
+    name_template: "newrelic-infra_{{.Os}}_{{ .Env.TAG }}_{{ .Arch }}"
     format: tar.gz
     files:
     - licence*
@@ -100,22 +100,22 @@ archives:
     - CHANGELOG*
     - build/package/binaries/windows/*
     ######## WINDOWS ########
-  - id: newrelic-infra_windows
-    builds:
-      - newrelic-infra
-      - newrelic-infra-ctl
-      - newrelic-infra-service
-    name_template: "newrelic-infra-{{ .Arch }}.{{ .Version }}"
-    format: zip
-    files:
-    - licence*
-    - LICENCE*
-    - license*
-    - LICENSE*
-    - readme*
-    - README*
-    - changelog*
-    - CHANGELOG*
+#  - id: newrelic-infra_windows
+#    builds:
+#      - newrelic-infra
+#      - newrelic-infra-ctl
+#      - newrelic-infra-service
+#    name_template: "newrelic-infra-{{ .Arch }}.{{ .Version }}"
+#    format: zip
+#    files:
+#    - licence*
+#    - LICENCE*
+#    - license*
+#    - LICENSE*
+#    - readme*
+#    - README*
+#    - changelog*
+#    - CHANGELOG*
 
 checksum:
   name_template: 'checksums.txt'
