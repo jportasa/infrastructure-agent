@@ -32,7 +32,7 @@ builds:
 #    - mips64le
 #    - ppc64le
 #    - s390x
-    id: newrelic-infra-ctl
+  - id: newrelic-infra-ctl
     main: ./cmd/newrelic-infra-ctl
     binary: newrelic-infra-ctl
     env:
