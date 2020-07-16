@@ -238,4 +238,4 @@ release:
 signs:
   - artifacts: checksum
     cmd: gpg2
-    args: ["--batch", '-u', "{{ .Env.GPG_MAIL }}", "--passphrase", "{{ .Env.GPG_PASSPHRASE }}", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
+    args: ["--batch", '-u', "{{ .Env.GPG_APT_MAIL }}", "--passphrase", "{{ .Env.GPG_APT_PASSPHRASE }}", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
