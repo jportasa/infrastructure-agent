@@ -14,7 +14,7 @@ curl -SL "https://download.newrelic.com/infrastructure_agent/binaries/linux/${NR
 # curl -SL "https://github.com/newrelic/nri-flex/releases/download/v${NRI_FLEX_VERSION}/nri-flex_${NRI_FLEX_VERSION}_${NRI_FLEX_OS}_x86_64.tar.gz" | tar xz -C /tmp/binaries/nri-flex
 
 echo "===> Importing GPG private key from GHA secrets..."
-printf %s ${GPG_PRIVATE_KEY} | base64 -d | gpg --batch --import -
+printf %s ${GPG_APT_PRIVATE_KEY} | base64 -d | gpg --batch --import -
 
 echo "===> List GPG keys"
 gpg --list-keys
