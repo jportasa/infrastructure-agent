@@ -20,9 +20,12 @@ env:
   GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
   REPO_NAME: ${{ github.event.repository.name }}
   REPO_FULL_NAME: ${{ github.event.repository.full_name }}
-  GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }} # base64 coded
-  GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-  GPG_MAIL: 'jportacloud@gmail.com' # Mail associated to GPG key
+  GPG_APT_PRIVATE_KEY: ${{ secrets.GPG_APT_PRIVATE_KEY_BASE64 }} # base64 encoded
+  GPG_APT_PASSPHRASE: ${{ secrets.GPG_APT_PASSPHRASE }}
+  GPG_APT_MAIL: 'infrastructure-eng@newrelic.com' # Mail associated to GPG key
+  GPG_RPM_PRIVATE_KEY: ${{ secrets.GPG_RPM_PRIVATE_KEY_BASE64 }} # base64 encoded
+  GPG_RPM_PASSPHRASE: ${{ secrets.GPG_RPM_PASSPHRASE }}
+  GPG_RPM_MAIL: 'infrastructure-eng@newrelic.com'
 
 jobs:
 #
