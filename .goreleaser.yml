@@ -217,9 +217,9 @@ nfpms:
     ######## UPSTART ########
   - id: newrelic-infra_upstart
     builds:
-      - newrelic-infra
-      - newrelic-infra-ctl
-      - newrelic-infra-service
+      - linux-newrelic-infra
+      - linux-newrelic-infra-ctl
+      - linux-newrelic-infra-service
     file_name_template: "newrelic-infra_upstart_{{ .Env.TAG }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
     vendor: "New Relic, Inc."
     homepage: "https://docs.newrelic.com/docs/release-notes/infrastructure-release-notes/infrastructure-agent-release-notes/new-relic-infrastructure-agent-197"
@@ -250,9 +250,9 @@ nfpms:
   ######## SYSV ########
   - id: newrelic-infra_sysv
     builds:
-      - newrelic-infra
-      - newrelic-infra-ctl
-      - newrelic-infra-service
+      - linux-newrelic-infra
+      - linux-newrelic-infra-ctl
+      - linux-newrelic-infra-service
     file_name_template: "newrelic-infra_sysv_{{ .Env.TAG }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
     vendor: 'New Relic, Inc.'
     homepage: 'https://docs.newrelic.com/docs/release-notes/infrastructure-release-notes/infrastructure-agent-release-notes/new-relic-infrastructure-agent-197'
