@@ -150,7 +150,7 @@ archives:
     name_template: "newrelic-infra_{{.Os}}_{{ .Env.TAG }}_{{ .Arch }}"
     wrap_in_directory: true
     format: tar.gz
-    config_files:
+    files:
       - LICENSE
       - build/package/binaries/linux/config_defaults.sh
       - build/package/binaries/linux/installer.sh
