@@ -11,14 +11,13 @@ before:
 #
 #
 builds:
-  - id: newrelic-infra
+  - id: linux-newrelic-infra
     main: ./cmd/newrelic-infra
     binary: newrelic-infra
     env:
     - CGO_ENABLED=0
     goos:
     - linux
-    - windows
     ldflags:
     - -s -w -X main.integrationVersion={{.Version}}
     goarch:
@@ -32,13 +31,54 @@ builds:
 #    - mips64le
 #    - ppc64le
 #    - s390x
-  - id: newrelic-infra-ctl
+  - id: linux-newrelic-infra-ctl-linux
     main: ./cmd/newrelic-infra-ctl
     binary: newrelic-infra-ctl
     env:
     - CGO_ENABLED=0
     goos:
     - linux
+    ldflags:
+    - -s -w -X main.integrationVersion={{.Version}}
+    goarch:
+    - amd64
+#    - arm
+#    - arm64
+#    - 386
+#    - mips
+#    - mips64
+#    - mipsle
+#    - mips64le
+#    - ppc64le
+#    - s390x
+  - id: linux-newrelic-infra-service
+    main: ./cmd/newrelic-infra-service
+    binary: newrelic-infra-service
+    env:
+    - CGO_ENABLED=0
+    goos:
+    - linux
+    ldflags:
+    - -s -w -X main.version={{.Version}}
+    - -s -w -X main.commit={{.Commit}}
+    goarch:
+    - amd64
+#    - arm
+#    - arm64
+#    - 386
+#    - mips
+#    - mips64
+#    - mipsle
+#    - mips64le
+#    - ppc64le
+#    - s390x
+#
+  - id: windows-newrelic-infra
+    main: ./cmd/newrelic-infra
+    binary: newrelic-infra
+    env:
+    - CGO_ENABLED=0
+    goos:
     - windows
     ldflags:
     - -s -w -X main.integrationVersion={{.Version}}
@@ -53,13 +93,32 @@ builds:
 #    - mips64le
 #    - ppc64le
 #    - s390x
-  - id: newrelic-infra-service
+  - id: windows-newrelic-infra-ctl-linux
+    main: ./cmd/newrelic-infra-ctl
+    binary: newrelic-infra-ctl
+    env:
+    - CGO_ENABLED=0
+    goos:
+    - windows
+    ldflags:
+    - -s -w -X main.integrationVersion={{.Version}}
+    goarch:
+    - amd64
+#    - arm
+#    - arm64
+#    - 386
+#    - mips
+#    - mips64
+#    - mipsle
+#    - mips64le
+#    - ppc64le
+#    - s390x
+  - id: windows-newrelic-infra-service
     main: ./cmd/newrelic-infra-service
     binary: newrelic-infra-service
     env:
     - CGO_ENABLED=0
     goos:
-    - linux
     - windows
     ldflags:
     - -s -w -X main.version={{.Version}}
@@ -76,46 +135,37 @@ builds:
 #    - ppc64le
 #    - s390x
 #
+
 #
 #  ARCHIVES
 #
 #
 archives:
     ######## LINUX ########
-  - id: newrelic-infra
+  - id: linux-newrelic-infra
     builds:
-      - newrelic-infra
-      - newrelic-infra-ctl
-      - newrelic-infra-service
+      - linux-newrelic-infra
+      - linux-newrelic-infra-ctl
+      - linux-newrelic-infra-service
     name_template: "newrelic-infra_{{.Os}}_{{ .Env.TAG }}_{{ .Arch }}"
+    wrap_in_directory: true
     format: tar.gz
     files:
-    - licence*
-    - LICENCE*
-    - license*
-    - LICENSE*
-    - readme*
-    - README*
-    - changelog*
-    - CHANGELOG*
-    - build/package/binaries/windows/*
+    - LICENCE
+    - build/package/binaries/linux/**/*
+
     ######## WINDOWS ########
-#  - id: newrelic-infra_windows
-#    builds:
-#      - newrelic-infra
-#      - newrelic-infra-ctl
-#      - newrelic-infra-service
-#    name_template: "newrelic-infra-{{ .Arch }}.{{ .Version }}"
-#    format: zip
-#    files:
-#    - licence*
-#    - LICENCE*
-#    - license*
-#    - LICENSE*
-#    - readme*
-#    - README*
-#    - changelog*
-#    - CHANGELOG*
+  - id: windows-newrelic-infra
+    builds:
+      - windows-newrelic-infra
+      - windows-newrelic-infra-ctl
+      - windows-newrelic-infra-service
+    name_template: "newrelic-infra-{{ .Arch }}.{{ .Version }}"
+    wrap_in_directory: true
+    format: zip
+    files:
+    - LICENCE
+    - installer.ps1
 
 checksum:
   name_template: 'checksums.txt'
