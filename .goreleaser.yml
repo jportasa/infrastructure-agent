@@ -150,10 +150,10 @@ archives:
     name_template: "newrelic-infra_{{.Os}}_{{ .Env.TAG }}_{{ .Arch }}"
     wrap_in_directory: true
     format: tar.gz
-    files:
-    - LICENSE
-    - build/package/binaries/linux/**/*
-
+    config_files:
+      - LICENSE
+      - build/package/binaries/linux/config_defaults.sh
+      - build/package/binaries/linux/installer.sh
     ######## WINDOWS ########
   - id: windows-newrelic-infra
     builds:
@@ -165,7 +165,7 @@ archives:
     format: zip
     files:
     - LICENSE
-    - build/package/binaries/windows/**/*
+    - build/package/binaries/windows/installer.ps1
 
 checksum:
   name_template: 'checksums.txt'
