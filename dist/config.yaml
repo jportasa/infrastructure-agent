@@ -1,0 +1,284 @@
+project_name: infrastructure-agent
+release:
+  github:
+    owner: jportasa
+    name: infrastructure-agent
+  prerelease: "true"
+  name_template: '{{.Tag}}'
+scoop:
+  name: infrastructure-agent
+  commit_author:
+    name: goreleaserbot
+    email: goreleaser@carlosbecker.com
+builds:
+- id: linux-newrelic-infra
+  goos:
+  - linux
+  goarch:
+  - amd64
+  goarm:
+  - "6"
+  targets:
+  - linux_amd64
+  dir: .
+  main: ./cmd/newrelic-infra
+  ldflags:
+  - -s -w -X main.integrationVersion={{.Version}}
+  binary: newrelic-infra
+  env:
+  - CGO_ENABLED=0
+  lang: go
+- id: linux-newrelic-infra-ctl-linux
+  goos:
+  - linux
+  goarch:
+  - amd64
+  goarm:
+  - "6"
+  targets:
+  - linux_amd64
+  dir: .
+  main: ./cmd/newrelic-infra-ctl
+  ldflags:
+  - -s -w -X main.integrationVersion={{.Version}}
+  binary: newrelic-infra-ctl
+  env:
+  - CGO_ENABLED=0
+  lang: go
+- id: linux-newrelic-infra-service
+  goos:
+  - linux
+  goarch:
+  - amd64
+  goarm:
+  - "6"
+  targets:
+  - linux_amd64
+  dir: .
+  main: ./cmd/newrelic-infra-service
+  ldflags:
+  - -s -w -X main.version={{.Version}}
+  - -s -w -X main.commit={{.Commit}}
+  binary: newrelic-infra-service
+  env:
+  - CGO_ENABLED=0
+  lang: go
+- id: windows-newrelic-infra
+  goos:
+  - windows
+  goarch:
+  - amd64
+  goarm:
+  - "6"
+  targets:
+  - windows_amd64
+  dir: .
+  main: ./cmd/newrelic-infra
+  ldflags:
+  - -s -w -X main.integrationVersion={{.Version}}
+  binary: newrelic-infra
+  env:
+  - CGO_ENABLED=0
+  lang: go
+- id: windows-newrelic-infra-ctl-linux
+  goos:
+  - windows
+  goarch:
+  - amd64
+  goarm:
+  - "6"
+  targets:
+  - windows_amd64
+  dir: .
+  main: ./cmd/newrelic-infra-ctl
+  ldflags:
+  - -s -w -X main.integrationVersion={{.Version}}
+  binary: newrelic-infra-ctl
+  env:
+  - CGO_ENABLED=0
+  lang: go
+- id: windows-newrelic-infra-service
+  goos:
+  - windows
+  goarch:
+  - amd64
+  goarm:
+  - "6"
+  targets:
+  - windows_amd64
+  dir: .
+  main: ./cmd/newrelic-infra-service
+  ldflags:
+  - -s -w -X main.version={{.Version}}
+  - -s -w -X main.commit={{.Commit}}
+  binary: newrelic-infra-service
+  env:
+  - CGO_ENABLED=0
+  lang: go
+archives:
+- id: linux-newrelic-infra
+  builds:
+  - linux-newrelic-infra
+  - linux-newrelic-infra-ctl
+  - linux-newrelic-infra-service
+  name_template: newrelic-infra_{{.Os}}_{{ .Env.TAG }}_{{ .Arch }}
+  format: tar.gz
+  wrap_in_directory: "true"
+  files:
+  - LICENCE
+  - build/package/binaries/linux/**/*
+- id: windows-newrelic-infra
+  builds:
+  - windows-newrelic-infra
+  - windows-newrelic-infra-ctl
+  - windows-newrelic-infra-service
+  name_template: newrelic-infra-{{ .Arch }}.{{ .Version }}
+  format: zip
+  wrap_in_directory: "true"
+  files:
+  - LICENCE
+  - installer.ps1
+  - license*
+  - LICENSE*
+  - readme*
+  - README*
+  - changelog*
+  - CHANGELOG*
+nfpms:
+- file_name_template: newrelic-infra_systemd_{{ .Env.TAG }}_{{ .Arch }}{{ if .Arm
+    }}v{{ .Arm }}{{ end }}
+  package_name: infrastructure-agent
+  empty_folders:
+  - /var/db/newrelic-infra/custom-integrations
+  - /var/db/newrelic-infra/integrations.d
+  - /var/log/newrelic-infra
+  - /var/run/newrelic-infra
+  files:
+    /tmp/binaries/nri-docker/etc/newrelic-infra/integrations.d/docker-config.yml: /etc/newrelic-infra/integrations.d/docker-config.yml
+    /tmp/binaries/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker: /var/db/newrelic-infra/newrelic-integrations/bin/nri-docker
+    build/package/systemd/newrelic-infra.service: /etc/systemd/system/newrelic-infra.service
+  overrides:
+    rpm:
+      replacements:
+        amd64: x86_64
+  id: newrelic-infra_systemd
+  builds:
+  - newrelic-infra
+  - newrelic-infra-ctl
+  - newrelic-infra-service
+  formats:
+  - deb
+  - rpm
+  vendor: New Relic, Inc.
+  homepage: https://docs.newrelic.com/docs/release-notes/infrastructure-release-notes/infrastructure-agent-release-notes/new-relic-infrastructure-agent-197
+  maintainer: caos-team@newrelic.com
+  description: New Relic Infrastructure provides flexible, dynamic server monitoring.
+    With real-time data collection and a UI that scales from a handful of hosts to
+    thousands, Infrastructure is designed for modern Operations teams with fast-changing
+    systems.
+  license: Copyright (c) 2008-2020 New Relic, Inc. All rights reserved.
+  bindir: /usr/bin
+- file_name_template: newrelic-infra_upstart_{{ .Env.TAG }}_{{ .Arch }}{{ if .Arm
+    }}v{{ .Arm }}{{ end }}
+  package_name: infrastructure-agent
+  empty_folders:
+  - /var/db/newrelic-infra/custom-integrations
+  - /var/db/newrelic-infra/integrations.d
+  - /var/log/newrelic-infra
+  - /var/run/newrelic-infra
+  files:
+    /tmp/binaries/nri-docker/etc/newrelic-infra/integrations.d/docker-config.yml: /etc/newrelic-infra/integrations.d/docker-config.yml
+    /tmp/binaries/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker: /var/db/newrelic-infra/newrelic-integrations/bin/nri-docker
+    build/package/upstart/newrelic-infra: /etc/init.d/newrelic-infra
+  overrides:
+    rpm:
+      replacements:
+        amd64: x86_64
+  id: newrelic-infra_upstart
+  builds:
+  - newrelic-infra
+  - newrelic-infra-ctl
+  - newrelic-infra-service
+  formats:
+  - deb
+  - rpm
+  vendor: New Relic, Inc.
+  homepage: https://docs.newrelic.com/docs/release-notes/infrastructure-release-notes/infrastructure-agent-release-notes/new-relic-infrastructure-agent-197
+  maintainer: caos-team@newrelic.com
+  description: New Relic Infrastructure provides flexible, dynamic server monitoring.
+    With real-time data collection and a UI that scales from a handful of hosts to
+    thousands, Infrastructure is designed for modern Operations teams with fast-changing
+    systems.
+  license: Copyright (c) 2008-2020 New Relic, Inc. All rights reserved.
+  bindir: /usr/bin
+- file_name_template: newrelic-infra_sysv_{{ .Env.TAG }}_{{ .Arch }}{{ if .Arm }}v{{
+    .Arm }}{{ end }}
+  package_name: infrastructure-agent
+  empty_folders:
+  - /var/db/newrelic-infra/custom-integrations
+  - /var/db/newrelic-infra/integrations.d
+  - /var/log/newrelic-infra
+  - /var/run/newrelic-infra
+  files:
+    /tmp/binaries/nri-docker/etc/newrelic-infra/integrations.d/docker-config.yml: /etc/newrelic-infra/integrations.d/docker-config.yml
+    /tmp/binaries/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker: /var/db/newrelic-infra/newrelic-integrations/bin/nri-docker
+    build/package/sysv/deb/newrelic-infra: /etc/init.d/newrelic-infra
+  overrides:
+    rpm:
+      replacements:
+        amd64: x86_64
+      files:
+        build/package/sysv/deb/newrelic-infra: /etc/init.d/newrelic-infra
+  id: newrelic-infra_sysv
+  builds:
+  - newrelic-infra
+  - newrelic-infra-ctl
+  - newrelic-infra-service
+  formats:
+  - deb
+  - rpm
+  vendor: New Relic, Inc.
+  homepage: https://docs.newrelic.com/docs/release-notes/infrastructure-release-notes/infrastructure-agent-release-notes/new-relic-infrastructure-agent-197
+  maintainer: caos-team@newrelic.com
+  description: New Relic Infrastructure provides flexible, dynamic server monitoring.
+    With real-time data collection and a UI that scales from a handful of hosts to
+    thousands, Infrastructure is designed for modern Operations teams with fast-changing
+    systems.
+  license: Copyright (c) 2008-2020 New Relic, Inc. All rights reserved.
+  bindir: /usr/bin
+snapshot:
+  name_template: '{{ .Tag }}-next'
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+changelog:
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+dist: dist
+signs:
+- id: default
+  cmd: gpg2
+  args:
+  - --batch
+  - -u
+  - '{{ .Env.GPG_APT_MAIL }}'
+  - --passphrase
+  - '{{ .Env.GPG_APT_PASSPHRASE }}'
+  - --pinentry-mode
+  - loopback
+  - --output
+  - ${signature}
+  - --detach-sign
+  - ${artifact}
+  signature: ${artifact}.sig
+  artifacts: checksum
+env_files:
+  github_token: ~/.config/goreleaser/github_token
+  gitlab_token: ~/.config/goreleaser/gitlab_token
+  gitea_token: ~/.config/goreleaser/gitea_token
+github_urls:
+  download: https://github.com
+gitlab_urls:
+  download: https://gitlab.com
