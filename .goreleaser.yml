@@ -165,7 +165,7 @@ archives:
     format: zip
     files:
     - LICENSE
-    - installer.ps1
+    - build/package/binaries/windows/**/*
 
 checksum:
   name_template: 'checksums.txt'
