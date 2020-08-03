@@ -31,7 +31,7 @@ builds:
 #    - mips64le
 #    - ppc64le
 #    - s390x
-  - id: linux-newrelic-infra-ctl-linux
+  - id: linux-newrelic-infra-ctl
     main: ./cmd/newrelic-infra-ctl
     binary: newrelic-infra-ctl
     env:
@@ -93,7 +93,7 @@ builds:
 #    - mips64le
 #    - ppc64le
 #    - s390x
-  - id: windows-newrelic-infra-ctl-linux
+  - id: windows-newrelic-infra-ctl
     main: ./cmd/newrelic-infra-ctl
     binary: newrelic-infra-ctl
     env:
