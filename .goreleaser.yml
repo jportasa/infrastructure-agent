@@ -151,7 +151,7 @@ archives:
     wrap_in_directory: true
     format: tar.gz
     files:
-    - LICENCE
+    - LICENSE
     - build/package/binaries/linux/**/*
 
     ######## WINDOWS ########
@@ -164,7 +164,7 @@ archives:
     wrap_in_directory: true
     format: zip
     files:
-    - LICENCE
+    - LICENSE
     - installer.ps1
 
 checksum:
