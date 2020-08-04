@@ -7,13 +7,10 @@ set -e
 #
 #
 echo "===> Downloading Tarball binaries from Github"
-
-release_id=$(curl --header "authorization: Bearer ${GITHUB_TOKEN}" --url https://api.github.com/repos/${REPO_FULL_NAME}/releases/tags/${TAG} | jq --raw-output '.id')
-echo "release_id=$release_id"
-download_url=$(curl --header "authorization: Bearer $GITHUB_TOKEN" --url https://api.github.com/repos/${REPO_FULL_NAME}/releases/${release_id}/assets | jq --raw-output '.[].browser_download_url' | grep newrelic-infra_binaries )
+TAG_WITHOUT_V=$(echo $TAG | cut -d "v" -f 2)
 cd /${REPO_FULL_NAME}
 mkdir binaries && cd binaries
-wget ${download_url} -O - | tar -xz --strip 1
+wget "https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/newrelic-infra_binaries_linux_${TAG_WITHOUT_V}_amd64.tar.gz" -O - | tar -xz --strip 1
 
 echo "===> Creating Tarball"
 cd /${REPO_FULL_NAME}
@@ -31,12 +28,12 @@ cp /${REPO_FULL_NAME}/binaries/* usr/bin/
 cp /${REPO_FULL_NAME}/LICENSE LICENSE.txt
 
 cd /${REPO_FULL_NAME}/tarball
-TAG_WITHOUT_V=$(echo $TAG | cut -d "v" -f 2)
 tar -czvf newrelic-infra_linux_${TAG_WITHOUT_V}_amd64.tar.gz *
 
 
 echo "===> Uploading GitHub asset newrelic-infra_linux_${TAG_WITHOUT_V}_amd64.tar.gz to TAG=$TAG"
 filename=newrelic-infra_linux_${TAG_WITHOUT_V}_amd64.tar.gz
+release_id=$(curl --header "authorization: Bearer $GITHUB_TOKEN" --url https://api.github.com/repos/${REPO_FULL_NAME}/releases/tags/${TAG} | jq --raw-output '.id' )
 curl \
     -H "Authorization: token $GITHUB_TOKEN" \
     -H "Content-Type: application/octet-stream" \
