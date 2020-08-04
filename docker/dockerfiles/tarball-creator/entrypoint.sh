@@ -6,8 +6,9 @@ set -e
 # Create Tarball for Linux and push it to GH Release Assets
 #
 #
-echo "===> Downloading Tarball binaries from Github"
+echo "===> Downloading Tarball binaries from GH"
 TAG_WITHOUT_V=$(echo $TAG | cut -d "v" -f 2)
+echo "TAG_WITHOUT_V=$TAG_WITHOUT_V"
 cd /${REPO_FULL_NAME}
 mkdir binaries && cd binaries
 URL="https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/newrelic-infra_binaries_linux_${TAG_WITHOUT_V}_amd64.tar.gz"
