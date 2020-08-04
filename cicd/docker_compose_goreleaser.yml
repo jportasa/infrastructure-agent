@@ -4,10 +4,10 @@ services:
 
   goreleaser:
     build:
-      context: docker/dockerfiles/goreleaser/
+      context: dockerfiles/goreleaser/
       dockerfile: Dockerfile
     volumes:
-      - ${PWD}:/go/src/github.com/${REPO_FULL_NAME}/
+      - ${GITHUB_WORKSPACE}:/go/src/github.com/${REPO_FULL_NAME}/
     working_dir: /go/src/github.com/${REPO_FULL_NAME}
     environment:
       - GITHUB_TOKEN=$GITHUB_TOKEN

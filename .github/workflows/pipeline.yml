@@ -18,6 +18,7 @@ on:
 env:
   TAG: ${{ github.event.release.tag_name }}
   GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+  GITHUB_WORKSPACE: ${{ github.workspace }}
   REPO_NAME: ${{ github.event.repository.name }}
   REPO_FULL_NAME: ${{ github.event.repository.full_name }}
   GPG_APT_PRIVATE_KEY: ${{ secrets.GPG_APT_PRIVATE_KEY_BASE64 }} # base64 encoded
@@ -53,7 +54,7 @@ jobs:
           GOPATH: '/go'
         run: |
           docker-compose --file docker_compose_goreleaser.yml run goreleaser
-      - name: Create tarball
+      - name: Create tarball and push to GH Release Assets
         run: |
           docker-compose --file docker_compose_tarball_creator.yml run tarballcreator
       - name: Upload Linux artifacts to GH Workflow Artifacts Cache
