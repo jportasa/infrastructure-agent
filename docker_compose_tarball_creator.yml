@@ -2,7 +2,7 @@ version: '3'
 
 services:
 
-  tarballcreator:
+  release:
     build:
       context: docker/dockerfiles/tarball-creator/
       dockerfile: Dockerfile
@@ -13,7 +13,7 @@ services:
       - GITHUB_TOKEN=$GITHUB_TOKEN
       - TAG=$TAG
       - REPO_FULL_NAME=$REPO_FULL_NAME
-      - REPO_NAME=$REPO_NAME
+
 
 
 

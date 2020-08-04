@@ -54,8 +54,12 @@ jobs:
         run: |
           docker-compose --file docker_compose_goreleaser.yml run release
       - name: Create tarball
+        env:
+          GITHUB_TOKEN: $GITHUB_TOKEN
+          REPO_FULL_NAME: $REPO_FULL_NAME
+          TAG: $TAG
         run: |
-
+          docker-compose --file docker_compose_tarball_creator.yml run release
       - name: Upload Linux artifacts to GH Workflow Artifacts Cache
         if: github.event.pull_request.merged
         uses: actions/upload-artifact@v2
