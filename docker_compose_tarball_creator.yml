@@ -2,7 +2,7 @@ version: '3'
 
 services:
 
-  release:
+  tarballcreator:
     build:
       context: docker/dockerfiles/tarball-creator/
       dockerfile: Dockerfile
