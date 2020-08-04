@@ -53,9 +53,11 @@ jobs:
           PROJECTNAME: $REPO_NAME
           GOPATH: '/go'
         run: |
+          cd cicd
           docker-compose --file docker_compose_goreleaser.yml run goreleaser
       - name: Create tarball and push to GH Release Assets
         run: |
+          cd cicd
           docker-compose --file docker_compose_tarball_creator.yml run tarballcreator
       - name: Upload Linux artifacts to GH Workflow Artifacts Cache
         if: github.event.pull_request.merged
