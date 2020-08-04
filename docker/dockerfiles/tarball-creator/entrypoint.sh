@@ -10,7 +10,8 @@ echo "===> Downloading Tarball binaries from Github"
 TAG_WITHOUT_V=$(echo $TAG | cut -d "v" -f 2)
 cd /${REPO_FULL_NAME}
 mkdir binaries && cd binaries
-wget "https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/newrelic-infra_binaries_linux_${TAG_WITHOUT_V}_amd64.tar.gz" -O - | tar -xz --strip 1
+URL="https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/newrelic-infra_binaries_linux_${TAG_WITHOUT_V}_amd64.tar.gz"
+wget $URL -O - | tar -xz --strip 1
 
 echo "===> Creating Tarball"
 cd /${REPO_FULL_NAME}
