@@ -29,12 +29,12 @@ TAG=`echo ${TAG:1}`
 if $GITHUB_PUSH_RELEASE_ASSETS; then
   if [ $download_urls == 'empty' ]; then
     echo "===> No GH Release Assets, so I run Goreleaser and push to GH release assets";
-    goreleaser release --config=.goreleaser.yml --rm-dist  --debug
+    goreleaser release --config=.goreleaser.yml --rm-dist
   else
     echo "===> Release assets were already created for this TAG, GH don't allow to overwrite them"
   fi
 else
     echo "===> Run Goreleaser and push them to GH Workflow Cache Assets";
-    goreleaser release --config=.goreleaser.yml --rm-dist --snapshot  --debug
+    goreleaser release --config=.goreleaser.yml --rm-dist --snapshot
 fi
 

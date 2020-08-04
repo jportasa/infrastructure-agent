@@ -8,7 +8,8 @@ set -e
 #
 echo "===> Downloading Tarball binaries from Github"
 
-release_id=$(curl --header "authorization: Bearer $GITHUB_TOKEN" --url https://api.github.com/repos/${REPO_FULL_NAME}/releases/tags/${TAG} | jq --raw-output '.id' )
+release_id=$(curl --header "authorization: Bearer ${GITHUB_TOKEN}" --url https://api.github.com/repos/${REPO_FULL_NAME}/releases/tags/${TAG} | jq --raw-output '.id')
+echo "release_id=$release_id"
 download_url=$(curl --header "authorization: Bearer $GITHUB_TOKEN" --url https://api.github.com/repos/${REPO_FULL_NAME}/releases/${release_id}/assets | jq --raw-output '.[].browser_download_url' | grep newrelic-infra_binaries )
 cd /${REPO_FULL_NAME}
 mkdir binaries && cd binaries

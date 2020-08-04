@@ -52,7 +52,7 @@ jobs:
           PROJECTNAME: $REPO_NAME
           GOPATH: '/go'
         run: |
-          docker-compose --file docker_compose_goreleaser.yml run release
+          docker-compose --file docker_compose_goreleaser.yml run goreleaser
       - name: Create tarball
         env:
           GITHUB_TOKEN: $GITHUB_TOKEN
