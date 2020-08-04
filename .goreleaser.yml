@@ -148,7 +148,7 @@ archives:
       - linux-newrelic-infra-ctl
       - linux-newrelic-infra-service
     name_template: "newrelic-infra_binaries_{{.Os}}_{{ .Env.TAG }}_{{ .Arch }}"
-    wrap_in_directory: true
+    wrap_in_directory: false
     format: tar.gz
     files:
       - none*

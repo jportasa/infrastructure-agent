@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+
+  tarballcreator:
+    build:
+      context: docker/dockerfiles/tarball-creator/
+      dockerfile: Dockerfile
+    volumes:
+      - ${PWD}:/${REPO_FULL_NAME}/
+    working_dir: /${REPO_FULL_NAME}
+    environment:
+      - GITHUB_TOKEN=$GITHUB_TOKEN
+      - TAG=$TAG
+      - REPO_FULL_NAME=$REPO_FULL_NAME
+      - REPO_NAME=$REPO_NAME
+
+
+
