@@ -7,8 +7,8 @@ set -e
 #
 #
 echo "===> Downloading Tarball binaries from GH"
+env
 TAG_WITHOUT_V=$(echo $TAG | cut -d "v" -f 2)
-echo "TAG_WITHOUT_V=$TAG_WITHOUT_V"
 cd /${REPO_FULL_NAME}
 mkdir binaries && cd binaries
 URL="https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/newrelic-infra_binaries_linux_${TAG_WITHOUT_V}_amd64.tar.gz"
