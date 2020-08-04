@@ -11,6 +11,28 @@ before:
 #
 #
 builds:
+  - id: linux-tarball-newrelic-infra
+    main: ./cmd/newrelic-infra
+    binary: newrelic-infra
+    env:
+    - CGO_ENABLED=0
+    goos:
+    - linux
+    goarch:
+    - amd64
+#    - arm
+#    - arm64
+#    - 386
+#    - mips
+#    - mips64
+#    - mipsle
+#    - mips64le
+#    - ppc64le
+#    - s390x
+    hooks:
+      post: ./create-tarball.sh dist/linux-tarball-newrelic-infra_linux_amd64
+
+
   - id: linux-newrelic-infra
     main: ./cmd/newrelic-infra
     binary: newrelic-infra
@@ -142,30 +164,30 @@ builds:
 #
 archives:
     ######## LINUX ########
-  - id: linux-newrelic-infra
+  - id: linux-tarball-newrelic-infra
     builds:
-      - linux-newrelic-infra
-      - linux-newrelic-infra-ctl
-      - linux-newrelic-infra-service
+      - linux-tarball-newrelic-infra
+#      - linux-newrelic-infra-ctl
+#      - linux-newrelic-infra-service
     name_template: "newrelic-infra_{{.Os}}_{{ .Env.TAG }}_{{ .Arch }}"
     wrap_in_directory: true
     format: tar.gz
-    files:
-      - LICENSE
-      - build/package/binaries/linux/config_defaults.sh
-      - build/package/binaries/linux/installer.sh
-    ######## WINDOWS ########
-  - id: windows-newrelic-infra
-    builds:
-      - windows-newrelic-infra
-      - windows-newrelic-infra-ctl
-      - windows-newrelic-infra-service
-    name_template: "newrelic-infra-{{ .Arch }}.{{ .Version }}"
-    wrap_in_directory: true
-    format: zip
-    files:
-    - LICENSE
-    - build/package/binaries/windows/installer.ps1
+#    files:
+#      - LICENSE
+#      - build/package/binaries/linux/config_defaults.sh
+#      - build/package/binaries/linux/installer.sh
+#    ######## WINDOWS ########
+#  - id: windows-newrelic-infra
+#    builds:
+#      - windows-newrelic-infra
+#      - windows-newrelic-infra-ctl
+#      - windows-newrelic-infra-service
+#    name_template: "newrelic-infra-{{ .Arch }}.{{ .Version }}"
+#    wrap_in_directory: true
+#    format: zip
+#    files:
+#    - LICENSE
+#    - build/package/binaries/windows/installer.ps1
 
 checksum:
   name_template: 'checksums.txt'
@@ -280,7 +302,6 @@ nfpms:
           amd64: x86_64 # Exceptions in the name, .deb are amd64, .rpm are x86_64
         files:
           'build/package/sysv/deb/newrelic-infra': '/etc/init.d/newrelic-infra'   ##### Ned to know how add different files depending on OS ###########################################################
-
 
 release:
   prerelease: true
