@@ -11,6 +11,8 @@ TAG_WITHOUT_V=$(echo $TAG | cut -d "v" -f 2)
 cd /${REPO_FULL_NAME}
 mkdir binaries && cd binaries
 URL="https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/newrelic-infra_binaries_linux_${TAG_WITHOUT_V}_amd64.tar.gz"
+echo "URL=$URL"
+echo "REPO_FULL_NAME=$REPO_FULL_NAME"
 wget $URL -O - | tar -xz --strip 1
 
 echo "===> Creating Tarball"
