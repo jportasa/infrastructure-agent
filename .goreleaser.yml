@@ -195,7 +195,6 @@ nfpms:
       'build/package/systemd/newrelic-infra.service': '/etc/systemd/system/newrelic-infra.service'
       'LICENSE': '/var/db/newrelic-infra/LICENSE.txt'
       '/other-repos/nri-docker/etc/newrelic-infra/integrations.d/docker-config.yml': '/etc/newrelic-infra/integrations.d/docker-config.yml'
-      'build/package/systemd/newrelic-infra.service': '/etc/systemd/system/newrelic-infra.service'
       '/other-repos/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
       '/other-repos/nri-flex/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
 
@@ -234,7 +233,7 @@ nfpms:
     files:
       'build/package/upstart/newrelic-infra': '/etc/init.d/newrelic-infra.conf'
       '/other-repos/nri-docker/etc/newrelic-infra/integrations.d/docker-config.yml': '/etc/newrelic-infra/integrations.d/docker-config.yml'
-      'build/package/upstart/newrelic-infra': '/lib/init/upstart-job'
+      #'build/package/upstart/newrelic-infra': '/lib/init/upstart-job'
       'LICENSE': '/var/db/newrelic-infra/LICENSE.txt'
       '/other-repos/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
       '/other-repos/nri-flex/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
