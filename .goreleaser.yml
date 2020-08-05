@@ -206,7 +206,7 @@ nfpms:
       'build/package/systemd/newrelic-infra.service': '/etc/systemd/system/newrelic-infra.service'
       'LICENSE': '/var/db/newrelic-infra/LICENSE.txt'
       '/other-repos/nri-docker/etc/newrelic-infra/integrations.d/docker-config.yml': '/etc/newrelic-infra/integrations.d/docker-config.yml'
-      '/other-repos/nri-docker/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
+      '/other-repos/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
       '/other-repos/nri-flex/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
 
       #: '/var/db/newrelic-infra/newrelic-integrations/logging/fluent-bit' ????? PENDING WORKAROUND
@@ -246,7 +246,7 @@ nfpms:
       '/other-repos/nri-docker/etc/newrelic-infra/integrations.d/docker-config.yml': '/etc/newrelic-infra/integrations.d/docker-config.yml'
       #'build/package/upstart/newrelic-infra': '/lib/init/upstart-job'
       'LICENSE': '/var/db/newrelic-infra/LICENSE.txt'
-      '/other-repos/nri-docker/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
+      '/other-repos/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
       '/other-repos/nri-flex/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
 
     empty_folders:
@@ -281,7 +281,7 @@ nfpms:
       'build/package/sysv/deb/newrelic-infra': '/etc/init.d/newrelic-infra'
       '/other-repos/nri-docker/etc/newrelic-infra/integrations.d/docker-config.yml': '/etc/newrelic-infra/integrations.d/docker-config.yml'
       'LICENSE': '/var/db/newrelic-infra/LICENSE.txt'
-      '/other-repos/nri-docker/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
+      '/other-repos/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
       '/other-repos/nri-flex/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
     empty_folders:
       - /var/db/newrelic-infra/custom-integrations

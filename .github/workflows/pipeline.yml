@@ -55,7 +55,7 @@ jobs:
         run: |
           cd cicd
           docker-compose --file docker_compose_goreleaser.yml run goreleaser
-      - name: Create tarball and push to GH Release Assets
+      - name: Create tarballs for Linux & Windows and push to GH Release Assets
         run: |
           cd cicd
           docker-compose --file docker_compose_tarball_creator.yml run tarballcreator
