@@ -37,7 +37,8 @@ tar -czvf newrelic-infra_linux_${TAG_WITHOUT_V}_amd64.tar.gz *
 echo "===> Uploading GitHub asset newrelic-infra_linux_${TAG_WITHOUT_V}_amd64.tar.gz to TAG=$TAG"
 filename=newrelic-infra_linux_${TAG_WITHOUT_V}_amd64.tar.gz
 
-curl -H "Authorization: token $GITHUB_TOKEN" \
+curl \
+     -H "Authorization: token $GITHUB_TOKEN" \
      -H "Content-Type: application/octet-stream" \
      --data-binary @$filename \
      "https://uploads.github.com/repos/${REPO_FULL_NAME}/releases/${release_id}/assets?name=$(basename $filename)"
@@ -65,7 +66,8 @@ zip -r newrelic-infra_windows_${TAG_WITHOUT_V}_amd64.zip .
 echo "===> Uploading GitHub asset newrelic-infra_windows_${TAG_WITHOUT_V}_amd64.tar.gz to TAG=$TAG"
 filename=newrelic-infra_windows_${TAG_WITHOUT_V}_amd64.zip
 
-curl -H "Authorization: token $GITHUB_TOKEN" \
+curl \
+     -H "Authorization: token $GITHUB_TOKEN" \
      -H "Content-Type: application/octet-stream" \
      --data-binary @$filename \
      "https://uploads.github.com/repos/${REPO_FULL_NAME}/releases/${release_id}/assets?name=$(basename $filename)"
