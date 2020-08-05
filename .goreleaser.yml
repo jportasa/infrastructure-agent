@@ -152,6 +152,17 @@ archives:
     format: tar.gz
     files:
       - none*
+    ######## WINDOWS ########
+  - id: windows-tarball-newrelic-infra
+    builds:
+      - windows-newrelic-infra
+      - windows-newrelic-infra-ctl
+      - windows-newrelic-infra-service
+    name_template: "newrelic-infra_binaries_{{.Os}}_{{ .Env.TAG }}_{{ .Arch }}"
+    wrap_in_directory: false
+    format: zip
+    files:
+      - none*
 
 checksum:
   name_template: 'checksums.txt'
@@ -195,8 +206,8 @@ nfpms:
       'build/package/systemd/newrelic-infra.service': '/etc/systemd/system/newrelic-infra.service'
       'LICENSE': '/var/db/newrelic-infra/LICENSE.txt'
       '/other-repos/nri-docker/etc/newrelic-infra/integrations.d/docker-config.yml': '/etc/newrelic-infra/integrations.d/docker-config.yml'
-      '/other-repos/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
-      '/other-repos/nri-flex/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
+      '/other-repos/nri-docker/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
+      '/other-repos/nri-flex/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
 
       #: '/var/db/newrelic-infra/newrelic-integrations/logging/fluent-bit' ????? PENDING WORKAROUND
       #: '/var/db/newrelic-infra/newrelic-integrations/logging/out_newrelic.so' ????? PENDING WORKAROUND
@@ -235,8 +246,8 @@ nfpms:
       '/other-repos/nri-docker/etc/newrelic-infra/integrations.d/docker-config.yml': '/etc/newrelic-infra/integrations.d/docker-config.yml'
       #'build/package/upstart/newrelic-infra': '/lib/init/upstart-job'
       'LICENSE': '/var/db/newrelic-infra/LICENSE.txt'
-      '/other-repos/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
-      '/other-repos/nri-flex/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
+      '/other-repos/nri-docker/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
+      '/other-repos/nri-flex/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
 
     empty_folders:
       - /var/db/newrelic-infra/custom-integrations
@@ -270,8 +281,8 @@ nfpms:
       'build/package/sysv/deb/newrelic-infra': '/etc/init.d/newrelic-infra'
       '/other-repos/nri-docker/etc/newrelic-infra/integrations.d/docker-config.yml': '/etc/newrelic-infra/integrations.d/docker-config.yml'
       'LICENSE': '/var/db/newrelic-infra/LICENSE.txt'
-      '/other-repos/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
-      '/other-repos/nri-flex/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
+      '/other-repos/nri-docker/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
+      '/other-repos/nri-flex/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
     empty_folders:
       - /var/db/newrelic-infra/custom-integrations
       - /var/db/newrelic-infra/integrations.d

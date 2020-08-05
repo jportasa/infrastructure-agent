@@ -1,7 +1,11 @@
 #!/bin/bash
 
 set -e
-
+#
+#
+# Run goreleaser to crreate binaries, deb, rpm
+#
+#
 echo "===> Get files from other repos and put them in /other-repos"
 mkdir -p /other-repos/{nri-docker,nri-flex}
 curl -SL "https://download.newrelic.com/infrastructure_agent/binaries/linux/${NRI_DOCKER_ARCH}/nri-docker_linux_${NRI_DOCKER_VERSION}_${NRI_DOCKER_ARCH}.tar.gz" | tar xz -C /other-repos/nri-docker
