@@ -6,17 +6,16 @@ set -e
 # Create Tarballs for Linux and Windows and push it to GH Release Assets
 #
 #
-TAG_WITHOUT_V=`echo ${TAG:1}`
 release_id=$(curl --header "authorization: Bearer $GITHUB_TOKEN" --url https://api.github.com/repos/${REPO_FULL_NAME}/releases/tags/${TAG} | jq --raw-output '.id' )
 
 ######## LINUX section ########
 echo "===> Downloading Linux Tarball binaries from GH"
 cd /${REPO_FULL_NAME}
 mkdir -p binaries/linux
-URL="https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/newrelic-infra_binaries_linux_${TAG_WITHOUT_V}_amd64.tar.gz"
+URL="https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/newrelic-infra_binaries_linux_${TAG:1}_amd64.tar.gz"
 curl -SL $URL | tar xz -C binaries/linux
 
-echo "===> Creating Tarball newrelic-infra_linux_${TAG_WITHOUT_V}_amd64.tar.gz"
+echo "===> Creating Tarball newrelic-infra_linux_${TAG:1}_amd64.tar.gz"
 cd /${REPO_FULL_NAME}
 mkdir -p tarball/linux/newrelic-infra && cd tarball/linux/newrelic-infra
 mkdir -p etc/{newrelic-infra/integrations.d,init_scripts/{systemd,sysv,upstart}}
@@ -32,10 +31,10 @@ cp /${REPO_FULL_NAME}/binaries/linux/* usr/bin/
 cp /${REPO_FULL_NAME}/LICENSE LICENSE.txt
 
 cd /${REPO_FULL_NAME}/tarball/linux
-tar -czvf newrelic-infra_linux_${TAG_WITHOUT_V}_amd64.tar.gz *
+tar -czvf newrelic-infra_linux_${TAG:1}_amd64.tar.gz *
 
-echo "===> Uploading GitHub asset newrelic-infra_linux_${TAG_WITHOUT_V}_amd64.tar.gz to TAG=$TAG"
-filename=newrelic-infra_linux_${TAG_WITHOUT_V}_amd64.tar.gz
+echo "===> Uploading GitHub asset newrelic-infra_linux_${TAG:1}_amd64.tar.gz to TAG=$TAG"
+filename=newrelic-infra_linux_${TAG:1}_amd64.tar.gz
 ls -la
 curl -s \
      -H "Authorization: token $GITHUB_TOKEN" \
@@ -48,10 +47,10 @@ curl -s \
 echo "===> Downloading Windows Tarball binaries from GH"
 cd /${REPO_FULL_NAME}
 mkdir -p binaries/windows
-URL="https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/newrelic-infra_binaries_windows_${TAG_WITHOUT_V}_amd64.zip"
+URL="https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/newrelic-infra_binaries_windows_${TAG:1}_amd64.zip"
 curl -SL $URL | bsdtar -xf - -C binaries/windows
 
-echo "===> Creating Tarball newrelic-infra_windows_${TAG_WITHOUT_V}_amd64.zip"
+echo "===> Creating Tarball newrelic-infra_windows_${TAG:1}_amd64.zip"
 cd /${REPO_FULL_NAME}
 mkdir -p tarball/windows/newrelic-infra && cd tarball/windows/newrelic-infra
 mkdir -p 'Program Files/New Relic/newrelic-infra'/{custom-integrations,integrations.d,newrelic-integrations}
@@ -61,10 +60,10 @@ cp /${REPO_FULL_NAME}/binaries/windows/*.exe 'Program Files/New Relic/newrelic-i
 # cp ......   'Program Files/New Relic/newrelic-infra/yamlgen.exe'
 
 cd /${REPO_FULL_NAME}/tarball/windows
-zip -r newrelic-infra_windows_${TAG_WITHOUT_V}_amd64.zip .
+zip -r newrelic-infra_windows_${TAG:1}_amd64.zip .
 
-echo "===> Uploading GitHub asset newrelic-infra_windows_${TAG_WITHOUT_V}_amd64.zip to TAG=$TAG"
-filename=newrelic-infra_windows_${TAG_WITHOUT_V}_amd64.zip
+echo "===> Uploading GitHub asset newrelic-infra_windows_${TAG:1}_amd64.zip to TAG=$TAG"
+filename=newrelic-infra_windows_${TAG:1}_amd64.zip
 curl -s \
      -H "Authorization: token $GITHUB_TOKEN" \
      -H "Content-Type: application/octet-stream" \
