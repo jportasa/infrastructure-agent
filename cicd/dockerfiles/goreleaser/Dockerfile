@@ -14,11 +14,11 @@ ENV PATH="/usr/local/go1.14/bin:${PATH}"
 
 ## Install goreleaser
 RUN curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
-#
-#COPY entrypoint.sh /
-#RUN chmod +x /entrypoint.sh
 
-#ENTRYPOINT ["/entrypoint.sh"]
-#CMD [ "-h" ]
+COPY entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD [ "-h" ]
 
 
