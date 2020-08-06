@@ -34,8 +34,8 @@ jobs:
 #  Build binaries/packages
 #
 #
-  build-linux-binaries-and-push-github:
-    name: build Linux binaries/packages
+  goreleaser:
+    name: Goreleaser
     if: github.event.action == 'released'
     runs-on: ubuntu-latest
     env:
@@ -55,14 +55,23 @@ jobs:
         run: |
           cd cicd
           docker-compose --file docker_compose_goreleaser.yml run goreleaser
+
+  tarballs:
+    name: Tarballs creation
+    if: github.event.action == 'released
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PUSH_RELEASE_ASSETS: false
+    steps:
+      - uses: actions/checkout@v2
+      - name: Unshallowify the repo clone # So GoReleaser can generate the changelog properly
+        run: git fetch --prune --unshallow
+      - name: Check GH event is Release or Prerelease
+        if: github.event_name == 'release'
+        run: echo "::set-env name=GITHUB_PUSH_RELEASE_ASSETS::true"
       - name: Create tarballs for Linux & Windows and push to GH Release Assets (if Release/Prerelease)
         run: |
           cd cicd
           docker-compose --file docker_compose_tarball_creator.yml run tarballcreator
-      - name: Upload Linux artifacts to GH Workflow Artifacts Cache
-        if: github.event.pull_request.merged
-        uses: actions/upload-artifact@v2
-        with:
-          name: Linux-artifacts
-          path: dist/**/*
+
 

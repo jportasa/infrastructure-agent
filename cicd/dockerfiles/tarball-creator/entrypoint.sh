@@ -3,7 +3,7 @@
 set -e
 #
 #
-# Create Tarball for Linux and Windows and push it to GH Release Assets
+# Create Tarballs for Linux and Windows and push it to GH Release Assets
 #
 #
 TAG_WITHOUT_V=`echo ${TAG:1}`
