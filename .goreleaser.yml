@@ -74,7 +74,7 @@ builds:
 #    - s390x
 #
 
-  - id: linux-go1.9-newrelic-infra
+  - id: linux-go1.9-newrelic-infra # Needed for centos5
     main: ./cmd/newrelic-infra
     binary: newrelic-infra
     env:
