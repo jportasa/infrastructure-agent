@@ -3,19 +3,11 @@
 # Pipeline bash functions
 #
 #
-
 set -e
 
 ####  DynamoDB lock ####
-#
-#
 # This script implements the locking mechanism functions to not having concurrent jobs
 # updating the S3 repos (APT, YUM, ZYPP...). It creates a lock for each repo type in DynamoDB.
-#
-# AWS_DEFAULT_REGION='us-east-1'
-# DYNAMO_TABLENAME='s3-repo-lock'
-# LOCK_REPO_TYPE='apt'
-# LOCK_TTL=6 # equivalent to 60 sec
 
 function create_dynamo_table {
   # Setup DynamoDB table
