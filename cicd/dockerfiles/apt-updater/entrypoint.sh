@@ -14,7 +14,7 @@ printf %s ${GPG_PRIVATE_KEY} | base64 --decode | gpg --batch --import -
 GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | awk '/sec/{if (length($2) > 0) print $2}' | cut -d "/" -f2)
 echo "GPG_KEY_ID = $GPG_KEY_ID"
 
-echo "===> Installing Depot script"
+echo "===> Installing Depot Pyhton script"
 git clone $DEPOT_REPO
 cd depot; python setup.py install
 

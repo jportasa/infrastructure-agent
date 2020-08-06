@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+
+  release:
+    build:
+      context: dockerfiles/apt-updater/
+      dockerfile: Dockerfile
+    environment:
+      - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+      - AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
+      - REPO_FULL_NAME=$REPO_FULL_NAME
+#      - TAG=$TAG
+      - TAG=v1.0.15
+      - REPO_NAME=$REPO_NAME
+      - DEPOT_REPO=$DEPOT_REPO
+      - S3_REPO_URL=$S3_REPO_URL
+      - BASE_PATH=$BASE_PATH
+      - GPG_APT_PRIVATE_KEY=$GPG_APT_PRIVATE_KEY
+      - GPG_APT_PASSPHRASE=$GPG_APT_PASSPHRASE
+
+
