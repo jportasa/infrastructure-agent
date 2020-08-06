@@ -15,6 +15,7 @@ git clone $DEPOT_REPO
 cd depot; python setup.py install
 
 echo "===> Downloading deb packages from GH"
+makdir -p /artifacts; cd /artifacts
 for boot in "${BOOT[@]}"; do
   echo "===> Downloading newrelic_infra_${boot}_${TAG:1}_amd64.deb from GH"
   DEB_PACKAGE="newrelic-infra_${boot}_${TAG:1}_amd64.deb"
@@ -27,7 +28,7 @@ ls -la
 
 
 echo "===> Start Uploading S3 APT repo with Depot script"
-cd /
+cd depot
 for codename in "${CODENAMES[@]}"; do
   for boot in "${BOOT[@]}"; do
    echo "==> Uploading to S3 ${DEB_PACKAGE} to component=main and codename=${codename}"
@@ -37,7 +38,7 @@ for codename in "${CODENAMES[@]}"; do
       --pool-path=${POOL_PATH} \
       --gpg-key ${GPG_APT_KEY_ID} \
       --passphrase ${GPG_APT_PASSPHRASE} \
-      newrelic_infra_${boot}_${TAG:1}_amd64.deb \
+      /artifacts/newrelic_infra-${boot}_${TAG:1}_amd64.deb \
       --force
   done
 done
