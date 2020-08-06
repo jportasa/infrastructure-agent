@@ -7,8 +7,8 @@ BOOT=( systemd upstart sysv )
 
 echo "===> Importing GPG signature and getting KeyId"
 printf %s ${GPG_APT_PRIVATE_KEY} | base64 --decode | gpg --batch --import -
-GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | awk '/sec/{if (length($2) > 0) print $2}' | cut -d "/" -f2)
-echo "GPG_KEY_ID = $GPG_KEY_ID"
+GPG_APT_KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | awk '/sec/{if (length($2) > 0) print $2}' | cut -d "/" -f2)
+echo "GPG_APT_KEY_ID = $GPG_APT_KEY_ID"
 
 echo "===> Installing Depot Pyhton script"
 git clone $DEPOT_REPO
@@ -34,9 +34,9 @@ for codename in "${CODENAMES[@]}"; do
       --component=main \
       --codename=${codename} \
       --pool-path=${POOL_PATH} \
-      --gpg-key ${GPG_KEY_ID} \
+      --gpg-key ${GPG_APT_KEY_ID} \
       --passphrase ${GPG_APT_PASSPHRASE} \
-      /newrelic_infra_${boot}_${TAG:1}_amd64.deb \
+      newrelic_infra_${boot}_${TAG:1}_amd64.deb \
       --force
   done
 done
