@@ -95,7 +95,7 @@ builds:
 #    - ppc64le
 #    - s390x
     hooks:
-      pre: set_go1.9.sh
+      pre: cicd/scripts/set_go1.9.sh
 
   - id: windows-newrelic-infra
     main: ./cmd/newrelic-infra
