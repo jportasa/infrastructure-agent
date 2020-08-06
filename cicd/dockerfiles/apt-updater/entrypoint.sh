@@ -18,9 +18,12 @@ echo "===> Downloading deb packages from GH"
 for boot in "${BOOT[@]}"; do
   echo "===> Downloading newrelic_infra_${boot}_${TAG:1}_amd64.deb from GH"
   DEB_PACKAGE="newrelic_infra_${boot}_${TAG:1}_amd64.deb"
-  POOL_PATH="pool/main/n/${REPO_NAME}/${DEB_PACKAGE}"
+  POOL_PATH="pool/main/n/newrelic-infra/${DEB_PACKAGE}"
   curl -SL https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/${DEB_PACKAGE} -o ${DEB_PACKAGE}
 done
+
+ls -la
+
 
 echo "===> Start Uploading S3 APT repo with Depot script"
 cd /
@@ -32,7 +35,7 @@ for codename in "${CODENAMES[@]}"; do
       --codename=${codename} \
       --pool-path=${POOL_PATH} \
       --gpg-key ${GPG_KEY_ID} \
-      --passphrase ${GPG_PASSPHRASE} \
+      --passphrase ${GPG_APT_PASSPHRASE} \
       /newrelic_infra_${boot}_${TAG:1}_amd64.deb \
       --force
   done
