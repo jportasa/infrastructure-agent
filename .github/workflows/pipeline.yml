@@ -101,7 +101,7 @@ jobs:
 
   s3-apt-update:
     name: S3 repo APT update
-    if: github.event.action == 'released'
+#    if: github.event.action == 'released'
 #    needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
