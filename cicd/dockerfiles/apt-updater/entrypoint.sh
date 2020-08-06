@@ -10,7 +10,7 @@ POOL_PATH="pool/main/n/${REPO_NAME}/${DEB_PACKAGE}"
 curl -SL https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/${DEB_PACKAGE} -o ${DEB_PACKAGE}
 
 echo "===> Importing GPG signature and getting KeyId"
-printf %s ${GPG_PRIVATE_KEY} | base64 --decode | gpg --batch --import -
+printf %s ${GPG_APT_PRIVATE_KEY} | base64 --decode | gpg --batch --import -
 GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | awk '/sec/{if (length($2) > 0) print $2}' | cut -d "/" -f2)
 echo "GPG_KEY_ID = $GPG_KEY_ID"
 
