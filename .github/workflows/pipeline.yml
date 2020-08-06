@@ -113,7 +113,7 @@ jobs:
 #    - name: Update APT repo
 #      run: |
 #        cd cicd
-#        source pipeline_functions.sh
+#        source scripts/pipeline_functions.sh
 #        create_dynamo_table
 #        wait_free_lock
 #        lock
