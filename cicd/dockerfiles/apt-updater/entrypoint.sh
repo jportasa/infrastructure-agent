@@ -15,7 +15,7 @@ git clone $DEPOT_REPO
 cd depot; python setup.py install
 
 echo "===> Downloading deb packages from GH"
-makdir -p /artifacts; cd /artifacts
+mkdir -p /artifacts; cd /artifacts
 for boot in "${BOOT[@]}"; do
   echo "===> Downloading newrelic_infra_${boot}_${TAG:1}_amd64.deb from GH"
   DEB_PACKAGE="newrelic-infra_${boot}_${TAG:1}_amd64.deb"
