@@ -80,7 +80,7 @@ builds:
     env:
     - CGO_ENABLED=0
     - GOROOT=/usr/local/go1.9
-    - PATH=/usr/local/go1.9/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    - PATH=$PATH:${GOROOT}/bin
     goos:
     - linux
     ldflags:
