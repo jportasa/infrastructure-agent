@@ -360,8 +360,7 @@ nfpms:
       - /var/log/newrelic-infra
       - /var/run/newrelic-infra
 
-
-  - id: newrelic-infra_sysv
+  - id: go1.9-newrelic-infra
     builds:
       - linux-go1.9-newrelic-infra
       - linux-go1.9-newrelic-infra-ctl
@@ -391,10 +390,6 @@ nfpms:
       rpm:
         replacements:
           amd64: x86_64
-
-
-
-
 
 release:
   prerelease: auto
