@@ -19,25 +19,22 @@ mkdir -p /artifacts; cd /artifacts
 for boot in "${BOOT[@]}"; do
   echo "===> Downloading newrelic_infra_${boot}_${TAG:1}_amd64.deb from GH"
   DEB_PACKAGE="newrelic-infra_${boot}_${TAG:1}_amd64.deb"
-  POOL_PATH="pool/main/n/newrelic-infra/${DEB_PACKAGE}"
   curl -SL https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/${DEB_PACKAGE} -o ${DEB_PACKAGE}
 done
-
-pwd
-ls -la
-
 
 echo "===> Start Uploading S3 APT repo with Depot script"
 for codename in "${CODENAMES[@]}"; do
   for boot in "${BOOT[@]}"; do
    echo "==> Uploading to S3 newrelic-infra_${boot}_${TAG:1}_amd64.deb to component=main and codename=${codename}"
+   DEB_PACKAGE="newrelic-infra_${boot}_${TAG:1}_amd64.deb"
+   POOL_PATH="pool/main/n/newrelic-infra/${DEB_PACKAGE}"
    depot --storage=${S3_REPO_URL}/${BASE_PATH} \
       --component=main \
       --codename=${codename} \
       --pool-path=${POOL_PATH} \
       --gpg-key ${GPG_APT_KEY_ID} \
       --passphrase ${GPG_APT_PASSPHRASE} \
-      /artifacts/newrelic-infra_${boot}_${TAG:1}_amd64.deb \
+      /artifacts/${DEB_PACKAGE} \
       --force
   done
 done
