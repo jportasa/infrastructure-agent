@@ -37,7 +37,7 @@ for codename in "${CODENAMES[@]}"; do
       --pool-path=${POOL_PATH} \
       --gpg-key ${GPG_APT_KEY_ID} \
       --passphrase ${GPG_APT_PASSPHRASE} \
-      /artifacts/newrelic_infra-${boot}_${TAG:1}_amd64.deb \
+      /artifacts/newrelic-infra_${boot}_${TAG:1}_amd64.deb \
       --force
   done
 done
