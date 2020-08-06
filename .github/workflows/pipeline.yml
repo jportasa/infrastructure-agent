@@ -59,6 +59,7 @@ jobs:
   tarballs:
     name: Tarballs creation
     if: github.event.action == 'released'
+    needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
       GITHUB_PUSH_RELEASE_ASSETS: false
