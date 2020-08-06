@@ -58,7 +58,7 @@ jobs:
 
   tarballs:
     name: Tarballs creation
-    if: github.event.action == 'released
+    if: github.event.action == 'released'
     runs-on: ubuntu-latest
     env:
       GITHUB_PUSH_RELEASE_ASSETS: false
