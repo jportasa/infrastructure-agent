@@ -47,9 +47,9 @@ curl -s \
 ######## WINDOWS section ########
 echo "===> Downloading Windows Tarball binaries from GH"
 cd /${REPO_FULL_NAME}
-mkdir binaries/windows
+mkdir -p binaries/windows
 URL="https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/newrelic-infra_binaries_windows_${TAG_WITHOUT_V}_amd64.zip"
-curl -SL $URL | tar xz -C binaries/windows
+curl -SL $URL | bsdtar -xf - -C binaries/windows
 
 echo "===> Creating Tarball newrelic-infra_windows_${TAG_WITHOUT_V}_amd64.tar.gz"
 cd /${REPO_FULL_NAME}
