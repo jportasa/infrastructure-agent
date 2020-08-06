@@ -12,9 +12,9 @@ release_id=$(curl --header "authorization: Bearer $GITHUB_TOKEN" --url https://a
 ######## LINUX section ########
 echo "===> Downloading Linux Tarball binaries from GH"
 cd /${REPO_FULL_NAME}
-mkdir -p binaries/linux && cd binaries/linux
+mkdir -p binaries/linux
 URL="https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/newrelic-infra_binaries_linux_${TAG_WITHOUT_V}_amd64.tar.gz"
-wget $URL -O - | tar -xz
+curl -SL $URL | tar xz -C binaries/linux
 
 echo "===> Creating Tarball newrelic-infra_linux_${TAG_WITHOUT_V}_amd64.tar.gz"
 cd /${REPO_FULL_NAME}
@@ -37,7 +37,7 @@ tar -czvf newrelic-infra_linux_${TAG_WITHOUT_V}_amd64.tar.gz *
 echo "===> Uploading GitHub asset newrelic-infra_linux_${TAG_WITHOUT_V}_amd64.tar.gz to TAG=$TAG"
 filename=newrelic-infra_linux_${TAG_WITHOUT_V}_amd64.tar.gz
 ls -la
-curl \
+curl -s \
      -H "Authorization: token $GITHUB_TOKEN" \
      -H "Content-Type: application/octet-stream" \
      --data-binary @$filename \
@@ -47,9 +47,9 @@ curl \
 ######## WINDOWS section ########
 echo "===> Downloading Windows Tarball binaries from GH"
 cd /${REPO_FULL_NAME}
-mkdir binaries/windows && cd binaries/windows
+mkdir binaries/windows
 URL="https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/newrelic-infra_binaries_windows_${TAG_WITHOUT_V}_amd64.zip"
-wget $URL -O - | tar -xz
+curl -SL $URL | tar xz -C binaries/windows
 
 echo "===> Creating Tarball newrelic-infra_windows_${TAG_WITHOUT_V}_amd64.tar.gz"
 cd /${REPO_FULL_NAME}
@@ -65,7 +65,7 @@ zip -r newrelic-infra_windows_${TAG_WITHOUT_V}_amd64.zip .
 
 echo "===> Uploading GitHub asset newrelic-infra_windows_${TAG_WITHOUT_V}_amd64.tar.gz to TAG=$TAG"
 filename=newrelic-infra_windows_${TAG_WITHOUT_V}_amd64.zip
-curl \
+curl -s \
      -H "Authorization: token $GITHUB_TOKEN" \
      -H "Content-Type: application/octet-stream" \
      --data-binary @$filename \
