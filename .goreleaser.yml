@@ -79,8 +79,6 @@ builds:
     binary: newrelic-infra
     env:
     - CGO_ENABLED=0
-    - GOROOT=/usr/local/go1.9
-    - PATH=$PATH:${GOROOT}/bin
     goos:
     - linux
     ldflags:
@@ -96,6 +94,8 @@ builds:
 #    - mips64le
 #    - ppc64le
 #    - s390x
+    hooks:
+      pre: set_go1.9.sh
 
   - id: windows-newrelic-infra
     main: ./cmd/newrelic-infra
