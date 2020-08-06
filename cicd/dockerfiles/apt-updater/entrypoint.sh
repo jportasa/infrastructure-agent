@@ -28,7 +28,6 @@ ls -la
 
 
 echo "===> Start Uploading S3 APT repo with Depot script"
-cd depot
 for codename in "${CODENAMES[@]}"; do
   for boot in "${BOOT[@]}"; do
    echo "==> Uploading to S3 ${DEB_PACKAGE} to component=main and codename=${codename}"
