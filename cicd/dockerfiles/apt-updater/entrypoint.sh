@@ -30,7 +30,7 @@ ls -la
 echo "===> Start Uploading S3 APT repo with Depot script"
 for codename in "${CODENAMES[@]}"; do
   for boot in "${BOOT[@]}"; do
-   echo "==> Uploading to S3 ${DEB_PACKAGE} to component=main and codename=${codename}"
+   echo "==> Uploading to S3 newrelic-infra_${boot}_${TAG:1}_amd64.deb to component=main and codename=${codename}"
    depot --storage=${S3_REPO_URL}/${BASE_PATH} \
       --component=main \
       --codename=${codename} \
