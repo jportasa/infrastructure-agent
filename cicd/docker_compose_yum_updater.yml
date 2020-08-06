@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+
+  release:
+    build:
+      context: dockerfiles/yum-updater-s3fuse/
+      dockerfile: Dockerfile
+    privileged: true
+    cap_add:
+      - SYS_ADMIN
+      - MKNOD
+    devices:
+      - "/dev/fuse"
+    environment:
+      - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+      - AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
+      - AWS_STORAGE_BUCKET_NAME=$AWS_STORAGE_BUCKET_NAME
+      - BASE_PATH=$BASE_PATH
+      - TAG=$TAG
+      - REPO_NAME=$REPO_NAME
+      - REPO_FULL_NAME=$REPO_FULL_NAME
+      - GPG_RPM_PRIVATE_KEY=$GPG_RPM_PRIVATE_KEY
+      - GPG_RPM_PASSPHRASE=$GPG_RPM_PASSPHRASE
+

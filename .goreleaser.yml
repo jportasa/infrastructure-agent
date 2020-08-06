@@ -73,6 +73,30 @@ builds:
 #    - ppc64le
 #    - s390x
 #
+
+  - id: linux-go1.9-newrelic-infra
+    main: ./cmd/newrelic-infra
+    binary: newrelic-infra
+    env:
+    - CGO_ENABLED=0
+    - GOROOT=/usr/local/go1.9
+    - PATH=/usr/local/go1.9/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    goos:
+    - linux
+    ldflags:
+    - -s -w -X main.integrationVersion={{.Version}}
+    goarch:
+    - amd64
+#    - arm
+#    - arm64
+#    - 386
+#    - mips
+#    - mips64
+#    - mipsle
+#    - mips64le
+#    - ppc64le
+#    - s390x
+
   - id: windows-newrelic-infra
     main: ./cmd/newrelic-infra
     binary: newrelic-infra
