@@ -6,13 +6,13 @@ set -e
 # Create Tarballs for Linux and Windows and push them to GH Release Assets
 #
 #
-ARCH-LINUX=( x86_64 386 arm arm64 )
-ARCH-WIN=( x86_64 386 )
+ARCH_LINUX=( x86_64 386 arm arm64 )
+ARCH_WIN=( x86_64 386 )
 
 release_id=$(curl --header "authorization: Bearer $GITHUB_TOKEN" --url https://api.github.com/repos/${REPO_FULL_NAME}/releases/tags/${TAG} | jq --raw-output '.id' )
 
 ######## LINUX section ########
-for arch-linux in "${ARCH-LINUX[@]}"; do
+for arch-linux in "${ARCH_LINUX[@]}"; do
   echo "===> Downloading newrelic-infra_binaries_linux_${TAG:1}_${arch-linux}.tar.gz from GH"
   cd /${REPO_FULL_NAME}
   mkdir -p binaries/linux/${arch-linux}
@@ -47,7 +47,7 @@ for arch-linux in "${ARCH-LINUX[@]}"; do
 done
 
 ######## WINDOWS section ########
-for arch-win in "${ARCH-WIN[@]}"; do
+for arch-win in "${ARCH_WIN[@]}"; do
   echo "===> Downloading newrelic-infra_binaries_windows_${TAG:1}_${arch-win}.zip from GH"
   cd /${REPO_FULL_NAME}
   mkdir -p binaries/windows/${arch-win}
