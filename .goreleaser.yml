@@ -42,7 +42,6 @@ builds:
     - -s -w -X main.integrationVersion={{.Version}}
     goarch:
     - amd64
-    - amd64
     - arm
     - arm64
     - 386
