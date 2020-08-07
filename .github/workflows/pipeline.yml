@@ -138,3 +138,23 @@ jobs:
         lock
         docker-compose --file docker_compose_yum_updater.yml run release
         release_lock
+
+  s3-zypp-update:
+    name: S3 repo ZYPP update
+#    if: github.event.action == 'released'
+#    needs: [goreleaser]
+    runs-on: ubuntu-latest
+    env:
+      BASE_PATH: "/infrastructure_agent/linux/zypp/sles"
+      LOCK_REPO_TYPE: 'zypp'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Upload & update ZYPP repo
+      run: |
+        cd cicd
+        source scripts/pipeline_functions.sh # import functions
+        create_dynamo_table
+        wait_free_lock
+        lock
+        docker-compose --file docker_compose_zypp_updater.yml run release
+        release_lock
