@@ -60,7 +60,7 @@ for arch_win in "${ARCH_WIN[@]}"; do
   mkdir -p 'Program Files/New Relic/newrelic-infra'/{custom-integrations,integrations.d,newrelic-integrations}
 
   cp /${REPO_FULL_NAME}/build/package/binaries/windows/installer.ps1 'Program Files/New Relic/newrelic-infra/'
-  cp /${REPO_FULL_NAME}/binaries/windows/${arch_WIN}/*.exe 'Program Files/New Relic/newrelic-infra/'
+  cp /${REPO_FULL_NAME}/binaries/windows/${arch_win}/*.exe 'Program Files/New Relic/newrelic-infra/'
   # cp ......   'Program Files/New Relic/newrelic-infra/yamlgen.exe'
 
   cd /${REPO_FULL_NAME}/tarball/windows/${arch_win}
