@@ -65,24 +65,24 @@ jobs:
 #          cd cicd
 #          docker-compose --file docker_compose_goreleaser.yml run goreleaser
 
-  tarballs:
-    name: Tarballs for Linux & Win creation
+#  tarballs:
+#    name: Tarballs for Linux & Win creation
 #    if: github.event.action == 'released'
 #    needs: [goreleaser]
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_PUSH_RELEASE_ASSETS: false
-    steps:
-      - uses: actions/checkout@v2
-      - name: Unshallowify the repo clone # So GoReleaser can generate the changelog properly
-        run: git fetch --prune --unshallow
-      - name: Check GH event is Release or Prerelease
-        if: github.event_name == 'release'
-        run: echo "::set-env name=GITHUB_PUSH_RELEASE_ASSETS::true"
-      - name: Create tarballs for Linux & Windows and push to GH Release Assets (if Release/Prerelease)
-        run: |
-          cd cicd
-          docker-compose --file docker_compose_tarball_creator.yml run tarballcreator
+#    runs-on: ubuntu-latest
+#    env:
+#      GITHUB_PUSH_RELEASE_ASSETS: false
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Unshallowify the repo clone # So GoReleaser can generate the changelog properly
+#        run: git fetch --prune --unshallow
+#      - name: Check GH event is Release or Prerelease
+#        if: github.event_name == 'release'
+#        run: echo "::set-env name=GITHUB_PUSH_RELEASE_ASSETS::true"
+#      - name: Create tarballs for Linux & Windows and push to GH Release Assets (if Release/Prerelease)
+#        run: |
+#          cd cicd
+#          docker-compose --file docker_compose_tarball_creator.yml run tarballcreator
 
 #  msi:
 #    name: MSI creation
@@ -119,3 +119,23 @@ jobs:
 #        lock
 #        docker-compose --file docker_compose_apt_updater.yml run release
 #        release_lock
+
+  s3-yum-update:
+    name: S3 repo YUM update
+#    if: github.event.action == 'released'
+#    needs: [goreleaser]
+    runs-on: ubuntu-latest
+    env:
+      BASE_PATH: "/infrastructure_agent/linux/yum/el"
+      LOCK_REPO_TYPE: 'yum'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Upload & update YUM repo
+      run: |
+        cd cicd
+        source scripts/pipeline_functions.sh # import functions
+        create_dynamo_table
+        wait_free_lock
+        lock
+        docker-compose --file docker_compose_yum_updater.yml run release
+        release_lock

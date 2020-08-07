@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-OS_VERSIONS=( 8 7 6 5 )
+OS_VERSIONS=( 5 6 7 8 )
 ARCH=( x86_64 )
 #
 #
@@ -44,50 +44,37 @@ fi
 echo "===> Mounting s3 in local docker with Fuse"
 mkdir -p ${AWS_S3_MOUNTPOINT}
 s3fs $S3FS_DEBUG $S3FS_ARGS -o passwd_file=${AWS_S3_AUTHFILE} -o url=${AWS_S3_URL} ${AWS_STORAGE_BUCKET_NAME} ${AWS_S3_MOUNTPOINT}
-#
-#
-# Downloading from GH and uploading RPM's to S3 repo
-#
-#
-echo "===> Download packages from GH and uploading to S3"
-function github_release_assets_download_upload_s3 () {
-# Requires wget, jq
-   REPO_FULL_NAME=$1
-   TAG=$2
-   FILE_EXTENSION=$3
-   BASE_DIR=$4
-   GITHUB_TOKEN=$5
-   ARCH=$6
-   release_id=$(curl --header "authorization: Bearer $GITHUB_TOKEN" --url https://api.github.com/repos/${REPO_FULL_NAME}/releases/tags/${TAG} | jq --raw-output '.id' )
-   download_urls=$(curl --header "authorization: Bearer $GITHUB_TOKEN" --url https://api.github.com/repos/${REPO_FULL_NAME}/releases/${release_id}/assets | jq --raw-output '.[].browser_download_url' | grep $FILE_EXTENSION$ | grep $ARCH)
-   for download_url in $download_urls; do
-     wget --quiet $download_url
-     arch=$(echo $download_url | cut -d "_" -f 3 | cut -d "." -f1)
-     package_name=$( echo $download_url | cut -d "/" -f 9 )
-     LOCAL_REPO_PATH="${AWS_S3_MOUNTPOINT}${BASE_DIR}"
-     echo "===>Creating local directory if not exists ${LOCAL_REPO_PATH}/repodata"
-     [ -d "${LOCAL_REPO_PATH}/repodata" ] || mkdir -p "${LOCAL_REPO_PATH}/repodata"
-     sleep 2
-     echo "===>Importing GPG signature"
-     printf %s ${GPG_PRIVATE_KEY} | base64 --decode | gpg --batch --import -
-     echo "===>Uploading $package_name to S3 in $BASE_DIR"
-     cp ${package_name} ${LOCAL_REPO_PATH}
-     echo "===>Updating metadata for $package_name to S3 $BASE_DIR"
-     find ${LOCAL_REPO_PATH} -regex '^.*repodata' | xargs -n 1 rm -rf
-     sleep 2
-     time createrepo --update -s sha "${LOCAL_REPO_PATH}"
-     echo "===>Updating GPG metadata dettached signature in PATH ${BASE_DIR}"
-     FILE="${LOCAL_REPO_PATH}/repodata/repomd.xml"
-     while [ ! -f $FILE ];do
-        echo "===>Waiting repomd.xml exists..."
-        sleep 2
-     done
-     gpg --batch --pinentry-mode=loopback --passphrase ${GPG_PASSPHRASE} --detach-sign --armor "${LOCAL_REPO_PATH}/repodata/repomd.xml"
-   done
-}
 
-for architecture in "${ARCH[@]}"; do
-  for os_version in "${OS_VERSIONS[@]}"; do
-    github_release_assets_download_upload_s3 "${REPO_FULL_NAME}" "${TAG}" 'rpm' "${BASE_PATH}/${os_version}/${architecture}" "${GITHUB_TOKEN}" "${architecture}"
+echo "===> Importing GPG signature"
+printf %s ${GPG_RPM_PRIVATE_KEY} | base64 --decode | gpg --batch --import -
+
+echo "===> Download packages from GH and uploading to S3"
+for os_version in "${OS_VERSIONS[@]}"; do
+  package_name="newrelic-infra-${TAG:1}.el${os_version}.${ARCH}.rpm"
+  LOCAL_REPO_PATH="${AWS_S3_MOUNTPOINT}${BASE_PATH}/${os_version}/${ARCH}"
+
+  echo "===> Downloading ${package_name} from GH"
+  wget --quiet https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/${package_name}
+
+  echo "===>Creating local directory if not exists ${LOCAL_REPO_PATH}/repodata"
+  [ -d "${LOCAL_REPO_PATH}/repodata" ] || mkdir -p "${LOCAL_REPO_PATH}/repodata"
+  sleep 2
+
+  echo "===>Uploading ${package_name} to S3 in ${BASE_PATH}/${os_version}/${ARCH}"
+  cp ${package_name} ${LOCAL_REPO_PATH}
+
+  echo "===>Updating metadata for $package_name to S3 $BASE_DIR"
+  find ${LOCAL_REPO_PATH} -regex '^.*repodata' | xargs -n 1 rm -rf
+  sleep 2
+  time createrepo --update -s sha "${LOCAL_REPO_PATH}"
+  FILE="${LOCAL_REPO_PATH}/repodata/repomd.xml"
+  while [ ! -f $FILE ];do
+     echo "===>Waiting repomd.xml exists..."
+     sleep 2
   done
+
+  echo "===>Updating GPG metadata dettached signature in ${BASE_PATH}/${os_version}/${ARCH}"
+  gpg --batch --pinentry-mode=loopback --passphrase ${GPG_PASSPHRASE} --detach-sign --armor "${LOCAL_REPO_PATH}/repodata/repomd.xml"
 done
+
+
