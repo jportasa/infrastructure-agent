@@ -30,7 +30,7 @@ for arch_linux in "${ARCH_LINUX[@]}"; do
   cp /${REPO_FULL_NAME}/build/package/sysv/deb/newrelic-infra  etc/init_scripts/sysv/
   cp /${REPO_FULL_NAME}/build/package/upstart/newrelic-infra  etc/init_scripts/upstart/
   cp /${REPO_FULL_NAME}/build/package/binaries/linux/installer.sh .
-  cp /${REPO_FULL_NAME}/binaries/linux/* usr/bin/
+  cp /${REPO_FULL_NAME}/binaries/linux/${arch_linux}/* usr/bin/
   cp /${REPO_FULL_NAME}/LICENSE LICENSE.txt
 
   cd /${REPO_FULL_NAME}/tarball/linux/${arch_linux}
@@ -60,7 +60,7 @@ for arch_win in "${ARCH_WIN[@]}"; do
   mkdir -p 'Program Files/New Relic/newrelic-infra'/{custom-integrations,integrations.d,newrelic-integrations}
 
   cp /${REPO_FULL_NAME}/build/package/binaries/windows/installer.ps1 'Program Files/New Relic/newrelic-infra/'
-  cp /${REPO_FULL_NAME}/binaries/windows/*.exe 'Program Files/New Relic/newrelic-infra/'
+  cp /${REPO_FULL_NAME}/binaries/windows/${arch_WIN}/*.exe 'Program Files/New Relic/newrelic-infra/'
   # cp ......   'Program Files/New Relic/newrelic-infra/yamlgen.exe'
 
   cd /${REPO_FULL_NAME}/tarball/windows/${arch_win}
