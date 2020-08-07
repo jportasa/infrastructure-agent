@@ -56,7 +56,7 @@ for os_version in "${OS_VERSIONS[@]}"; do
   echo "===> Downloading ${package_name} from GH"
   wget --quiet https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/${package_name}
 
-  echo "===>Creating local directory if not exists ${LOCAL_REPO_PATH}/repodata"
+  echo "===> Creating local directory if not exists ${LOCAL_REPO_PATH}/repodata"
   [ -d "${LOCAL_REPO_PATH}/repodata" ] || mkdir -p "${LOCAL_REPO_PATH}/repodata"
   sleep 2
 

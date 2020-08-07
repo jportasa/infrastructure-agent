@@ -1,6 +1,9 @@
 #!/bin/bash
 
 set -e
+
+ARCH_LINUX=( 386 amd64 arm arm64 )
+ARCH_WINDOWS=( 386 amd64 )
 #
 #
 # Mount S3 with S3Fuse
@@ -38,38 +41,31 @@ if [ ! -f "${AWS_S3_AUTHFILE}" ]; then
    echo "${AWS_ACCESS_KEY_ID}:${AWS_SECRET_ACCESS_KEY}" > ${AWS_S3_AUTHFILE}
    chmod 400 ${AWS_S3_AUTHFILE}
 fi
-
 mkdir -p ${AWS_S3_MOUNTPOINT}
 
 echo "===> Mounting s3 in local docker with Fuse"
 s3fs $S3FS_DEBUG $S3FS_ARGS -o passwd_file=${AWS_S3_AUTHFILE} -o url=${AWS_S3_URL} ${AWS_STORAGE_BUCKET_NAME} ${AWS_S3_MOUNTPOINT}
-#
-#
-# Uploading TARBALLS's to S3 repo
-#
-#
-echo "===> Uploading artifacts to S3"
-function github_release_assets_download_upload_s3 (){
-# Requires wget, jqTAG='v8.0.62'
-   REPO_FULL_NAME=$1
-   TAG=$2
-   FILE_EXTENSION=$3
-   BASE_DIR=$4
-   GITHUB_TOKEN=$5
-   release_id=$(curl --header "authorization: Bearer $GITHUB_TOKEN" --url https://api.github.com/repos/${REPO_FULL_NAME}/releases/tags/${TAG} | jq --raw-output '.id' )
-   download_urls=$(curl --header "authorization: Bearer $GITHUB_TOKEN" --url https://api.github.com/repos/${REPO_FULL_NAME}/releases/${release_id}/assets | jq --raw-output '.[].browser_download_url' | grep $FILE_EXTENSION )
-   for download_url in $download_urls; do
-     wget --quiet $download_url
-     arch=$(echo $download_url | cut -d "_" -f 3 | cut -d "." -f1)
-     package_name=$( echo $download_url | cut -d "/" -f 9 )
-     LOCAL_REPO_PATH="${AWS_S3_MOUNTPOINT}${BASE_DIR}/${arch}/"
-     [ -d ${LOCAL_REPO_PATH} ] || mkdir -p ${LOCAL_REPO_PATH}
-     echo "===>Uploading $package_name to S3 $BASE_DIR"
-     cp ${package_name} ${LOCAL_REPO_PATH}
-   done
-}
 
-github_release_assets_download_upload_s3 $REPO_FULL_NAME $TAG 'tar.gz' $BASE_PATH $GITHUB_TOKEN
+echo "===> Download Linux packages from GH and uploading to S3"
+for arch_linux in "${ARCH_LINUX[@]}"; do
+  package_name="newrelic-infra_linux_${TAG:1}_${arch_linux}.tar.gz"
+  LOCAL_REPO_PATH="${AWS_S3_MOUNTPOINT}${BASE_PATH}/linux/${arch_linux}"
 
-# echo "Running command $@"
-# exec "$@"
+  echo "===> Downloading ${package_name} from GH"
+  wget --quiet https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/${package_name}
+
+  echo "===> Uploading ${package_name} to S3 in ${BASE_PATH}/linux/${arch_linux}"
+  cp ${package_name} ${LOCAL_REPO_PATH}
+done
+
+echo "===> Download Windows packages from GH and uploading to S3"
+for arch_windows in "${ARCH_WINDOWS[@]}"; do
+  package_name="newrelic-infra-${arch_windows}.${TAG:1}.zip"
+  LOCAL_REPO_PATH="${AWS_S3_MOUNTPOINT}${BASE_PATH}/windows/${arch_windows}"
+
+  echo "===> Downloading ${package_name} from GH"
+  wget --quiet https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/${package_name}
+
+  echo "===> Uploading ${package_name} to S3 in ${BASE_PATH}/windows/${arch_windows}"
+  cp ${package_name} ${LOCAL_REPO_PATH}
+done

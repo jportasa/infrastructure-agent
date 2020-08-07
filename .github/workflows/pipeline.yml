@@ -158,3 +158,22 @@ jobs:
         lock
         docker-compose --file docker_compose_zypp_updater.yml run release
         release_lock
+
+    s3-tarball-update:
+    name: S3 repo Tarball Linux and Windows update
+#    if: github.event.action == 'released'
+#    needs: [build-linux-binaries-and-push-github, build-win-binaries-and-push-github]
+    runs-on: ubuntu-latest
+    env:
+      BASE_PATH: "/infrastructure_agent/binaries"
+      LOCK_REPO_TYPE: 'tarball'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Upload tarballs
+      run: |
+        source pipeline_functions.sh # import functions
+        create_dynamo_table
+        wait_free_lock
+        lock
+        docker-compose --file docker_compose_tarball_linux_updater.yml run release
+        release_lock
