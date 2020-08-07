@@ -12,16 +12,16 @@ ARCH_WIN=( x86_64 386 )
 release_id=$(curl --header "authorization: Bearer $GITHUB_TOKEN" --url https://api.github.com/repos/${REPO_FULL_NAME}/releases/tags/${TAG} | jq --raw-output '.id' )
 
 ######## LINUX section ########
-for arch-linux in "${ARCH_LINUX[@]}"; do
-  echo "===> Downloading newrelic-infra_binaries_linux_${TAG:1}_${arch-linux}.tar.gz from GH"
+for arch_linux in "${ARCH_LINUX[@]}"; do
+  echo "===> Downloading newrelic-infra_binaries_linux_${TAG:1}_${arch_linux}.tar.gz from GH"
   cd /${REPO_FULL_NAME}
-  mkdir -p binaries/linux/${arch-linux}
-  URL="https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/newrelic-infra_binaries_linux_${TAG:1}_${arch-linux}.tar.gz"
-  curl -SL $URL | tar xz -C binaries/linux/${arch-linux}
+  mkdir -p binaries/linux/${arch_linux}
+  URL="https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/newrelic-infra_binaries_linux_${TAG:1}_${arch_linux}.tar.gz"
+  curl -SL $URL | tar xz -C binaries/linux/${arch_linux}
 
-  echo "===> Creating Tarball newrelic-infra_linux_${TAG:1}_${arch-linux}.tar.gz"
+  echo "===> Creating Tarball newrelic-infra_linux_${TAG:1}_${arch_linux}.tar.gz"
   cd /${REPO_FULL_NAME}
-  mkdir -p tarball/linux/${arch-linux}/newrelic-infra && cd tarball/linux/${arch-linux}/newrelic-infra
+  mkdir -p tarball/linux/${arch_linux}/newrelic-infra && cd tarball/linux/${arch_linux}/newrelic-infra
   mkdir -p etc/{newrelic-infra/integrations.d,init_scripts/{systemd,sysv,upstart}}
   mkdir -p usr/bin
   mkdir -p var/{db,log/newrelic-infra,run/newrelic-infra}
@@ -33,11 +33,11 @@ for arch-linux in "${ARCH_LINUX[@]}"; do
   cp /${REPO_FULL_NAME}/binaries/linux/* usr/bin/
   cp /${REPO_FULL_NAME}/LICENSE LICENSE.txt
 
-  cd /${REPO_FULL_NAME}/tarball/linux/${arch-linux}
-  tar -czvf newrelic-infra_linux_${TAG:1}_${arch-linux}.tar.gz *
+  cd /${REPO_FULL_NAME}/tarball/linux/${arch_linux}
+  tar -czvf newrelic-infra_linux_${TAG:1}_${arch_linux}.tar.gz *
 
-  echo "===> Uploading newrelic-infra_linux_${TAG:1}_${arch-linux}.tar.gz to GH"
-  filename=newrelic-infra_linux_${TAG:1}_${arch-linux}.tar.gz
+  echo "===> Uploading newrelic-infra_linux_${TAG:1}_${arch_linux}.tar.gz to GH"
+  filename=newrelic-infra_linux_${TAG:1}_${arch_linux}.tar.gz
   ls -la
   curl -s \
        -H "Authorization: token $GITHUB_TOKEN" \
@@ -47,27 +47,27 @@ for arch-linux in "${ARCH_LINUX[@]}"; do
 done
 
 ######## WINDOWS section ########
-for arch-win in "${ARCH_WIN[@]}"; do
-  echo "===> Downloading newrelic-infra_binaries_windows_${TAG:1}_${arch-win}.zip from GH"
+for arch_win in "${ARCH_WIN[@]}"; do
+  echo "===> Downloading newrelic-infra_binaries_windows_${TAG:1}_${arch_win}.zip from GH"
   cd /${REPO_FULL_NAME}
-  mkdir -p binaries/windows/${arch-win}
-  URL="https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/newrelic-infra_binaries_windows_${TAG:1}_${arch-win}.zip"
-  curl -SL $URL | bsdtar -xf - -C binaries/windows/${arch-win}
+  mkdir -p binaries/windows/${arch_win}
+  URL="https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/newrelic-infra_binaries_windows_${TAG:1}_${arch_win}.zip"
+  curl -SL $URL | bsdtar -xf - -C binaries/windows/${arch_win}
 
-  echo "===> Creating Tarball newrelic-infra_windows_${TAG:1}_${arch-win}.zip"
+  echo "===> Creating Tarball newrelic-infra_windows_${TAG:1}_${arch_win}.zip"
   cd /${REPO_FULL_NAME}
-  mkdir -p tarball/windows/${arch-win}/newrelic-infra && cd tarball/windows/${arch-win}/newrelic-infra
+  mkdir -p tarball/windows/${arch_win}/newrelic-infra && cd tarball/windows/${arch_win}/newrelic-infra
   mkdir -p 'Program Files/New Relic/newrelic-infra'/{custom-integrations,integrations.d,newrelic-integrations}
 
   cp /${REPO_FULL_NAME}/build/package/binaries/windows/installer.ps1 'Program Files/New Relic/newrelic-infra/'
   cp /${REPO_FULL_NAME}/binaries/windows/*.exe 'Program Files/New Relic/newrelic-infra/'
   # cp ......   'Program Files/New Relic/newrelic-infra/yamlgen.exe'
 
-  cd /${REPO_FULL_NAME}/tarball/windows/${arch-win}
-  zip -r newrelic-infra_windows_${TAG:1}_${arch-win}.zip .
+  cd /${REPO_FULL_NAME}/tarball/windows/${arch_win}
+  zip -r newrelic-infra_windows_${TAG:1}_${arch_win}.zip .
 
-  echo "===> Uploading newrelic-infra_windows_${TAG:1}_${arch-win}.zip to GH"
-  filename=newrelic-infra_windows_${TAG:1}_${arch-win}.zip
+  echo "===> Uploading newrelic-infra_windows_${TAG:1}_${arch_win}.zip to GH"
+  filename=newrelic-infra_windows_${TAG:1}_${arch_win}.zip
   curl -s \
        -H "Authorization: token $GITHUB_TOKEN" \
        -H "Content-Type: application/octet-stream" \
