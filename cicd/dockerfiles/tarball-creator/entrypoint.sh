@@ -7,7 +7,7 @@ set -e
 #
 #
 ARCH_LINUX=( amd64 386 arm arm64 )
-ARCH_WIN=( x86_64 386 )
+ARCH_WIN=( amd64 386 )
 
 release_id=$(curl --header "authorization: Bearer $GITHUB_TOKEN" --url https://api.github.com/repos/${REPO_FULL_NAME}/releases/tags/${TAG} | jq --raw-output '.id' )
 
