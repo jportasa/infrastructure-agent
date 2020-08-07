@@ -3,7 +3,7 @@
 set -e
 #
 #
-# Create Tarballs for Linux and Windows and push it to GH Release Assets
+# Create Tarballs for Linux and Windows and push them to GH Release Assets
 #
 #
 release_id=$(curl --header "authorization: Bearer $GITHUB_TOKEN" --url https://api.github.com/repos/${REPO_FULL_NAME}/releases/tags/${TAG} | jq --raw-output '.id' )
