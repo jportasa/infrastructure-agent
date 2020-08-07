@@ -29,9 +29,8 @@ env:
   GPG_APT_PRIVATE_KEY: ${{ secrets.GPG_APT_PRIVATE_KEY_BASE64 }} # base64 encoded
   GPG_APT_PASSPHRASE: ${{ secrets.GPG_APT_PASSPHRASE }}
   GPG_APT_MAIL: 'infrastructure-eng@newrelic.com' # Mail associated to GPG key
-  GPG_RPM_PRIVATE_KEY: ${{ secrets.GPG_RPM_PRIVATE_KEY_BASE64 }} # base64 encoded
+  GPG_RPM_PRIVATE_KEY_BASE64: ${{ secrets.GPG_RPM_PRIVATE_KEY_BASE64 }}
   GPG_RPM_PASSPHRASE: ${{ secrets.GPG_RPM_PASSPHRASE }}
-  GPG_RPM_MAIL: 'infrastructure-eng@newrelic.com'
   PFX_KEY: ${{ secrets.PFX_KEY }} # base64 encoded
   PFX_PASSPHRASE: ${{ secrets.PFX_PASSPHRASE }}
   DYNAMO_TABLE_NAME: 's3-repo-lock'

@@ -46,7 +46,7 @@ mkdir -p ${AWS_S3_MOUNTPOINT}
 s3fs $S3FS_DEBUG $S3FS_ARGS -o passwd_file=${AWS_S3_AUTHFILE} -o url=${AWS_S3_URL} ${AWS_STORAGE_BUCKET_NAME} ${AWS_S3_MOUNTPOINT}
 
 echo "===> Importing GPG signature"
-printf %s ${GPG_RPM_PRIVATE_KEY} | base64 --decode | gpg --batch --import -
+printf %s ${GPG_RPM_PRIVATE_KEY_BASE64} | base64 --decode | gpg --batch --import -
 
 echo "===> Download packages from GH and uploading to S3"
 for os_version in "${OS_VERSIONS[@]}"; do
@@ -74,7 +74,7 @@ for os_version in "${OS_VERSIONS[@]}"; do
   done
 
   echo "===>Updating GPG metadata dettached signature in ${BASE_PATH}/${os_version}/${ARCH}"
-  gpg --batch --pinentry-mode=loopback --passphrase ${GPG_PASSPHRASE} --detach-sign --armor "${LOCAL_REPO_PATH}/repodata/repomd.xml"
+  gpg --batch --pinentry-mode=loopback --passphrase ${GPG_RPM_PASSPHRASE} --detach-sign --armor "${LOCAL_REPO_PATH}/repodata/repomd.xml"
 done
 
 
