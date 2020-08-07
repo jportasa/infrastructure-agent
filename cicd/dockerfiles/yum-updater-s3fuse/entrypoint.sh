@@ -63,7 +63,7 @@ for os_version in "${OS_VERSIONS[@]}"; do
   echo "===>Uploading ${package_name} to S3 in ${BASE_PATH}/${os_version}/${ARCH}"
   cp ${package_name} ${LOCAL_REPO_PATH}
 
-  echo "===>Updating metadata for $package_name to S3 $BASE_DIR"
+  echo "===>Updating metadata for $package_name"
   find ${LOCAL_REPO_PATH} -regex '^.*repodata' | xargs -n 1 rm -rf
   sleep 2
   time createrepo --update -s sha "${LOCAL_REPO_PATH}"
