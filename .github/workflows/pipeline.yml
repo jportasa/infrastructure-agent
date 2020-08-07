@@ -68,7 +68,7 @@ jobs:
   tarballs:
     name: Tarballs for Linux & Win creation
     if: github.event.action == 'released'
-    needs: [goreleaser]
+#    needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
       GITHUB_PUSH_RELEASE_ASSETS: false
