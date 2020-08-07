@@ -1,9 +1,6 @@
 #!/bin/bash
 
 set -e
-
-ARCH_LINUX=( 386 amd64 arm arm64 )
-ARCH_WINDOWS=( 386 amd64 )
 #
 #
 # Mount S3 with S3Fuse
@@ -41,6 +38,7 @@ if [ ! -f "${AWS_S3_AUTHFILE}" ]; then
    echo "${AWS_ACCESS_KEY_ID}:${AWS_SECRET_ACCESS_KEY}" > ${AWS_S3_AUTHFILE}
    chmod 400 ${AWS_S3_AUTHFILE}
 fi
+
 mkdir -p ${AWS_S3_MOUNTPOINT}
 
 echo "===> Mounting s3 in local docker with Fuse"
