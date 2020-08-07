@@ -159,7 +159,7 @@ jobs:
         docker-compose --file docker_compose_zypp_updater.yml run release
         release_lock
 
-    s3-tarball-update:
+  s3-tarball-update:
     name: S3 repo Tarball Linux and Windows update
 #    if: github.event.action == 'released'
 #    needs: [build-linux-binaries-and-push-github, build-win-binaries-and-push-github]
