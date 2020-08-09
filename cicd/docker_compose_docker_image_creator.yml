@@ -7,8 +7,7 @@ services:
       context: dockerfiles/docker_image_creator/
       dockerfile: Dockerfile
     volumes:
-#      - ${GITHUB_WORKSPACE}:/${REPO_FULL_NAME}/
-      - ${GITHUB_WORKSPACE}:/${REPO_FULL_NAME}
+      - ${GITHUB_WORKSPACE}:/${REPO_FULL_NAME}/
       - /var/run/docker.sock:/var/run/docker.sock:rw
     working_dir: /${REPO_FULL_NAME}
     environment:
