@@ -6,9 +6,8 @@ set -e
 # Create infrastructure-agent docker image and push it to Registry
 #
 #
-export image_version=${TAG:1}
-export agent_version=${TAG:1}
-export agent_bin='newrelic/infrastructure'
+AGENT_BUILD_NUMBER=${TAG:1}
+NS=jportasa
 
 echo "===> Downloading newrelic-infra_binaries_linux_${TAG:1}_amd64.tar.gz from GH"
 URL="https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/newrelic-infra_binaries_linux_${TAG:1}_amd64.tar.gz"
@@ -20,4 +19,5 @@ cd /${REPO_FULL_NAME}/build/container
 make build/base
 
 #echo "===> Push image to registry"
-#docker login
+docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}
+docker push $NS/infrastructure

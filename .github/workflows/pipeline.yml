@@ -35,6 +35,8 @@ env:
   PFX_PASSPHRASE: ${{ secrets.PFX_PASSPHRASE }}
   DYNAMO_TABLE_NAME: 's3-repo-lock'
   DEPOT_REPO: 'https://github.com/jportasa/depot'
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
 
 jobs:
 #
