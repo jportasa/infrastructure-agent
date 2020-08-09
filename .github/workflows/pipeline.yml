@@ -164,7 +164,7 @@ jobs:
   s3-tarball-update:
     name: S3 Tarball Linux & Windows update
     if: github.event.action == 'released'
-    needs: [build-linux-binaries-and-push-github, build-win-binaries-and-push-github]
+    needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
       BASE_PATH: "/infrastructure_agent/binaries"
@@ -184,7 +184,7 @@ jobs:
   docker-image-update:
     name: Docker image creation and push to Registry
     if: github.event.action == 'released'
-    needs: [build-linux-binaries-and-push-github, build-win-binaries-and-push-github]
+    needs: [goreleaser]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
