@@ -21,3 +21,4 @@ make build/base
 echo "===> Push image to dockerhub registry"
 docker login --username ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD}
 docker push $NS/infrastructure:latest
+docker push $NS/infrastructure:${TAG:1}
