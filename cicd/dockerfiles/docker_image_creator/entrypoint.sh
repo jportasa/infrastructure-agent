@@ -6,7 +6,7 @@ set -e
 # Create infrastructure-agent docker image and push it to Registry
 #
 #
-AGENT_BUILD_NUMBER=${TAG:1}
+export AGENT_BUILD_NUMBER=${TAG:1}
 export NS=jportasa
 
 echo "===> Downloading newrelic-infra_binaries_linux_${TAG:1}_amd64.tar.gz from GH"
