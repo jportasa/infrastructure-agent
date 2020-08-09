@@ -103,8 +103,8 @@ jobs:
 
   s3-apt-update:
     name: S3 repo APT update
-#    if: github.event.action == 'released'
-#    needs: [goreleaser]
+    if: github.event.action == 'released'
+    needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
       BASE_PATH: "infrastructure_agent/linux/apt"
@@ -123,8 +123,8 @@ jobs:
 
   s3-yum-update:
     name: S3 YUM update
-#    if: github.event.action == 'released'
-#    needs: [goreleaser]
+    if: github.event.action == 'released'
+    needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
       BASE_PATH: "/infrastructure_agent/linux/yum/el"
@@ -143,8 +143,8 @@ jobs:
 
   s3-zypp-update:
     name: S3 ZYPP update
-#    if: github.event.action == 'released'
-#    needs: [goreleaser]
+    if: github.event.action == 'released'
+    needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
       BASE_PATH: "/infrastructure_agent/linux/zypp/sles"
@@ -163,8 +163,8 @@ jobs:
 
   s3-tarball-update:
     name: S3 Tarball Linux & Windows update
-#    if: github.event.action == 'released'
-#    needs: [build-linux-binaries-and-push-github, build-win-binaries-and-push-github]
+    if: github.event.action == 'released'
+    needs: [build-linux-binaries-and-push-github, build-win-binaries-and-push-github]
     runs-on: ubuntu-latest
     env:
       BASE_PATH: "/infrastructure_agent/binaries"
@@ -183,8 +183,8 @@ jobs:
 
   docker-image-update:
     name: Docker image creation and push to Registry
-#    if: github.event.action == 'released'
-#    needs: [build-linux-binaries-and-push-github, build-win-binaries-and-push-github]
+    if: github.event.action == 'released'
+    needs: [build-linux-binaries-and-push-github, build-win-binaries-and-push-github]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
