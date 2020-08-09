@@ -7,7 +7,7 @@ set -e
 #
 #
 AGENT_BUILD_NUMBER=${TAG:1}
-NS=jportasa
+export NS=jportasa
 
 echo "===> Downloading newrelic-infra_binaries_linux_${TAG:1}_amd64.tar.gz from GH"
 URL="https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/newrelic-infra_binaries_linux_${TAG:1}_amd64.tar.gz"
@@ -20,4 +20,4 @@ make build/base
 
 echo "===> Push image to dockerhub registry"
 docker login --username ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD}
-docker push $NS/infrastructure
+docker push $NS/infrastructure:latest
