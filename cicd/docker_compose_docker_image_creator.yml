@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+
+  release:
+    build:
+      context: dockerfiles/docker_image_creator/
+      dockerfile: Dockerfile
+    volumes:
+#      - ${GITHUB_WORKSPACE}:/${REPO_FULL_NAME}/
+      - /Users/mac/repos/infrastructure-agent:/${REPO_FULL_NAME}
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+    working_dir: /${REPO_FULL_NAME}
+    environment:
+      - GITHUB_TOKEN=$GITHUB_TOKEN
+#      - TAG=$TAG
+      - TAG=v1.0.27
+      - REPO_FULL_NAME=$REPO_FULL_NAME

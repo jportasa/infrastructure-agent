@@ -118,63 +118,75 @@ jobs:
 #        lock
 #        docker-compose --file docker_compose_apt_updater.yml run release
 #        release_lock
+#
+#  s3-yum-update:
+#    name: S3 YUM update
+##    if: github.event.action == 'released'
+##    needs: [goreleaser]
+#    runs-on: ubuntu-latest
+#    env:
+#      BASE_PATH: "/infrastructure_agent/linux/yum/el"
+#      LOCK_REPO_TYPE: 'yum'
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: Upload & update YUM repo
+#      run: |
+#        cd cicd
+#        source scripts/pipeline_functions.sh # import functions
+#        create_dynamo_table
+#        wait_free_lock
+#        lock
+#        docker-compose --file docker_compose_yum_updater.yml run release
+#        release_lock
+#
+#  s3-zypp-update:
+#    name: S3 ZYPP update
+##    if: github.event.action == 'released'
+##    needs: [goreleaser]
+#    runs-on: ubuntu-latest
+#    env:
+#      BASE_PATH: "/infrastructure_agent/linux/zypp/sles"
+#      LOCK_REPO_TYPE: 'zypp'
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: Upload & update ZYPP repo
+#      run: |
+#        cd cicd
+#        source scripts/pipeline_functions.sh # import functions
+#        create_dynamo_table
+#        wait_free_lock
+#        lock
+#        docker-compose --file docker_compose_zypp_updater.yml run release
+#        release_lock
+#
+#  s3-tarball-update:
+#    name: S3 Tarball Linux & Windows update
+##    if: github.event.action == 'released'
+##    needs: [build-linux-binaries-and-push-github, build-win-binaries-and-push-github]
+#    runs-on: ubuntu-latest
+#    env:
+#      BASE_PATH: "/infrastructure_agent/binaries"
+#      LOCK_REPO_TYPE: 'tarball'
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: Upload tarballs
+#      run: |
+#        cd cicd
+#        source scripts/pipeline_functions.sh # import functions
+#        create_dynamo_table
+#        wait_free_lock
+#        lock
+#        docker-compose --file docker_compose_tarball_updater.yml run release
+#        release_lock
 
-  s3-yum-update:
-    name: S3 YUM update
-#    if: github.event.action == 'released'
-#    needs: [goreleaser]
-    runs-on: ubuntu-latest
-    env:
-      BASE_PATH: "/infrastructure_agent/linux/yum/el"
-      LOCK_REPO_TYPE: 'yum'
-    steps:
-    - uses: actions/checkout@v2
-    - name: Upload & update YUM repo
-      run: |
-        cd cicd
-        source scripts/pipeline_functions.sh # import functions
-        create_dynamo_table
-        wait_free_lock
-        lock
-        docker-compose --file docker_compose_yum_updater.yml run release
-        release_lock
-
-  s3-zypp-update:
-    name: S3 ZYPP update
-#    if: github.event.action == 'released'
-#    needs: [goreleaser]
-    runs-on: ubuntu-latest
-    env:
-      BASE_PATH: "/infrastructure_agent/linux/zypp/sles"
-      LOCK_REPO_TYPE: 'zypp'
-    steps:
-    - uses: actions/checkout@v2
-    - name: Upload & update ZYPP repo
-      run: |
-        cd cicd
-        source scripts/pipeline_functions.sh # import functions
-        create_dynamo_table
-        wait_free_lock
-        lock
-        docker-compose --file docker_compose_zypp_updater.yml run release
-        release_lock
-
-  s3-tarball-update:
-    name: S3 Tarball Linux & Windows update
+  docker-image-update:
+    name: Docker image creation and push to Registry
 #    if: github.event.action == 'released'
 #    needs: [build-linux-binaries-and-push-github, build-win-binaries-and-push-github]
     runs-on: ubuntu-latest
-    env:
-      BASE_PATH: "/infrastructure_agent/binaries"
-      LOCK_REPO_TYPE: 'tarball'
     steps:
     - uses: actions/checkout@v2
-    - name: Upload tarballs
+    - name: Create image creation and push
       run: |
         cd cicd
-        source scripts/pipeline_functions.sh # import functions
-        create_dynamo_table
-        wait_free_lock
-        lock
-        docker-compose --file docker_compose_tarball_linux_updater.yml run release
-        release_lock
+        docker-compose --file docker_compose_docker_image_creator.yml run release

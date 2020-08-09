@@ -1,16 +1,16 @@
-ARG base_image=alpine:3.11
+ARG base_image=alpine:3.12
 
 FROM $base_image AS core
 
-ARG image_version
-ARG agent_version
-ARG version_file
-ARG agent_bin
+ARG image_version=0.0
+ARG agent_version=0.0
+ARG version_file=VERSION
+ARG agent_bin=newrelic-infra
 
 # Add the agent binary
 COPY $agent_bin /usr/bin/newrelic-infra
 COPY ${agent_bin}-ctl /usr/bin/newrelic-infra-ctl
-#COPY ${agent_bin}-service /usr/bin/newrelic-infra-service
+COPY ${agent_bin}-service /usr/bin/newrelic-infra-service
 
 # Add all static assets
 COPY assets /newrelic
@@ -27,7 +27,7 @@ ENV NRIA_IS_CONTAINERIZED true
 ENV NRIA_OVERRIDE_HOST_ROOT /host
 
 RUN apk add --no-cache --upgrade \
-    ca-certificates \
+    ca-certificates=20191127-r4 \
     # Embed required dlls:
     # ldd /usr/bin/newrelic-infra
     #   /lib64/ld-linux-x86-64.so.2 (0x7f2bbbd0f000)
@@ -36,11 +36,28 @@ RUN apk add --no-cache --upgrade \
     # As musl and glibc are compatible, this symlink fixes the missing dependency
     && mkdir /lib64 \
     && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 \
-    && apk add --no-cache tini
+    && apk add --no-cache tini=0.19.0-r0
 
 # Tini is now available at /sbin/tini
 ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["/usr/bin/newrelic-infra"]
+CMD ["/usr/bin/newrelic-infra-service"]
+
+#################################
+# Forwarder
+#################################
+FROM core AS forwarder
+RUN addgroup -g 2000 nri-agent && adduser -D -H -u 1000 -G nri-agent nri-agent
+USER nri-agent
+
+ENV NRIA_OVERRIDE_HOST_ROOT ""
+ENV NRIA_IS_SECURE_FORWARD_ONLY true
+
+#################################
+# K8s events forwarder
+#################################
+FROM forwarder AS k8s-events-forwarder
+
+ENV NRIA_HTTP_SERVER_ENABLED true
 
 #################################
 # BASE
@@ -54,7 +71,8 @@ ARG nri_flex_version
 LABEL com.newrelic.nri-docker.version=$nri_docker_version \
       com.newrelic.nri-flex.version=$nri_flex_version
 
-RUN apk add --no-cache ntpsec=1.1.8-r0
-RUN apk add --no-cache curl=7.67.0-r0
+RUN apk add --no-cache \
+        ntpsec=1.1.8-r0 \
+        curl=7.69.1-r0
 
 COPY $nri_pkg_dir /
