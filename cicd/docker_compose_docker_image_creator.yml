@@ -12,8 +12,7 @@ services:
     working_dir: /${REPO_FULL_NAME}
     environment:
       - GITHUB_TOKEN=$GITHUB_TOKEN
-#      - TAG=$TAG
-      - TAG=v1.0.27
+      - TAG=$TAG
       - REPO_FULL_NAME=$REPO_FULL_NAME
       - DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME
       - DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD
