@@ -18,6 +18,6 @@ echo "===> Running Makefile"
 cd /${REPO_FULL_NAME}/build/container
 make build/base
 
-#echo "===> Push image to registry"
-docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}
+echo "===> Push image to dockerhub registry"
+docker login --username ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD}
 docker push $NS/infrastructure
