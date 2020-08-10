@@ -63,7 +63,7 @@ jobs:
         env:
           PARENT_BUILD_NUMBER: nose
         run: |
-          pwd; export GOOS=linux; export GOARCH=amd64; GOPATH=go/src; go test github.com/jportasa/infrastructure-agent/tree/master/test/harvest -tags="harvest" -v -c -o harvest_\${PARENT_BUILD_NUMBER}.test
+          pwd; export GOOS=linux; export GOARCH=amd64; export GOPATH=go/src; go test github.com/jportasa/infrastructure-agent/tree/master/test/harvest -tags="harvest" -v -c -o harvest_\${PARENT_BUILD_NUMBER}.test
 #      - name: Push binary to GH workflow artifacts cache
 #        uses: actions/upload-artifact@v2
 #        with:
