@@ -61,7 +61,7 @@ jobs:
           path: go/src/github.com/${{ github.event.repository.full_name }}
       - name: Create the binary
         run: |
-          GOOS=linux; GOARCH=amd64; /usr/local/go/bin/go test test/harvest -tags="harvest" -v -c -o harvest_\${PARENT_BUILD_NUMBER}.test
+          GOOS=linux; GOARCH=amd64; go test test/harvest -tags="harvest" -v -c -o harvest_\${PARENT_BUILD_NUMBER}.test
 #      - name: Push binary to GH workflow artifacts cache
 #        uses: actions/upload-artifact@v2
 #        with:
