@@ -2,9 +2,9 @@ name: Pipeline
 
 on:
   push:
-    branches:
-      - '*'
-      - '!master'
+#    branches:
+#      - '*'
+#      - '!master'
   pull_request:
     types:
       - closed
@@ -50,7 +50,7 @@ jobs:
 #
 ##
 
-  harvest-tests-create binary:
+  harvest-tests-create:
     name: Harcest tests in Ubuntu:18.04
     runs-on: ubuntu-18.04
     steps:
