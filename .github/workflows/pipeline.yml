@@ -63,7 +63,7 @@ jobs:
         env:
           PARENT_BUILD_NUMBER: nose
         run: |
-          pwd; go env; GOOS=linux; GOARCH=amd64; GOPATH=go; go test test/harvest -tags="harvest" -v -c -o harvest_\${PARENT_BUILD_NUMBER}.test
+          pwd; go env; GOOS=linux; GOARCH=amd64; GOPATH=/home/runner/work/infrastructure-agent/go; go test test/harvest -tags="harvest" -v -c -o harvest_\${PARENT_BUILD_NUMBER}.test
 #      - name: Push binary to GH workflow artifacts cache
 #        uses: actions/upload-artifact@v2
 #        with:
