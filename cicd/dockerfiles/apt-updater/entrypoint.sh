@@ -38,6 +38,3 @@ for codename in "${CODENAMES[@]}"; do
       --force
   done
 done
-
-
-d

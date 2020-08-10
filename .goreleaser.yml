@@ -22,9 +22,9 @@ builds:
     - -s -w -X main.integrationVersion={{.Version}}
     goarch:
     - amd64
-    - arm
-    - arm64
-    - 386
+#    - arm
+#    - arm64
+#    - 386
 #    - mips
 #    - mips64
 #    - mipsle
@@ -42,9 +42,10 @@ builds:
     - -s -w -X main.integrationVersion={{.Version}}
     goarch:
     - amd64
-    - arm
-    - arm64
-    - 386
+#    - arm
+#    - arm64
+#    - 386
+#    - mips
 #    - mips64
 #    - mipsle
 #    - mips64le
@@ -62,16 +63,15 @@ builds:
     - -s -w -X main.commit={{.Commit}}
     goarch:
     - amd64
-    - arm
-    - arm64
-    - 386
+#    - arm
+#    - arm64
+#    - 386
 #    - mips
 #    - mips64
 #    - mipsle
 #    - mips64le
 #    - ppc64le
 #    - s390x
-#
 
   - id: linux-go1.9-newrelic-infra # Needed for centos5
     main: ./cmd/newrelic-infra

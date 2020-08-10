@@ -181,14 +181,14 @@ jobs:
         docker-compose --file docker_compose_tarball_updater.yml run release
         release_lock
 
-  docker-image-update:
-    name: Docker image creation and push to Registry
-    if: github.event.action == 'released'
-    needs: [goreleaser]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Create image creation and push
-      run: |
-        cd cicd
-        docker-compose --file docker_compose_docker_image_creator.yml run release
+#  docker-image-update:
+#    name: Docker image creation and push to Registry
+#    if: github.event.action == 'released'
+#    needs: [goreleaser]
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: Create image creation and push
+#      run: |
+#        cd cicd
+#        docker-compose --file docker_compose_docker_image_creator.yml run release
