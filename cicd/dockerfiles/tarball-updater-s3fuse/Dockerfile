@@ -1,6 +1,6 @@
 FROM alpine
 
-S3_FUSE_VERSION=v1.86
+ARG S3_FUSE_VERSION=v1.86
 
 RUN apk --update add fuse alpine-sdk automake autoconf libxml2-dev fuse-dev curl-dev git bash wget jq;
 RUN git clone https://github.com/s3fs-fuse/s3fs-fuse.git; \
