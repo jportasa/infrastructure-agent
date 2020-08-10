@@ -12,7 +12,6 @@ services:
     environment:
       - GITHUB_TOKEN=$GITHUB_TOKEN
       - TAG=$TAG
-#      - TAG=v1.0.27
       - REPO_FULL_NAME=$REPO_FULL_NAME
 
 
