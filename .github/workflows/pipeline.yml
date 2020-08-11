@@ -126,7 +126,8 @@ jobs:
 #        printf "%s" "$PFX_CERTIFICATE_BASE64" | base64 -d - > ./mycert.pfx
     - name: Create msi
       shell: pwsh
-      run: |
+      run:
+        $PFX_PASSPHRASE = $env:PFX_PASSPHRASE
         cd cicd/scripts
         .\msi_creation.ps1
 

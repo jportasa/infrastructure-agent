@@ -1,6 +1,4 @@
 
-
-$PFX_PASSPHRASE = $env:PFX_PASSPHRASE
 $arch = 'amd64'
 $tag = 'v1.0.27'
 
