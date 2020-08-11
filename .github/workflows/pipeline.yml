@@ -124,8 +124,10 @@ jobs:
         printf "%s" "$PFX_CERTIFICATE_BASE64" | base64 -d - > ./mycert.pfx
     - name: Import PFX certificate
       shell: pwsh
+      env:
+        PFX_PASSPHRASE: $env:PFX_PASSPHRASE
       run: |
-        $PFX_PASSPHRASE = $env:PFX_PASSPHRASE
+        #$PFX_PASSPHRASE = $env:PFX_PASSPHRASE
         Import-PfxCertificate -FilePath .\mycert.pfx -Password (ConvertTo-SecureString -String $PFX_PASSPHRASE -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
 #
 #  s3-apt-update:
