@@ -3,7 +3,7 @@ param (
     [ValidateSet("amd64", "386")]
     [string]$arch="amd64",
     [string]$tag="0.0.0",
-    [string]$pfx_passphrase='none'
+    [string]$pfx_passphrase='none',
     # nri-flex
     [string]$nriFlexVersion,
     #fluent-bit
