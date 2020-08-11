@@ -31,7 +31,7 @@ env:
   GPG_APT_MAIL: 'infrastructure-eng@newrelic.com' # Mail associated to GPG key
   GPG_RPM_PRIVATE_KEY_BASE64: ${{ secrets.GPG_RPM_PRIVATE_KEY_BASE64 }}
   GPG_RPM_PASSPHRASE: ${{ secrets.GPG_RPM_PASSPHRASE }}
-  PFX_KEY: ${{ secrets.PFX_KEY }} # base64 encoded
+  PFX_CERTIFICATE_BASE64: ${{ secrets.PFX_CERTIFICATE_BASE64 }} # base64 encoded
   PFX_PASSPHRASE: ${{ secrets.PFX_PASSPHRASE }}
   DYNAMO_TABLE_NAME: 's3-repo-lock'
   DEPOT_REPO: 'https://github.com/jportasa/depot'
@@ -50,25 +50,25 @@ jobs:
 #
 ##
 
-  harvest-tests-create:
-    name: Harvest tests in Ubuntu:18.04
-    runs-on: ubuntu-18.04
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v1
-        with:
-          fetch-depth: 1
-          path: go/src/github.com/jportasa/infrastructure-agent
-      - name: Create the binary
-        env:
-          PARENT_BUILD_NUMBER: nose
-        run: |
-          pwd; go env; export GOOS=linux; export GOARCH=amd64; export GOPATH=/home/runner/work/infrastructure-agent/go/src; go test github.com/jportasa/infrastructure-agent/tree/master/test/harvest -tags="harvest" -v -c -o harvest_\${PARENT_BUILD_NUMBER}.test
-#      - name: Push binary to GH workflow artifacts cache
-#        uses: actions/upload-artifact@v2
+#  harvest-tests-create:
+#    name: Harvest tests in Ubuntu:18.04
+#    runs-on: ubuntu-18.04
+#    steps:
+#      - name: Check out code
+#        uses: actions/checkout@v1
 #        with:
-#          name: Windows-bin-artifacts
-#          path: target/bin/**/*
+#          fetch-depth: 1
+#          path: go/src/github.com/jportasa/infrastructure-agent
+#      - name: Create the binary
+#        env:
+#          PARENT_BUILD_NUMBER: nose
+#        run: |
+#          pwd; go env; export GOOS=linux; export GOARCH=amd64; export GOPATH=/home/runner/work/infrastructure-agent/go/src; go test github.com/jportasa/infrastructure-agent/tree/master/test/harvest -tags="harvest" -v -c -o harvest_\${PARENT_BUILD_NUMBER}.test
+##      - name: Push binary to GH workflow artifacts cache
+##        uses: actions/upload-artifact@v2
+##        with:
+##          name: Windows-bin-artifacts
+##          path: target/bin/**/*
 
 
 #  goreleaser:
@@ -112,21 +112,17 @@ jobs:
 #          cd cicd
 #          docker-compose --file docker_compose_tarball_creator.yml run tarballcreator
 #
-##  msi:
-##    name: MSI creation
-##    if: github.event.action == 'released'
-##    needs: [goreleaser]
-##    runs-on: windows-2019
-##    steps:
-##    - name: Check out code into the Go module directory
-##      uses: actions/checkout@v1
-##    - name: Get PFX certificate
-##      shell: bash
-##      run: |
-##        printf "%s" "$PFX_KEY" | base64 -d - > ./pkg/windows/nri-${{ matrix.goarch }}-installer/mycert.pfx
-##    - name: Create msi
-##      shell: pwsh
-##      run: |
+  msi:
+    name: MSI creation
+#    if: github.event.action == 'released'
+#    needs: [goreleaser]
+    runs-on: windows-2019
+    steps:
+    - name: pfx
+      shell: pwsh
+      run: |
+        $PFX_CERTIFICATE_BASE64
+
 #
 #  s3-apt-update:
 #    name: S3 repo APT update
