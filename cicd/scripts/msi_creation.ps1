@@ -4,6 +4,12 @@ param (
     [string]$arch="amd64",
     [string]$tag="0.0.0",
     [string]$pfx_passphrase='none'
+    # nri-flex
+    [string]$nriFlexVersion,
+    #fluent-bit
+    #[string]$nrfbArtifactVersion,
+    # Signing tool
+    [string]$signtool='"C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe"'
 )
 
 echo "===> Import pfx certificate"

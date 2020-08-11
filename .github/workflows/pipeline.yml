@@ -124,11 +124,11 @@ jobs:
       shell: bash
       run: |
         printf "%s" "$PFX_CERTIFICATE_BASE64" | base64 -d - > ./mycert.pfx
-    - name: Import cert. and create msi
+    - name: Import cert. and embed external &create msi
       shell: pwsh
       run: |
         cd cicd/scripts
-        .\msi_creation.ps1 'amd64' 'v1.0.27' "$env:PFX_PASSPHRASE"
+        .\msi_creation.ps1 'amd64' 'v1.0.27' "$env:PFX_PASSPHRASE" 'v1.3.2'
 
 
 
