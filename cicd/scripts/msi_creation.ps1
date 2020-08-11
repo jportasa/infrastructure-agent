@@ -3,7 +3,6 @@ param (
     [ValidateSet("amd64", "386")]
     [string]$arch="amd64",
     [string]$tag="0.0.0",
-    # Creates a signed installer
     [string]$pfx_passphrase='none'
 )
 
@@ -41,28 +40,26 @@ if (-Not [string]::IsNullOrWhitespace($nriFlexVersion)) {
     Remove-Item -Path $flexPath -Force -Recurse
 }
 # embded fluent-bit
-$includeFluentBit = (
-    -Not [string]::IsNullOrWhitespace($artifactoryToken))
-if ($includeFluentBit) {
-    $fbArch = "win64"
-    if($arch -eq "386") {
-        $fbArch = "win32"
-    }
-    # Download fluent-bit artifacts.
-    $ProgressPreference = 'SilentlyContinue'
-    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    Invoke-WebRequest "https://artifacts.datanerd.us/ohai-repo/logging/windows/nrfb-$nrfbArtifactVersion-$fbArch.zip" -Headers @{"X-JFrog-Art-Api"="$artifactoryToken"} -OutFile nrfb.zip
-    expand-archive -path '.\nrfb.zip' -destinationpath '.\'
-    Remove-Item -Force .\nrfb.zip
-    if (-Not $skipSigning) {
-        iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'New Relic, Inc.'  .\nrfb\fluent-bit.exe"
-    }
-    # Move the files to packaging.
-    $nraPath = "target\bin\windows_$arch\"
-    New-Item -path "$nraPath\logging" -type directory -Force
-    Copy-Item -Path ".\nrfb\*" -Destination "$nraPath\logging" -Recurse -Force
-    Remove-Item -Path ".\nrfb" -Force -Recurse
+$fbArch = "win64"
+if($arch -eq "386") {
+    $fbArch = "win32"
 }
+# Download fluent-bit artifacts.
+$ProgressPreference = 'SilentlyContinue'
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+Invoke-WebRequest "https://artifacts.datanerd.us/ohai-repo/logging/windows/nrfb-$nrfbArtifactVersion-$fbArch.zip" -Headers @{"X-JFrog-Art-Api"="$artifactoryToken"} -OutFile nrfb.zip
+expand-archive -path '.\nrfb.zip' -destinationpath '.\'
+Remove-Item -Force .\nrfb.zip
+if (-Not $skipSigning) {
+    iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'New Relic, Inc.'  .\nrfb\fluent-bit.exe"
+}
+# Move the files to packaging.
+$nraPath = "target\bin\windows_$arch\"
+New-Item -path "$nraPath\logging" -type directory -Force
+Copy-Item -Path ".\nrfb\*" -Destination "$nraPath\logging" -Recurse -Force
+Remove-Item -Path ".\nrfb" -Force -Recurse
+
+ls ..\..\target\bin\windows_$arch
 
 echo "--- Create msi"
 $env:path = "$env:path;C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin"
