@@ -118,18 +118,18 @@ jobs:
 #    needs: [goreleaser]
     runs-on: windows-2019
     steps:
-    - name: Get PFX certificate from secrets
+    - name: Get PFX certificate from GH secrets
       shell: bash
       run: |
         printf "%s" "$PFX_CERTIFICATE_BASE64" | base64 -d - > ./mycert.pfx
     - name: Import PFX certificate
       shell: pwsh
-      env:
-        PFX_PASSPHRASE: $env:PFX_PASSPHRASE
       run: |
         #$PFX_PASSPHRASE = $env:PFX_PASSPHRASE
-        Import-PfxCertificate -FilePath .\mycert.pfx -Password (ConvertTo-SecureString -String $PFX_PASSPHRASE -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
-#
+        #Import-PfxCertificate -FilePath .\mycert.pfx -Password (ConvertTo-SecureString -String $PFX_PASSPHRASE -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
+        cicd\scripts\msi_creation.ps1
+
+
 #  s3-apt-update:
 #    name: S3 repo APT update
 #    if: github.event.action == 'released'
