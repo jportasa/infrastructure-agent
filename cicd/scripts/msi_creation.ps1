@@ -18,27 +18,26 @@ ls "..\..\target\bin\windows_$arch\"
 
 echo "===> Embedding external components"
 # embded flex
-if (-Not [string]::IsNullOrWhitespace($nriFlexVersion)) {
-    # download
-    [string]$release="v${nriFlexVersion}"
-    [string]$file="nri-flex_${nriFlexVersion}_Windows_x86_64.zip"
-    $ProgressPreference = 'SilentlyContinue'
-    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    Invoke-WebRequest "https://github.com/newrelic/nri-flex/releases/download/${release}/${file}" -OutFile "target\nri-flex.zip"
-    # embed:
-    $flexPath = "target\nri-flex"
-    $nraPath = "target\bin\windows_$arch"
-    # extract
-    New-Item -path $flexPath -type directory -Force
-    expand-archive -path 'target\nri-flex.zip' -destinationpath $flexPath
-    Remove-Item 'target\nri-flex.zip'
-    # flex binaries
-    Copy-Item -Path "$flexPath\nri-flex.exe" -Destination "$nraPath" -Force
-    # nrjmx
-    #Copy-Item -Path "$flexPath\nrjmx" -Destination "$nraPath\" -Recurse -Force
-    # clean
-    Remove-Item -Path $flexPath -Force -Recurse
-}
+# download
+[string]$release="v${nriFlexVersion}"
+[string]$file="nri-flex_${nriFlexVersion}_Windows_x86_64.zip"
+$ProgressPreference = 'SilentlyContinue'
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+Invoke-WebRequest "https://github.com/newrelic/nri-flex/releases/download/${release}/${file}" -OutFile "..\..\target\nri-flex.zip"
+# embed:
+$flexPath = "..\..\target\nri-flex"
+$nraPath = "..\..\target\bin\windows_$arch"
+# extract
+New-Item -path $flexPath -type directory -Force
+expand-archive -path '..\..\target\nri-flex.zip' -destinationpath $flexPath
+Remove-Item '..\..\target\nri-flex.zip'
+# flex binaries
+Copy-Item -Path "$flexPath\nri-flex.exe" -Destination "$nraPath" -Force
+# nrjmx
+#Copy-Item -Path "$flexPath\nrjmx" -Destination "$nraPath\" -Recurse -Force
+# clean
+Remove-Item -Path $flexPath -Force -Recurse
+
 ## embded fluent-bit
 #$fbArch = "win64"
 #if($arch -eq "386") {
@@ -52,11 +51,11 @@ if (-Not [string]::IsNullOrWhitespace($nriFlexVersion)) {
 #Remove-Item -Force .\nrfb.zip
 #iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'New Relic, Inc.'  .\nrfb\fluent-bit.exe"
 
-# Move the files to packaging.
-$nraPath = "target\bin\windows_$arch\"
-New-Item -path "$nraPath\logging" -type directory -Force
-Copy-Item -Path ".\nrfb\*" -Destination "$nraPath\logging" -Recurse -Force
-Remove-Item -Path ".\nrfb" -Force -Recurse
+## Move the files to packaging.
+#$nraPath = "..\..\target\bin\windows_$arch\"
+#New-Item -path "$nraPath\logging" -type directory -Force
+#Copy-Item -Path ".\nrfb\*" -Destination "$nraPath\logging" -Recurse -Force
+#Remove-Item -Path ".\nrfb" -Force -Recurse
 
 echo "===> Binaries to embed:"
 ls ..\..\target\bin\windows_$arch
