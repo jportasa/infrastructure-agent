@@ -120,10 +120,10 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
-#    - name: Get PFX certificate from GH secrets
-#      shell: bash
-#      run: |
-#        printf "%s" "$PFX_CERTIFICATE_BASE64" | base64 -d - > ./mycert.pfx
+    - name: Get PFX certificate from GH secrets
+      shell: bash
+      run: |
+        printf "%s" "$PFX_CERTIFICATE_BASE64" | base64 -d - > ./mycert.pfx
     - name: Create msi
       shell: pwsh
       run: |
