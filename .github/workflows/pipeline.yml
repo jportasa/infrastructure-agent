@@ -118,14 +118,14 @@ jobs:
 #    needs: [goreleaser]
     runs-on: windows-2019
     steps:
-    - name: pfx
+    - name: Get PFX certificate from secrets
+      shell: bash
+      run: |
+        printf "%s" "$PFX_CERTIFICATE_BASE64" | base64 -d - > ./mycert.pfx
+    - name: Import PFX certificate
       shell: pwsh
       run: |
-        #$PFX_CERTIFICATE_BASE64
-        $PFX_CERTIFICATE = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($PFX_CERTIFICATE_BASE64))
-        $PFX_CERTIFICATE
-
-
+        Import-PfxCertificate -FilePath .\mycert.pfx -Password (ConvertTo-SecureString -String $PFX_PASSPHRASE -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
 #
 #  s3-apt-update:
 #    name: S3 repo APT update
