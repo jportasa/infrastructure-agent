@@ -15,7 +15,6 @@ Expand-Archive $file -DestinationPath "..\..\target\bin\windows_$arch\"
 ls "..\..\target\bin\windows_$arch\
 
 echo "--- Create msi"
-$arch = 'amd64'
 $env:path = "$env:path;C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin"
 Push-Location -Path "..\..\build\package\windows\newrelic-infra-$arch-installer\newrelic-infra"
 . MSBuild.exe newrelic-infra-installer.wixproj

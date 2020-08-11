@@ -128,7 +128,7 @@ jobs:
       shell: pwsh
       run: |
         cd cicd/scripts
-        msi_creation.ps1
+        .\msi_creation.ps1
 
 
 
