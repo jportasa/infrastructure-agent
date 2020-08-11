@@ -6,17 +6,17 @@ param (
     [string]$pfx_passphrase='none'
 )
 
-echo "--- Import pfx certificate"
+echo "===> Import pfx certificate"
 Import-PfxCertificate -FilePath ..\..\mycert.pfx -Password (ConvertTo-SecureString -String $pfx_passphrase -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
 $file = "newrelic-infra_binaries_windows_1.0.27_$arch.zip"
 $url = "https://github.com/jportasa/infrastructure-agent/releases/download/$tag/$file"
 
-echo "--- Download main infra agent binaries from GH release"
+echo "===> Download main infra agent binaries from GH release"
 Invoke-WebRequest $url -OutFile $file
 Expand-Archive $file -DestinationPath "..\..\target\bin\windows_$arch\"
 ls "..\..\target\bin\windows_$arch\"
 
-echo "--- Embedding external components"
+echo "===> Embedding external components"
 # embded flex
 if (-Not [string]::IsNullOrWhitespace($nriFlexVersion)) {
     # download
@@ -39,29 +39,29 @@ if (-Not [string]::IsNullOrWhitespace($nriFlexVersion)) {
     # clean
     Remove-Item -Path $flexPath -Force -Recurse
 }
-# embded fluent-bit
-$fbArch = "win64"
-if($arch -eq "386") {
-    $fbArch = "win32"
-}
-# Download fluent-bit artifacts.
-$ProgressPreference = 'SilentlyContinue'
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-Invoke-WebRequest "https://artifacts.datanerd.us/ohai-repo/logging/windows/nrfb-$nrfbArtifactVersion-$fbArch.zip" -Headers @{"X-JFrog-Art-Api"="$artifactoryToken"} -OutFile nrfb.zip
-expand-archive -path '.\nrfb.zip' -destinationpath '.\'
-Remove-Item -Force .\nrfb.zip
-if (-Not $skipSigning) {
-    iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'New Relic, Inc.'  .\nrfb\fluent-bit.exe"
-}
+## embded fluent-bit
+#$fbArch = "win64"
+#if($arch -eq "386") {
+#    $fbArch = "win32"
+#}
+## Download fluent-bit artifacts.
+#$ProgressPreference = 'SilentlyContinue'
+#[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+#Invoke-WebRequest "https://artifacts.datanerd.us/ohai-repo/logging/windows/nrfb-$nrfbArtifactVersion-$fbArch.zip" -Headers @{"X-JFrog-Art-Api"="$artifactoryToken"} -OutFile nrfb.zip
+#expand-archive -path '.\nrfb.zip' -destinationpath '.\'
+#Remove-Item -Force .\nrfb.zip
+#iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'New Relic, Inc.'  .\nrfb\fluent-bit.exe"
+
 # Move the files to packaging.
 $nraPath = "target\bin\windows_$arch\"
 New-Item -path "$nraPath\logging" -type directory -Force
 Copy-Item -Path ".\nrfb\*" -Destination "$nraPath\logging" -Recurse -Force
 Remove-Item -Path ".\nrfb" -Force -Recurse
 
+echo "===> Binaries to embed:"
 ls ..\..\target\bin\windows_$arch
 
-echo "--- Create msi"
+echo "===> Create msi"
 $env:path = "$env:path;C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin"
 Push-Location -Path "..\..\build\package\windows\newrelic-infra-$arch-installer\newrelic-infra"
 . MSBuild.exe newrelic-infra-installer.wixproj
