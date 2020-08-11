@@ -121,7 +121,10 @@ jobs:
     - name: pfx
       shell: pwsh
       run: |
-        $PFX_CERTIFICATE_BASE64
+        #$PFX_CERTIFICATE_BASE64
+        $PFX_CERTIFICATE = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($PFX_CERTIFICATE_BASE64))
+        $PFX_CERTIFICATE
+
 
 #
 #  s3-apt-update:
