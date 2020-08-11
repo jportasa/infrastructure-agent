@@ -141,8 +141,8 @@ jobs:
     - name: Create .msi
       shell: pwsh
       run: |
-        $arch = 'amd64'
-        $msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath
+        $arch = 'amd64'th
+        $env:path = "$env:path;C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin"
         Push-Location -Path "build\package\windows\newrelic-infra-$arch-installer\newrelic-infra"
         MSBuild.exe newrelic-infra-installer.wixproj
 
