@@ -127,6 +127,7 @@ jobs:
       run: |
         #$PFX_PASSPHRASE = $env:PFX_PASSPHRASE
         #Import-PfxCertificate -FilePath .\mycert.pfx -Password (ConvertTo-SecureString -String $PFX_PASSPHRASE -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
+        Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
         cicd\scripts\msi_creation.ps1
 
 
