@@ -133,8 +133,9 @@ jobs:
       shell: pwsh
       run: |
         $arch = 'amd64'
+        $tag = 'v1.0.27'
         $file = "newrelic-infra_binaries_windows_1.0.27_$arch.zip"
-        $url = "https://github.com/jportasa/infrastructure-agent/releases/download/v1.0.27/$file"
+        $url = "https://github.com/jportasa/infrastructure-agent/releases/download/$tag/$file"
         Invoke-WebRequest $url -OutFile $file
         Expand-Archive $file -DestinationPath ".\target\bin\windows_$arch\"
         ls ".\target\bin\windows_$arch\"
