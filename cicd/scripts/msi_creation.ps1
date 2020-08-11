@@ -12,10 +12,57 @@ Import-PfxCertificate -FilePath ..\..\mycert.pfx -Password (ConvertTo-SecureStri
 $file = "newrelic-infra_binaries_windows_1.0.27_$arch.zip"
 $url = "https://github.com/jportasa/infrastructure-agent/releases/download/$tag/$file"
 
-echo "--- Download binaries from GH release"
+echo "--- Download main infra agent binaries from GH release"
 Invoke-WebRequest $url -OutFile $file
 Expand-Archive $file -DestinationPath "..\..\target\bin\windows_$arch\"
 ls "..\..\target\bin\windows_$arch\"
+
+echo "--- Embedding external components"
+# embded flex
+if (-Not [string]::IsNullOrWhitespace($nriFlexVersion)) {
+    # download
+    [string]$release="v${nriFlexVersion}"
+    [string]$file="nri-flex_${nriFlexVersion}_Windows_x86_64.zip"
+    $ProgressPreference = 'SilentlyContinue'
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    Invoke-WebRequest "https://github.com/newrelic/nri-flex/releases/download/${release}/${file}" -OutFile "target\nri-flex.zip"
+    # embed:
+    $flexPath = "target\nri-flex"
+    $nraPath = "target\bin\windows_$arch"
+    # extract
+    New-Item -path $flexPath -type directory -Force
+    expand-archive -path 'target\nri-flex.zip' -destinationpath $flexPath
+    Remove-Item 'target\nri-flex.zip'
+    # flex binaries
+    Copy-Item -Path "$flexPath\nri-flex.exe" -Destination "$nraPath" -Force
+    # nrjmx
+    #Copy-Item -Path "$flexPath\nrjmx" -Destination "$nraPath\" -Recurse -Force
+    # clean
+    Remove-Item -Path $flexPath -Force -Recurse
+}
+# embded fluent-bit
+$includeFluentBit = (
+    -Not [string]::IsNullOrWhitespace($artifactoryToken))
+if ($includeFluentBit) {
+    $fbArch = "win64"
+    if($arch -eq "386") {
+        $fbArch = "win32"
+    }
+    # Download fluent-bit artifacts.
+    $ProgressPreference = 'SilentlyContinue'
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    Invoke-WebRequest "https://artifacts.datanerd.us/ohai-repo/logging/windows/nrfb-$nrfbArtifactVersion-$fbArch.zip" -Headers @{"X-JFrog-Art-Api"="$artifactoryToken"} -OutFile nrfb.zip
+    expand-archive -path '.\nrfb.zip' -destinationpath '.\'
+    Remove-Item -Force .\nrfb.zip
+    if (-Not $skipSigning) {
+        iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'New Relic, Inc.'  .\nrfb\fluent-bit.exe"
+    }
+    # Move the files to packaging.
+    $nraPath = "target\bin\windows_$arch\"
+    New-Item -path "$nraPath\logging" -type directory -Force
+    Copy-Item -Path ".\nrfb\*" -Destination "$nraPath\logging" -Recurse -Force
+    Remove-Item -Path ".\nrfb" -Force -Recurse
+}
 
 echo "--- Create msi"
 $env:path = "$env:path;C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin"
