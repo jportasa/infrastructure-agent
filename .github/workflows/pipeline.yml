@@ -142,9 +142,9 @@ jobs:
       shell: pwsh
       run: |
         $arch = 'amd64'
-        #$msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath
+        $msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath
         Push-Location -Path "build\package\windows\newrelic-infra-$arch-installer\newrelic-infra"
-        . MSBuild.exe newrelic-infra-installer.wixproj
+        MSBuild.exe newrelic-infra-installer.wixproj
 
 
 #  s3-apt-update:
