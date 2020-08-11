@@ -130,7 +130,7 @@ jobs:
     - name: Download binaries from GH
       shell: pwsh
       run: |
-        $arch = amd64
+        $arch = 'amd64'
         $file = "newrelic-infra_binaries_windows_1.0.27_$arch.zip"
         $url = "https://github.com/jportasa/infrastructure-agent/releases/download/v1.0.27/$file"
         wget $url -OutFile $file
