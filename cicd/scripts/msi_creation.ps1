@@ -8,7 +8,7 @@ $msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0)
 echo "--- Building Installer"
 Push-Location -Path "build\package\windows\newrelic-infra-$arch-installer\newrelic-infra"
 #. $msBuild/MSBuild.exe newrelic-infra-installer.wixproj /p:IncludeFluentBit=$
-. $msBuild/MSBuild.exe newrelic-infra-installer.wixproj /p:IncludeFluentBit=$includeFluentBit
+. $msBuild/MSBuild.exe newrelic-infra-installer.wixproj
 #if (-not $?)
 #{
 #    echo "Failed building installer"

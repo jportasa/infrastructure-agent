@@ -118,15 +118,15 @@ jobs:
 #    needs: [goreleaser]
     runs-on: windows-2019
     steps:
-    - name: Get PFX certificate from GH secrets
-      shell: bash
-      run: |
-        printf "%s" "$PFX_CERTIFICATE_BASE64" | base64 -d - > ./mycert.pfx
-    - name: Import PFX certificate from GH Secrets
-      shell: pwsh
-      run: |
-        $PFX_PASSPHRASE = $env:PFX_PASSPHRASE
-        Import-PfxCertificate -FilePath .\mycert.pfx -Password (ConvertTo-SecureString -String $PFX_PASSPHRASE -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
+#    - name: Get PFX certificate from GH secrets
+#      shell: bash
+#      run: |
+#        printf "%s" "$PFX_CERTIFICATE_BASE64" | base64 -d - > ./mycert.pfx
+#    - name: Import PFX certificate from GH Secrets
+#      shell: pwsh
+#      run: |
+#        $PFX_PASSPHRASE = $env:PFX_PASSPHRASE
+#        Import-PfxCertificate -FilePath .\mycert.pfx -Password (ConvertTo-SecureString -String $PFX_PASSPHRASE -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
     - name: Download Win binaries from GH release
       shell: pwsh
       run: |
@@ -136,6 +136,13 @@ jobs:
         Invoke-WebRequest $url -OutFile $file
         Expand-Archive $file -DestinationPath ".\target\bin\windows_$arch\"
         ls ".\target\bin\windows_$arch\"
+    - name: Create .msi
+      shell: pwsh
+      run: |
+        $arch = amd64
+        $msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath
+        Push-Location -Path "build\package\windows\newrelic-infra-$arch-installer\newrelic-infra"
+        . $msBuild/MSBuild.exe newrelic-infra-installer.wixproj
 
 
 #  s3-apt-update:
