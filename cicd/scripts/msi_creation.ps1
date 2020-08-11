@@ -1,9 +1,14 @@
-
-$arch = 'amd64'
-$tag = 'v1.0.27'
+param (
+    # Target architecture: amd64 (default) or 386
+    [ValidateSet("amd64", "386")]
+    [string]$arch="amd64",
+    [string]$tag="0.0.0",
+    # Creates a signed installer
+    [string]$pfx_passphrase='none'
+)
 
 echo "--- Import pfx certificate"
-Import-PfxCertificate -FilePath ..\..\mycert.pfx -Password (ConvertTo-SecureString -String $(PFX_PASSPHRASE) -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
+Import-PfxCertificate -FilePath ..\..\mycert.pfx -Password (ConvertTo-SecureString -String $(pfx_passphrase) -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
 $file = "newrelic-infra_binaries_windows_1.0.27_$arch.zip"
 $url = "https://github.com/jportasa/infrastructure-agent/releases/download/$tag/$file"
 

@@ -129,7 +129,7 @@ jobs:
       run:
         $PFX_PASSPHRASE = $env:PFX_PASSPHRASE
         cd cicd/scripts
-        .\msi_creation.ps1
+        .\msi_creation.ps1 'amd64' 'v1.0.27' $PFX_PASSPHRASE
 
 
 
