@@ -127,6 +127,13 @@ jobs:
       run: |
         $PFX_PASSPHRASE = $env:PFX_PASSPHRASE
         Import-PfxCertificate -FilePath .\mycert.pfx -Password (ConvertTo-SecureString -String $PFX_PASSPHRASE -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
+    - name: Download binaries from GH
+      shell: pwsh
+      run:
+        $file = newrelic-infra_binaries_windows_1.0.27_amd64.zip
+        $url = https://github.com/jportasa/infrastructure-agent/releases/download/v1.0.27/$file
+        wget $url -OutFile $file
+        ls
 
 
 
