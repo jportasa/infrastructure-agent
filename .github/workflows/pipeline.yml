@@ -129,12 +129,13 @@ jobs:
         Import-PfxCertificate -FilePath .\mycert.pfx -Password (ConvertTo-SecureString -String $PFX_PASSPHRASE -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
     - name: Download binaries from GH
       shell: pwsh
-      run:
-        $file = newrelic-infra_binaries_windows_1.0.27_amd64.zip
-        $url = https://github.com/jportasa/infrastructure-agent/releases/download/v1.0.27/$file
+      run
+        $arch = amd64
+        $file = "newrelic-infra_binaries_windows_1.0.27_$arch.zip"
+        $url = "https://github.com/jportasa/infrastructure-agent/releases/download/v1.0.27/$file"
         wget $url -OutFile $file
-        ls
-
+        Expand-Archive D:\file.zip -DestinationPath ".\target\bin\windows_$arch\"
+        ls ".\target\bin\windows_$arch\"
 
 
 #  s3-apt-update:
