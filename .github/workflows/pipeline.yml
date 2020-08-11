@@ -118,6 +118,7 @@ jobs:
 #    needs: [goreleaser]
     runs-on: windows-2019
     steps:
+     - uses: actions/checkout@v2
 #    - name: Get PFX certificate from GH secrets
 #      shell: bash
 #      run: |
