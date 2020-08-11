@@ -125,7 +125,7 @@ jobs:
     - name: Import PFX certificate
       shell: pwsh
       run: |
-        PFX_PASSPHRASE = $env:PFX_PASSPHRASE
+        $PFX_PASSPHRASE = $env:PFX_PASSPHRASE
         Import-PfxCertificate -FilePath .\mycert.pfx -Password (ConvertTo-SecureString -String $PFX_PASSPHRASE -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
 #
 #  s3-apt-update:
