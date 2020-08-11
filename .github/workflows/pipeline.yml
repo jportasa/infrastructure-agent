@@ -128,7 +128,7 @@ jobs:
       shell: pwsh
       run: |
         cd cicd/scripts
-        .\msi_creation.ps1 'amd64' 'v1.0.27' "$env:PFX_PASSPHRASE" 'v1.3.2'
+        .\msi_creation.ps1 'amd64' 'v1.0.27' "$env:PFX_PASSPHRASE" "$env.NRI_FLEX_VERSION"
 
 
 
