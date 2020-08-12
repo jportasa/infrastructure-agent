@@ -33,3 +33,6 @@ cmd/newrelic-infra/versioninfo.json
 # Goreleaser
 dist
 target
+
+# certificates
+*.pfx
