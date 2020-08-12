@@ -132,6 +132,13 @@ jobs:
 
 
 
+    - name: Push Win binary to GH workflow artifacts cache
+      if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+      uses: actions/upload-artifact@v2
+      with:
+        name: Windows-bin-artifacts
+        path: target/bin/**/*
+
 #  s3-apt-update:
 #    name: S3 repo APT update
 #    if: github.event.action == 'released'
