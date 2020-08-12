@@ -41,7 +41,7 @@
     </CreateProperty>
   </Target>
   <Target Name="SignInstaller">
-    <Exec Command="&quot;$(SignToolPath)signtool.exe&quot; sign /d &quot;Contoso&quot; /n &quot;Contoso&quot; &quot;$(OutputPath)$(OutputName).msi&quot;" />
+    <Exec Command="&quot;$(SignToolPath)signtool.exe&quot; sign /d &quot;Contoso&quot; /i &quot;Contoso&quot; &quot;$(OutputPath)$(OutputName).msi&quot;" />
     <Copy SourceFiles="$(OutputPath)$(OutputName).msi" DestinationFiles="$(OutputPath)$(OutputName).1.0.NNN.msi" />
     <!-- <Delete Files="$(OutputPath)$(OutputName).msi" /> -->
   </Target>
