@@ -29,6 +29,7 @@ echo "===> Embedding external components"
 [string]$file="nri-flex_${nriFlexVersion}_Windows_x86_64.zip"
 $ProgressPreference = 'SilentlyContinue'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+write-host "https://github.com/newrelic/nri-flex/releases/download/$release/$file"
 Invoke-WebRequest "https://github.com/newrelic/nri-flex/releases/download/$release/$file" -OutFile "..\..\target\nri-flex.zip"
 # embed:
 $flexPath = "..\..\target\nri-flex"
