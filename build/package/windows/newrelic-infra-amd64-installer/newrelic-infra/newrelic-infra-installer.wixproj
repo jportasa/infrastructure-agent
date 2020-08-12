@@ -41,7 +41,7 @@
     </CreateProperty>
   </Target>
   <Target Name="SignInstaller">
-    <Exec Command="&quot;$(SignToolPath)signtool.exe&quot; sign /d &quot;New Relic Infrastructure Agent&quot; /n &quot;New Relic, Inc.&quot; &quot;$(OutputPath)$(OutputName).msi&quot;" />
+    <Exec Command="&quot;$(SignToolPath)signtool.exe&quot; sign /d &quot;Contoso Software&quot; /n &quot;Contoso Corporation&quot; &quot;$(OutputPath)$(OutputName).msi&quot;" />
     <Copy SourceFiles="$(OutputPath)$(OutputName).msi" DestinationFiles="$(OutputPath)$(OutputName).1.0.NNN.msi" />
     <!-- <Delete Files="$(OutputPath)$(OutputName).msi" /> -->
   </Target>
