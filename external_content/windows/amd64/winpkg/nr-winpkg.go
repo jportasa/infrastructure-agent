@@ -1,0 +1,5 @@
+package winpkg
+
+func main() {
+
+}

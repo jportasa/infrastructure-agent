@@ -45,29 +45,36 @@ Copy-Item -Path "$flexPath\nri-flex.exe" -Destination "$nraPath" -Force
 # clean
 Remove-Item -Path $flexPath -Force -Recurse
 
-## embded fluent-bit
-#$fbArch = "win64"
-#if($arch -eq "386") {
+# # embded fluent-bit
+# $fbArch = "win64"
+# if($arch -eq "386") {
 #    $fbArch = "win32"
-#}
-## Download fluent-bit artifacts.
-#$ProgressPreference = 'SilentlyContinue'
-#[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-#Invoke-WebRequest "https://artifacts.datanerd.us/ohai-repo/logging/windows/nrfb-$nrfbArtifactVersion-$fbArch.zip" -Headers @{"X-JFrog-Art-Api"="$artifactoryToken"} -OutFile nrfb.zip
-#expand-archive -path '.\nrfb.zip' -destinationpath '.\'
-#Remove-Item -Force .\nrfb.zip
-#iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'New Relic, Inc.'  .\nrfb\fluent-bit.exe"
+# }
+# # Download fluent-bit artifacts.
+# $ProgressPreference = 'SilentlyContinue'
+# [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+# Invoke-WebRequest "https://artifacts.datanerd.us/ohai-repo/logging/windows/nrfb-$nrfbArtifactVersion-$fbArch.zip" -Headers @{"X-JFrog-Art-Api"="$artifactoryToken"} -OutFile nrfb.zip
+# expand-archive -path '.\nrfb.zip' -destinationpath '.\'
+# Remove-Item -Force .\nrfb.zip
+# iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'New Relic, Inc.'  .\nrfb\fluent-bit.exe"
 
-## Move the files to packaging.
-#$nraPath = "..\..\target\bin\windows_$arch\"
-#New-Item -path "$nraPath\logging" -type directory -Force
-#Copy-Item -Path ".\nrfb\*" -Destination "$nraPath\logging" -Recurse -Force
-#Remove-Item -Path ".\nrfb" -Force -Recurse
+# Move the files to packaging.
+# $nraPath = "..\..\target\bin\windows_$arch\"
+# New-Item -path "$nraPath\logging" -type directory -Force
+# Copy-Item -Path ".\nrfb\*" -Destination "$nraPath\logging" -Recurse -Force
+# Remove-Item -Path ".\nrfb" -Force -Recurse
 
 echo "===> Binaries to embed:"
 ls ..\..\target\bin\windows_$arch
 
+$msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath
+if ($msBuild.Length -eq 0) {
+    echo "Can't find MSBuild tool. .NET Framework 4.0.x must be installed"
+    exit -1
+}
+echo $msBuild
+
 echo "===> Create msi"
 $env:path = "$env:path;C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin"
 Push-Location -Path "..\..\build\package\windows\newrelic-infra-$arch-installer\newrelic-infra"
-. MSBuild.exe newrelic-infra-installer.wixproj
+. $msBuild/MSBuild.exe newrelic-infra-installer.wixproj /p:AgentVersion=1.2.3 /p:IncludeFluentBit=false

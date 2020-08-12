@@ -36,6 +36,9 @@
     <CreateProperty Condition="$(IncludeFluentBit) != ''" Value="IncludeFluentBit=$(IncludeFluentBit);$(DefineConstants)">
         <Output TaskParameter="Value" PropertyName="DefineConstants" />
     </CreateProperty>
+    <CreateProperty Condition="$(AgentVersion) != ''" Value="AgentVersion=$(AgentVersion);$(DefineConstants)">
+        <Output TaskParameter="Value" PropertyName="DefineConstants" />
+    </CreateProperty>
   </Target>
   <Target Name="SignInstaller">
     <Exec Command="&quot;$(SignToolPath)signtool.exe&quot; sign /d &quot;New Relic Infrastructure Agent&quot; /n &quot;New Relic, Inc.&quot; &quot;$(OutputPath)$(OutputName).msi&quot;" />
