@@ -16,7 +16,6 @@ coverage.xml
 /workspace
 .vscode
 cmd/newrelic-infra/versioninfo.json
-**/Product.wxs
 
 # Agent data directory when AppDataDir is not specify in darwin
 /data
