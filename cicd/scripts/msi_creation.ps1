@@ -97,7 +97,7 @@ echo $msBuild
 echo "===> Create msi"
 $env:path = "$env:path;C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin"
 Push-Location -Path "..\..\build\package\windows\newrelic-infra-$arch-installer\newrelic-infra"
-. $msBuild/MSBuild.exe newrelic-infra-installer.wixproj /p:AgentVersion=${version} /p:IncludeFluentBit=false
+. $msBuild/MSBuild.exe newrelic-infra-installer.wixproj /p:AgentVersion=${version} /p:IncludeFluentBit=true
 
 
 echo "===>Making versioned installed copy"
