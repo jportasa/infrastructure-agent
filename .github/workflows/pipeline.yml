@@ -137,7 +137,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Windows-msi-artifact
-        path: bin/Release/*
+        path: build\package\windows\**\newrelic-infra/bin/Release/*
 
 #  s3-apt-update:
 #    name: S3 repo APT update
