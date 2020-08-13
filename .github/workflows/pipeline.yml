@@ -115,7 +115,7 @@ jobs:
   msi:
     name: MSI creation
 #    if: github.event.action == 'released'
-    needs: [goreleaser]
+#    needs: [goreleaser]
     runs-on: windows-2019
     steps:
     - name: Check out code
