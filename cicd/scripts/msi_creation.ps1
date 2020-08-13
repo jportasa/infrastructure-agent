@@ -82,6 +82,7 @@ Copy-Item -Path "${repo_root_path}\external_content\windows\amd64\fluentbit\file
 Copy-Item -Path "${repo_root_path}\external_content\windows\amd64\fluentbit\fluentbit.yml.example" -Destination "${repo_root_path}\target\logging.d" -Force
 Copy-Item -Path "${repo_root_path}\external_content\windows\amd64\fluentbit\fluent-bit.dll" -Destination "${repo_root_path}\target\newrelic-integrations\logging" -Force
 Copy-Item -Path "${repo_root_path}\external_content\windows\amd64\fluentbit\fluent-bit.exe" -Destination "${repo_root_path}\target\newrelic-integrations\logging" -Force
+ls "${repo_root_path}\target\newrelic-integrations\logging"
 
 $msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath
 if ($msBuild.Length -eq 0) {
