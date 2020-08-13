@@ -120,27 +120,28 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
-#    - name: Get PFX certificate from GH secrets
-#      shell: bash
-#      run: |
-#        printf "%s" "$PFX_CERTIFICATE_BASE64" | base64 -d - > ./mycert.pfx
-#    - name: Import certif. + embed external  + create msi
-#      shell: pwsh
-#      run: |
-#        cd cicd/scripts
-#        #.\msi_creation.ps1 'amd64' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
-#        #.\msi_creation.ps1 '386' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
-#        .\msi_creation.ps1 'amd64' '1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
-#        .\msi_creation.ps1 '386' '1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
-#    - name: Push Win binary to GH workflow artifacts cache
-#      if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
-#      uses: actions/upload-artifact@v2
-#      with:
-#        name: Windows-msi-artifact
-#        path: build\package\windows\**\newrelic-infra/bin/Release/*
+    - name: Get PFX certificate from GH secrets
+      shell: bash
+      run: |
+        printf "%s" "$PFX_CERTIFICATE_BASE64" | base64 -d - > ./mycert.pfx
+    - name: Import certif. + embed external  + create msi
+      shell: pwsh
+      run: |
+        cd cicd/scripts
+        #.\msi_creation.ps1 'amd64' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
+        #.\msi_creation.ps1 '386' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
+        .\msi_creation.ps1 'amd64' '1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
+        .\msi_creation.ps1 '386' '1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
+    - name: Push Win binary to GH workflow artifacts cache
+      if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+      uses: actions/upload-artifact@v2
+      with:
+        name: Windows-msi-artifact
+        path: build\package\windows\**\newrelic-infra/bin/Release/*
     - name: Push msi to GH Release assets
       shell: bash
       run: |
+        TAG=v1.0.27
         cd cicd/scripts
         for arch in amd64 386; do
           ls "../../build/package/windows/newrelic-infra-${arch}-installer/newrelic-infra"
