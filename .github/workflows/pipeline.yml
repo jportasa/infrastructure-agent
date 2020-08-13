@@ -142,7 +142,7 @@ jobs:
       shell: bash
       run: |
         pwd
-        cd cicd/scripts
+        cd cicd\scripts
         for arch in amd64 386; do
           upload_artifact_to_github_release.sh "..\..\build\package\windows\newrelic-infra-${arch}-installer\newrelic-infra" "newrelic-infra-${arch}.${tag:1}.msi"
         done
