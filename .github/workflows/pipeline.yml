@@ -124,7 +124,7 @@ jobs:
       shell: bash
       run: |
         printf "%s" "$PFX_CERTIFICATE_BASE64" | base64 -d - > ./mycert.pfx
-    - name: Import certif. + embed external  + create msi
+    - name: Import certif. + embed external + sign + create msi
       shell: pwsh
       run: |
         cd cicd/scripts
