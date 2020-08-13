@@ -128,16 +128,13 @@ jobs:
       shell: pwsh
       run: |
         cd cicd/scripts
-        .\msi_creation.ps1 'amd64' 'v1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
-
-
-
+        .\msi_creation.ps1 'amd64' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
     - name: Push Win binary to GH workflow artifacts cache
-      if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+#      if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
       uses: actions/upload-artifact@v2
       with:
-        name: Windows-bin-artifacts
-        path: target/bin/**/*
+        name: Windows-msi-artifact
+        path: bin/Release/*
 
 #  s3-apt-update:
 #    name: S3 repo APT update
