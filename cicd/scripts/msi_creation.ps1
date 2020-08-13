@@ -62,7 +62,8 @@ if($arch -eq "386") {
 
 #expand-archive -path '.\nrfb.zip' -destinationpath '.\'
 #Remove-Item -Force .\nrfb.zip
-Copy-Item -Path "..\..\external_content\windows\amd64\fluentbit\*" -Destination ".\nrfb" -Recurse -Force
+$root_path='D:\a\infrastructure-agent\infrastructure-agent\'
+Copy-Item -Path "$root_path\external_content\windows\amd64\fluentbit\*" -Destination ".\nrfb" -Recurse -Force
 iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'Contoso'  .\nrfb\fluent-bit.exe"
 
 #Move the files to packaging.
