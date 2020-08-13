@@ -15,6 +15,7 @@ param (
 echo "===> Import .pfx certificate from GH Secrets"
 Import-PfxCertificate -FilePath ..\..\mycert.pfx -Password (ConvertTo-SecureString -String $pfx_passphrase -AsPlainText -Force) -CertStoreLocation Cert:\CurrentUser\My
 $file = "newrelic-infra_binaries_windows_1.0.27_$arch.zip"
+write-host "https://github.com/jportasa/infrastructure-agent/releases/download/v$version/$file"
 $url = "https://github.com/jportasa/infrastructure-agent/releases/download/v$version/$file"
 
 echo "===> Show certificate installed"
