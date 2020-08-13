@@ -21,7 +21,8 @@ Get-ChildItem -Path cert:\CurrentUser\My\
 echo "===> Download main infra agent binaries from GH release"
 $file = "newrelic-infra_binaries_windows_$version_$arch.zip"
 write-host "URL to download:" "https://github.com/jportasa/infrastructure-agent/releases/download/$version/$file"
-$url = "https://github.com/jportasa/infrastructure-agent/releases/download/$version/$file"
+$url = "https://github.com/jportasa/infrastructure-agent/releases/download/v$version/$file"
+
 Invoke-WebRequest $url -OutFile $file
 Expand-Archive $file -DestinationPath "..\..\target\bin\windows_$arch\"
 ls "..\..\target\bin\windows_$arch\"
