@@ -28,7 +28,7 @@ Expand-Archive $file -DestinationPath "..\..\target\bin\windows_$arch\"
 ls "..\..\target\bin\windows_$arch\"
 
 echo "===> Embedding external components"
-echo " ===> Embeding Flex"
+echo "===> Embeding Flex"
 # embded flex
 # download
 [string]$release="v${nriFlexVersion}"
@@ -51,7 +51,7 @@ Copy-Item -Path "$flexPath\nri-flex.exe" -Destination "$nraPath" -Force
 # clean
 Remove-Item -Path $flexPath -Force -Recurse
 
-echo " ===> Embeding Fluentbit"
+echo "===> Embeding Fluentbit"
 $repo_root_path='D:\a\infrastructure-agent\infrastructure-agent\'
 $fbArch = "win64"
 if($arch -eq "386") {
@@ -75,7 +75,7 @@ iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'Contoso'  ${repo_r
 #Remove-Item -Path ".\nrfb" -Force -Recurse
 
 #Move the files to packaging.
-New-Item -path  "$nraPath\logging.d" -type directory -Force
+New-Item -path  "$repo_root_path\logging.d" -type directory -Force
 Copy-Item -Path "${repo_root_path}\external_content\windows\amd64\fluentbit\file.yml.example" -Destination "$repo_root_path\target\logging.d" -Force
 Copy-Item -Path "${repo_root_path}\external_content\windows\amd64\fluentbit\fluentbit.yml.example" -Destination "$repo_root_path\target\logging.d" -Force
 New-Item -path  "$repo_root_path\target\newrelic-integrations\logging" -type directory -Force
