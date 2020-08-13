@@ -115,7 +115,7 @@ jobs:
   msi:
     name: MSI creation
 #    if: github.event.action == 'released'
-#    needs: [goreleaser]
+    needs: [goreleaser]
     runs-on: windows-2019
     steps:
     - name: Check out code
@@ -128,8 +128,10 @@ jobs:
       shell: pwsh
       run: |
         cd cicd/scripts
-        .\msi_creation.ps1 'amd64' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
-        .\msi_creation.ps1 '386' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
+        #.\msi_creation.ps1 'amd64' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
+        #.\msi_creation.ps1 '386' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
+        .\msi_creation.ps1 'amd64' 'v1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
+        .\msi_creation.ps1 '386' 'v1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
     - name: Push Win binary to GH workflow artifacts cache
 #      if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
       uses: actions/upload-artifact@v2
