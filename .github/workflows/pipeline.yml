@@ -144,8 +144,8 @@ jobs:
         TAG=v1.0.27
         cd cicd/scripts
         for arch in amd64 386; do
-          ls "../../build/package/windows/newrelic-infra-${arch}-installer/newrelic-infra"
-          upload_artifact_to_github_release.sh "../../build/package/windows/newrelic-infra-${arch}-installer/newrelic-infra" "newrelic-infra-${arch}.${TAG:1}.msi"
+          ls "../../build/package/windows/newrelic-infra-${arch}-installer/newrelic-infra/bin/Release/"
+          upload_artifact_to_github_release.sh "../../build/package/windows/newrelic-infra-${arch}-installer/newrelic-infra/bin/Release" "newrelic-infra-${arch}.${TAG:1}.msi"
         done
 
 #  s3-apt-update:
