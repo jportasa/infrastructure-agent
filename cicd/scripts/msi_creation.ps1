@@ -28,6 +28,7 @@ Expand-Archive $file -DestinationPath "..\..\target\bin\windows_$arch\"
 ls "..\..\target\bin\windows_$arch\"
 
 echo "===> Embedding external components"
+echo " ===> Embeding Flex"
 # embded flex
 # download
 [string]$release="v${nriFlexVersion}"
@@ -50,7 +51,8 @@ Copy-Item -Path "$flexPath\nri-flex.exe" -Destination "$nraPath" -Force
 # clean
 Remove-Item -Path $flexPath -Force -Recurse
 
-# embded fluent-bit
+echo " ===> Embeding Fluentbit"
+$repo_root_path='D:\a\infrastructure-agent\infrastructure-agent\'
 $fbArch = "win64"
 if($arch -eq "386") {
    $fbArch = "win32"
@@ -62,9 +64,9 @@ if($arch -eq "386") {
 
 #expand-archive -path '.\nrfb.zip' -destinationpath '.\'
 #Remove-Item -Force .\nrfb.zip
-$root_path='D:\a\infrastructure-agent\infrastructure-agent\'
-Copy-Item -Path "$root_path\external_content\windows\amd64\fluentbit\*" -Destination ".\nrfb" -Recurse -Force
-iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'Contoso'  .\nrfb\fluent-bit.exe"
+$fluentbitPath = "$repo_root_path\target\nri-flex"
+
+iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'Contoso'  $root_path\external_content\windows\amd64\fluentbit\fluent-bit.exe"
 
 #Move the files to packaging.
 #$nraPath = "..\..\target\bin\windows_$arch\"
@@ -73,13 +75,12 @@ iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'Contoso'  .\nrfb\f
 #Remove-Item -Path ".\nrfb" -Force -Recurse
 
 #Move the files to packaging.
-$nraPath = "..\..\target\bin\windows_$arch\"
-New-Item -path "$nraPath\logging.d" -type directory -Force
-Copy-Item -Path ".\nrfb\file.yml.example" -Destination "$nraPath\logging.d" -Force
-Copy-Item -Path ".\nrfb\fluentbit.yml.example" -Destination "$nraPath\logging.d" -Force
-New-Item -path "$nraPath\newrelic-integrations\logging" -type directory -Force
-Copy-Item -Path ".\nrfb\fluent-bit.dll" -Destination "$nraPath\newrelic-integrations\logging" -Force
-Copy-Item -Path ".\nrfb\fluent-bit.exe" -Destination "$nraPath\newrelic-integrations\logging" -Force
+New-Item -path  "$nraPath\logging.d" -type directory -Force
+Copy-Item -Path "$root_path\external_content\windows\amd64\fluentbit\file.yml.example" -Destination "$nraPath\logging.d" -Force
+Copy-Item -Path "$root_path\external_content\windows\amd64\fluentbit\fluentbit.yml.example" -Destination "$nraPath\logging.d" -Force
+New-Item -path  "$nraPath\newrelic-integrations\logging" -type directory -Force
+Copy-Item -Path "$root_path\external_content\windows\amd64\fluentbit\fluent-bit.dll" -Destination "$nraPath\newrelic-integrations\logging" -Force
+Copy-Item -Path "$root_path\external_content\windows\amd64\fluentbit\fluent-bit.exe" -Destination "$nraPath\newrelic-integrations\logging" -Force
 
 
 echo "===> Binaries to embed:"
