@@ -82,9 +82,6 @@ New-Item -path  "$repo_root_path\target\newrelic-integrations\logging" -type dir
 Copy-Item -Path "${repo_root_path}\external_content\windows\amd64\fluentbit\fluent-bit.dll" -Destination "$repo_root_path\target\newrelic-integrations\logging" -Force
 Copy-Item -Path "${repo_root_path}\external_content\windows\amd64\fluentbit\fluent-bit.exe" -Destination "$repo_root_path\target\newrelic-integrations\logging" -Force
 
-echo "===> Binaries to embed:"
-ls $repo_root_path\target\bin\windows_$arch
-
 $msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath
 if ($msBuild.Length -eq 0) {
     echo "Can't find MSBuild tool. .NET Framework 4.0.x must be installed"
