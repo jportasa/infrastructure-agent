@@ -12,7 +12,7 @@ param (
     [string]$signtool='"C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe"'
 )
 
-echo "===> Import .pfx certificate"
+echo "===> Import .pfx certificate from GH Secrets"
 Import-PfxCertificate -FilePath ..\..\mycert.pfx -Password (ConvertTo-SecureString -String $pfx_passphrase -AsPlainText -Force) -CertStoreLocation Cert:\CurrentUser\My
 $file = "newrelic-infra_binaries_windows_1.0.27_$arch.zip"
 $url = "https://github.com/jportasa/infrastructure-agent/releases/download/v$version/$file"
