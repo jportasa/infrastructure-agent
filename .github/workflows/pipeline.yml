@@ -133,11 +133,18 @@ jobs:
         .\msi_creation.ps1 'amd64' '1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
         .\msi_creation.ps1 '386' '1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
     - name: Push Win binary to GH workflow artifacts cache
-#      if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+      if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
       uses: actions/upload-artifact@v2
       with:
         name: Windows-msi-artifact
-        path: build\package\windows\**\newrelic-infra/bin/Release/newrelic-infra-386.?.?.?.msi
+        path: build\package\windows\**\newrelic-infra/bin/Release/*
+    - name: Push msi to GH Release assets
+      shell: bash
+      run: |
+        cd cicd/scripts
+        for arch in amd64 386; do
+          upload_artifact_to_github_release.sh "..\..\build\package\windows\newrelic-infra-$arch-installer\newrelic-infra" "newrelic-infra-$arch.${tag:1}.msi"
+        done
 
 #  s3-apt-update:
 #    name: S3 repo APT update
