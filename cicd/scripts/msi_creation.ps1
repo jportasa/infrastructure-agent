@@ -69,22 +69,21 @@ $fluentbitPath = "$repo_root_path\target\nri-flex"
 iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'Contoso'  $root_path\external_content\windows\amd64\fluentbit\fluent-bit.exe"
 
 #Move the files to packaging.
-#$nraPath = "..\..\target\bin\windows_$arch\"
+#$nraPath = "$root_path\external_content\windows\amd64\fluentbit\target\bin\windows_$arch\"
 #New-Item -path "$nraPath\logging" -type directory -Force
 #Copy-Item -Path ".\nrfb\*" -Destination "$nraPath\logging" -Recurse -Force
 #Remove-Item -Path ".\nrfb" -Force -Recurse
 
 #Move the files to packaging.
 New-Item -path  "$nraPath\logging.d" -type directory -Force
-Copy-Item -Path "$root_path\external_content\windows\amd64\fluentbit\file.yml.example" -Destination "$nraPath\logging.d" -Force
-Copy-Item -Path "$root_path\external_content\windows\amd64\fluentbit\fluentbit.yml.example" -Destination "$nraPath\logging.d" -Force
-New-Item -path  "$nraPath\newrelic-integrations\logging" -type directory -Force
-Copy-Item -Path "$root_path\external_content\windows\amd64\fluentbit\fluent-bit.dll" -Destination "$nraPath\newrelic-integrations\logging" -Force
-Copy-Item -Path "$root_path\external_content\windows\amd64\fluentbit\fluent-bit.exe" -Destination "$nraPath\newrelic-integrations\logging" -Force
-
+Copy-Item -Path "$root_path\external_content\windows\amd64\fluentbit\file.yml.example" -Destination "$repo_root_path\target\logging.d" -Force
+Copy-Item -Path "$root_path\external_content\windows\amd64\fluentbit\fluentbit.yml.example" -Destination "$repo_root_path\target\logging.d" -Force
+New-Item -path  "$repo_root_path\target\newrelic-integrations\logging" -type directory -Force
+Copy-Item -Path "$root_path\external_content\windows\amd64\fluentbit\fluent-bit.dll" -Destination "$repo_root_path\target\newrelic-integrations\logging" -Force
+Copy-Item -Path "$root_path\external_content\windows\amd64\fluentbit\fluent-bit.exe" -Destination "$repo_root_path\target\newrelic-integrations\logging" -Force
 
 echo "===> Binaries to embed:"
-ls ..\..\target\bin\windows_$arch
+ls $repo_root_path\target\bin\windows_$arch
 
 $msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath
 if ($msBuild.Length -eq 0) {
