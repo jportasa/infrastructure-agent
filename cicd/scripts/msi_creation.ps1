@@ -65,13 +65,13 @@ if($arch -eq "386") {
 Copy-Item -Path "..\..\external_content\windows\amd64\fluentbit\*" -Destination ".\nrfb" -Recurse -Force
 iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'Contoso'  .\nrfb\fluent-bit.exe"
 
-Move the files to packaging.
-$nraPath = "..\..\target\bin\windows_$arch\"
-New-Item -path "$nraPath\logging" -type directory -Force
-Copy-Item -Path ".\nrfb\*" -Destination "$nraPath\logging" -Recurse -Force
-Remove-Item -Path ".\nrfb" -Force -Recurse
+#Move the files to packaging.
+#$nraPath = "..\..\target\bin\windows_$arch\"
+#New-Item -path "$nraPath\logging" -type directory -Force
+#Copy-Item -Path ".\nrfb\*" -Destination "$nraPath\logging" -Recurse -Force
+#Remove-Item -Path ".\nrfb" -Force -Recurse
 
-Move the files to packaging.
+#Move the files to packaging.
 $nraPath = "..\..\target\bin\windows_$arch\"
 New-Item -path "$nraPath\logging.d" -type directory -Force
 Copy-Item -Path ".\nrfb\file.yml.example" -Destination "$nraPath\logging.d" -Force
@@ -79,9 +79,6 @@ Copy-Item -Path ".\nrfb\fluentbit.yml.example" -Destination "$nraPath\logging.d"
 New-Item -path "$nraPath\newrelic-integrations\logging" -type directory -Force
 Copy-Item -Path ".\nrfb\fluent-bit.dll" -Destination "$nraPath\newrelic-integrations\logging" -Force
 Copy-Item -Path ".\nrfb\fluent-bit.exe" -Destination "$nraPath\newrelic-integrations\logging" -Force
-
-Remove-Item -Path ".\nrfb" -Force -Recurse
-
 
 
 echo "===> Binaries to embed:"
