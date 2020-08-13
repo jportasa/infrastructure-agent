@@ -66,7 +66,7 @@ if($arch -eq "386") {
 #Remove-Item -Force .\nrfb.zip
 $fluentbitPath = "${repo_root_path}\target\nri-flex"
 
-iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'Contoso'  ${{repo_root_path}}\external_content\windows\amd64\fluentbit\fluent-bit.exe"
+iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'Contoso'  ${repo_root_path}\external_content\windows\amd64\fluentbit\fluent-bit.exe"
 
 #Move the files to packaging.
 #$nraPath = "$root_path\external_content\windows\amd64\fluentbit\target\bin\windows_$arch\"
