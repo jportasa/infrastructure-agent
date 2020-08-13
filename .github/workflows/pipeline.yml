@@ -71,27 +71,27 @@ jobs:
 ##          path: target/bin/**/*
 
 
-#  goreleaser:
-#    name: Goreleaser
-#    if: github.event.action == 'released'
-#    runs-on: ubuntu-latest
-#    env:
-#      GITHUB_PUSH_RELEASE_ASSETS: false
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Unshallowify the repo clone # So GoReleaser can generate the changelog properly
-#        run: git fetch --prune --unshallow
-#      - name: Check GH event is Release or Prerelease
-#        if: github.event_name == 'release'
-#        run: echo "::set-env name=GITHUB_PUSH_RELEASE_ASSETS::true"
-#      - name: Create binaries/.deb/rpm & Push to GH Release Assets (if Release/Prerelease)
-#        env:
-#          GITHUB_REF: $GITHUB_REF
-#          PROJECTNAME: $REPO_NAME
-#          GOPATH: '/go'
-#        run: |
-#          cd cicd
-#          docker-compose --file docker_compose_goreleaser.yml run goreleaser
+  goreleaser:
+    name: Goreleaser
+    if: github.event.action == 'released'
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PUSH_RELEASE_ASSETS: false
+    steps:
+      - uses: actions/checkout@v2
+      - name: Unshallowify the repo clone # So GoReleaser can generate the changelog properly
+        run: git fetch --prune --unshallow
+      - name: Check GH event is Release or Prerelease
+        if: github.event_name == 'release'
+        run: echo "::set-env name=GITHUB_PUSH_RELEASE_ASSETS::true"
+      - name: Create binaries/.deb/rpm & Push to GH Release Assets (if Release/Prerelease)
+        env:
+          GITHUB_REF: $GITHUB_REF
+          PROJECTNAME: $REPO_NAME
+          GOPATH: '/go'
+        run: |
+          cd cicd
+          docker-compose --file docker_compose_goreleaser.yml run goreleaser
 #
 #  tarballs:
 #    name: Tarballs for Linux & Win creation
