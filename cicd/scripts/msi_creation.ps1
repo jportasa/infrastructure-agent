@@ -77,6 +77,7 @@ iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'Contoso'  ${repo_r
 #Move the files to packaging.
 New-Item -path  "${repo_root_path}\logging.d" -type directory -Force
 New-Item -path  "${repo_root_path}\target\newrelic-integrations\logging" -type directory -Force
+echo "===> Embeding Fluentbit yml and company"
 Copy-Item -Path "${repo_root_path}\external_content\windows\amd64\fluentbit\file.yml.example" -Destination "${repo_root_path}\target\logging.d" -Force
 Copy-Item -Path "${repo_root_path}\external_content\windows\amd64\fluentbit\fluentbit.yml.example" -Destination "${repo_root_path}\target\logging.d" -Force
 Copy-Item -Path "${repo_root_path}\external_content\windows\amd64\fluentbit\fluent-bit.dll" -Destination "${repo_root_path}\target\newrelic-integrations\logging" -Force
