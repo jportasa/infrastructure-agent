@@ -1,9 +1,11 @@
-set -e
+#!/bin/bash
 #
 #
 # Upload artifact: path/filename to GH Release asset
 #
 #
+set -e
+
 path=$1
 filename=$2
 
