@@ -209,8 +209,8 @@ jobs:
 #
   s3-tarball-update:
     name: S3 Tarball Linux & Windows update
-    if: github.event.action == 'released'
-    needs: [goreleaser]
+#    if: github.event.action == 'released'
+#    needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
       BASE_PATH: "/infrastructure_agent/binaries"
