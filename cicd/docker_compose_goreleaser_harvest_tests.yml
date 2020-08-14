@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+
+  goreleaser:
+    build:
+      context: dockerfiles/goreleaser-harvest-tests/
+      dockerfile: Dockerfile
+    volumes:
+      - ${GITHUB_WORKSPACE}:/go/src/github.com/${REPO_FULL_NAME}/
+    working_dir: /go/src/github.com/${REPO_FULL_NAME}
+    environment:
+      - REPO_FULL_NAME=$REPO_FULL_NAME
+      - PROJECTNAME=$PROJECTNAME
+      - GOPATH=$GOPATH
+      - GPG_APT_PRIVATE_KEY=$GPG_APT_PRIVATE_KEY
+      - GPG_APT_PASSPHRASE=$GPG_APT_PASSPHRASE
+      - GPG_APT_MAIL=$GPG_APT_MAIL

@@ -4,7 +4,7 @@ services:
 
   release:
     build:
-      context: dockerfiles/docker_image_creator/
+      context: dockerfiles/docker-image-creator/
       dockerfile: Dockerfile
     volumes:
       - ${GITHUB_WORKSPACE}:/${REPO_FULL_NAME}/

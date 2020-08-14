@@ -1,0 +1,35 @@
+before:
+  hooks:
+    # You may remove this if you don't use go modules.
+    #- go mod download
+    # you may remove this if you don't need go generate
+    #- go generate ./...
+    #- make validate
+
+builds:
+  - id: linux-newrelic-infra
+    main: ./cmd/newrelic-infra
+    binary: newrelic-infra
+    env:
+    - CGO_ENABLED=0
+    goos:
+    - linux
+    ldflags:
+    - -s -w -X main.integrationVersion={{.Version}}
+    goarch:
+    - amd64
+
+archives:
+  - id: linux-tarball-infrastructure-agent
+    builds:
+      - linux-newrelic-infra
+    name_template: "newrelic-infra_binaries_{{.Os}}_0.0.0_{{ .Arch }}"
+    wrap_in_directory: false
+    format: tar.gz
+    files:
+      - none*
+
+signs:
+  - artifacts: checksum
+    cmd: gpg2
+    args: ["--batch", '-u', "{{ .Env.GPG_APT_MAIL }}", "--passphrase", "{{ .Env.GPG_APT_PASSPHRASE }}", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]

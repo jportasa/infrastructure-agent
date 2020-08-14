@@ -50,48 +50,51 @@ jobs:
 #
 ##
 
-#  create-binaries-for-harvest-tests:
-#    name: Create-binaries-for-harvest-tests
-#    runs-on: ubuntu-18.04
-#    steps:
-#      - name: Check out code
-#        uses: actions/checkout@v1
-#        with:
-#          fetch-depth: 1
-#          path: go/src/github.com/jportasa/infrastructure-agent
-#      - name: Create the binary
-#        env:
-#          PARENT_BUILD_NUMBER: nose
-#        run: |
-#          pwd; ls; go env; go test github.com/jportasa/infrastructure-agent/tree/master/test/harvest -tags="harvest" -v -c -o harvest_\${PARENT_BUILD_NUMBER}.test
-##      - name: Push binary to GH workflow artifacts cache
-##        uses: actions/upload-artifact@v2
-##        with:
-##          name: Windows-bin-artifacts
-##          path: target/bin/**/*
 
 
-  goreleaser:
-    name: Goreleaser
+
+  goreleaser-create-binaries-harvest-tests:
+    name: Goreleaser to create bin for harvest tests
     if: github.event.action == 'released'
     runs-on: ubuntu-latest
-    env:
-      GITHUB_PUSH_RELEASE_ASSETS: false
     steps:
       - uses: actions/checkout@v2
       - name: Unshallowify the repo clone # So GoReleaser can generate the changelog properly
         run: git fetch --prune --unshallow
-      - name: Check GH event is Release or Prerelease
-        if: github.event_name == 'release'
-        run: echo "::set-env name=GITHUB_PUSH_RELEASE_ASSETS::true"
-      - name: Create binaries/.deb/rpm & Push to GH Release Assets (if Release/Prerelease)
+      - name: Create tarball & Push to GH Release Assets (if Release/Prerelease)
         env:
-          GITHUB_REF: $GITHUB_REF
           PROJECTNAME: $REPO_NAME
           GOPATH: '/go'
         run: |
           cd cicd
-          docker-compose --file docker_compose_goreleaser.yml run goreleaser
+          docker-compose --file docker_compose_goreleaser_harvest_tests.yml run goreleaser
+      - name: Push binary to GH workflow artifacts cache
+        uses: actions/upload-artifact@v2
+        with:
+          name: Windows-bin-artifacts
+          path: dist/*
+
+#  goreleaser:
+#    name: Goreleaser
+#    if: github.event.action == 'released'
+#    runs-on: ubuntu-latest
+#    env:
+#      GITHUB_PUSH_RELEASE_ASSETS: false
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Unshallowify the repo clone # So GoReleaser can generate the changelog properly
+#        run: git fetch --prune --unshallow
+#      - name: Check GH event is Release or Prerelease
+#        if: github.event_name == 'release'
+#        run: echo "::set-env name=GITHUB_PUSH_RELEASE_ASSETS::true"
+#      - name: Create binaries/.deb/rpm & Push to GH Release Assets (if Release/Prerelease)
+#        env:
+#          GITHUB_REF: $GITHUB_REF
+#          PROJECTNAME: $REPO_NAME
+#          GOPATH: '/go'
+#        run: |
+#          cd cicd
+#          docker-compose --file docker_compose_goreleaser.yml run goreleaser
 #
 #  tarballs:
 #    name: Tarballs for Linux & Win creation

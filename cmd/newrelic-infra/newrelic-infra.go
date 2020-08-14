@@ -46,7 +46,6 @@ import (
 	"github.com/newrelic/infrastructure-agent/pkg/config"
 	"github.com/newrelic/infrastructure-agent/pkg/disk"
 	"github.com/newrelic/infrastructure-agent/pkg/plugins"
-    "github.com/josephspurrier/goversioninfo/cmd/goversioninfo"
 )
 
 var (
