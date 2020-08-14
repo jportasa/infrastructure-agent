@@ -50,25 +50,25 @@ jobs:
 #
 ##
 
-#  harvest-tests-create:
-#    name: Harvest tests in Ubuntu:18.04
-#    runs-on: ubuntu-18.04
-#    steps:
-#      - name: Check out code
-#        uses: actions/checkout@v1
+  harvest-tests:
+    name: Harvest tests in Ubuntu:18.04
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+          path: go/src/github.com/jportasa/infrastructure-agent
+      - name: Create the binary
+        env:
+          PARENT_BUILD_NUMBER: nose
+        run: |
+          pwd; ls; go env; go test github.com/jportasa/infrastructure-agent/tree/master/test/harvest -tags="harvest" -v -c -o harvest_\${PARENT_BUILD_NUMBER}.test
+#      - name: Push binary to GH workflow artifacts cache
+#        uses: actions/upload-artifact@v2
 #        with:
-#          fetch-depth: 1
-#          path: go/src/github.com/jportasa/infrastructure-agent
-#      - name: Create the binary
-#        env:
-#          PARENT_BUILD_NUMBER: nose
-#        run: |
-#          pwd; go env; export GOOS=linux; export GOARCH=amd64; export GOPATH=/home/runner/work/infrastructure-agent/go/src; go test github.com/jportasa/infrastructure-agent/tree/master/test/harvest -tags="harvest" -v -c -o harvest_\${PARENT_BUILD_NUMBER}.test
-##      - name: Push binary to GH workflow artifacts cache
-##        uses: actions/upload-artifact@v2
-##        with:
-##          name: Windows-bin-artifacts
-##          path: target/bin/**/*
+#          name: Windows-bin-artifacts
+#          path: target/bin/**/*
 
 
 #  goreleaser:
@@ -207,47 +207,47 @@ jobs:
 #        docker-compose --file docker_compose_zypp_updater.yml run release
 #        release_lock
 #
-  s3-tarball-update:
-    name: S3 Tarball Linux & Windows update
-#    if: github.event.action == 'released'
-#    needs: [goreleaser]
-    runs-on: ubuntu-latest
-    env:
-      BASE_PATH: "/infrastructure_agent/binaries"
-      LOCK_REPO_TYPE: 'tarball'
-    steps:
-    - uses: actions/checkout@v2
-    - name: Upload tarballs
-      run: |
-        TAG=v1.0.27
-        cd cicd
-        source scripts/pipeline_functions.sh # import functions
-        create_dynamo_table
-        wait_free_lock
-        lock
-        docker-compose --file docker_compose_tarball_updater.yml run release
-        release_lock
-
-  s3-win-update:
-    name: S3 Windows .msi update
-#    if: github.event.action == 'released'
-#    needs: [goreleaser]
-    runs-on: ubuntu-latest
-    env:
-      BASE_PATH: "/infrastructure_agent"
-      LOCK_REPO_TYPE: 'win'
-    steps:
-    - uses: actions/checkout@v2
-    - name: Upload .msi's
-      run: |
-        TAG=v1.0.27
-        cd cicd
-        source scripts/pipeline_functions.sh # import functions
-        create_dynamo_table
-        wait_free_lock
-        lock
-        docker-compose --file docker_compose_win_updater.yml run release
-        release_lock
+#  s3-tarball-update:
+#    name: S3 Tarball Linux & Windows update
+##    if: github.event.action == 'released'
+##    needs: [goreleaser]
+#    runs-on: ubuntu-latest
+#    env:
+#      BASE_PATH: "/infrastructure_agent/binaries"
+#      LOCK_REPO_TYPE: 'tarball'
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: Upload tarballs
+#      run: |
+#        TAG=v1.0.27
+#        cd cicd
+#        source scripts/pipeline_functions.sh # import functions
+#        create_dynamo_table
+#        wait_free_lock
+#        lock
+#        docker-compose --file docker_compose_tarball_updater.yml run release
+#        release_lock
+#
+#  s3-win-update:
+#    name: S3 Windows .msi update
+##    if: github.event.action == 'released'
+##    needs: [goreleaser]
+#    runs-on: ubuntu-latest
+#    env:
+#      BASE_PATH: "/infrastructure_agent"
+#      LOCK_REPO_TYPE: 'win'
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: Upload .msi's
+#      run: |
+#        TAG=v1.0.27
+#        cd cicd
+#        source scripts/pipeline_functions.sh # import functions
+#        create_dynamo_table
+#        wait_free_lock
+#        lock
+#        docker-compose --file docker_compose_win_updater.yml run release
+#        release_lock
 
 #  docker-image-update:
 #    name: Docker image creation and push to Registry
