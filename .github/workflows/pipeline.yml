@@ -238,7 +238,7 @@ jobs:
       LOCK_REPO_TYPE: 'win'
     steps:
     - uses: actions/checkout@v2
-    - name: Upload tarballs
+    - name: Upload .msi's
       run: |
         TAG=v1.0.27
         cd cicd

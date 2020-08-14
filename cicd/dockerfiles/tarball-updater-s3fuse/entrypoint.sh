@@ -62,7 +62,7 @@ done
 
 echo "===> Download Windows packages from GH Release Assets and uploading to S3"
 for arch_windows in "${ARCH_WINDOWS[@]}"; do
-  package_name="newrelic-infra-${arch_windows}.${TAG:1}.zip"
+  package_name="newrelic-infra_windows_${TAG:1}_${arch_windows}.zip"
   LOCAL_REPO_PATH="${AWS_S3_MOUNTPOINT}${BASE_PATH}/windows/${arch_windows}"
 
   echo "===> Downloading ${package_name} from GH"
