@@ -12,7 +12,6 @@ printf %s ${GPG_APT_PRIVATE_KEY} | base64 -d | gpg --batch --import -
 echo "===> List GPG keys"
 gpg --list-keys
 
-echo "===> Strip from TAG v character"
 TAG='0.0.0'
 
 echo "===> Run Goreleaser";

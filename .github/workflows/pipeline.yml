@@ -44,14 +44,6 @@ env:
   NRI_FLEX_ARCH: x86_64
 
 jobs:
-#
-#
-#  Build binaries/packages
-#
-##
-
-
-
 
   goreleaser-create-binaries-harvest-tests:
     name: Goreleaser to create bin for harvest tests

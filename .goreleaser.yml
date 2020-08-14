@@ -128,8 +128,8 @@ builds:
     goarch:
     - amd64
     - 386
-    hooks:
-      pre: cicd/scripts/set_exe_properties.sh {{.Version}}
+#    hooks:
+#      pre: cicd/scripts/set_exe_properties.sh {{.Version}}
 
   - id: windows-newrelic-infra-ctl
     main: ./cmd/newrelic-infra-ctl
