@@ -65,7 +65,7 @@ if ($includeFluentBit) {
     $ProgressPreference = 'SilentlyContinue'
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     #Invoke-WebRequest "https://artifacts.datanerd.us/ohai-repo/logging/windows/nrfb-$nrfbArtifactVersion-$fbArch.zip" -Headers @{"X-JFrog-Art-Api"="$artifactoryToken"} -OutFile nrfb.zip
-    Copy-Item -Path "..\..\external_content\windows\amd64\fluentbit\*" -Destination "." -Recurse -Force
+    Copy-Item -Path "..\..\external_content\windows\${arch}\fluentbit\*" -Destination "." -Recurse -Force
 
     expand-archive -path '.\nrfb.zip' -destinationpath '.'
     Remove-Item -Force .\nrfb.zip
