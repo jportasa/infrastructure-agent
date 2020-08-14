@@ -52,10 +52,9 @@ Copy-Item -Path "$flexPath\nri-flex.exe" -Destination "$nraPath" -Force
 Remove-Item -Path $flexPath -Force -Recurse
 
 echo "===> Embeding Fluentbit (optional)"
-# embded fluent-bit
-$includeFluentBit = (
-    -Not [string]::IsNullOrWhitespace($artifactoryToken))
-if ($includeFluentBit) {
+#$includeFluentBit = (
+#    -Not [string]::IsNullOrWhitespace($artifactoryToken))
+#if ($includeFluentBit) {
     $fbArch = "win64"
     if($arch -eq "386") {
         $fbArch = "win32"
@@ -76,7 +75,7 @@ if ($includeFluentBit) {
     New-Item -path "$nraPath\logging" -type directory -Force
     Copy-Item -Path ".\nrfb\*" -Destination "$nraPath\logging" -Recurse -Force
     Remove-Item -Path ".\nrfb" -Force -Recurse
-}
+#}
 
 $msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath
 if ($msBuild.Length -eq 0) {
