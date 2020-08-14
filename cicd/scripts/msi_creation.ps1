@@ -54,6 +54,7 @@ Remove-Item -Path $flexPath -Force -Recurse
 echo "===> Embeding Fluentbit (optional)"
 #$includeFluentBit = (
 #    -Not [string]::IsNullOrWhitespace($artifactoryToken))
+$includeFluentBit = true
 #if ($includeFluentBit) {
     $fbArch = "win64"
     if($arch -eq "386") {
@@ -75,7 +76,6 @@ echo "===> Embeding Fluentbit (optional)"
     New-Item -path "$nraPath\logging" -type directory -Force
     Copy-Item -Path ".\nrfb\*" -Destination "$nraPath\logging" -Recurse -Force
     Remove-Item -Path ".\nrfb" -Force -Recurse
-    echo "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
     ls "$nraPath\logging"
 #}
 
