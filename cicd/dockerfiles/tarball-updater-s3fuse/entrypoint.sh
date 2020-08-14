@@ -1,11 +1,15 @@
 #!/bin/bash
-
+#
+#
+# Downloads win (zip) and linux (tar.gz) from GH Release assets and uploads them to S3 repo.
+#
+#
 set -e
-#
-#
-# Mount S3 with S3Fuse
-#
-#
+
+ARCH_LINUX=( amd64 386 )
+ARCH_WINDOWS=( amd64 386 )
+
+
 [ "${DEBUG:-false}" == 'true' ] && { set -x; S3FS_DEBUG='-d -d'; }
 
 # Defaults
@@ -44,7 +48,7 @@ mkdir -p ${AWS_S3_MOUNTPOINT}
 echo "===> Mounting s3 in local docker with Fuse"
 s3fs $S3FS_DEBUG $S3FS_ARGS -o passwd_file=${AWS_S3_AUTHFILE} -o url=${AWS_S3_URL} ${AWS_STORAGE_BUCKET_NAME} ${AWS_S3_MOUNTPOINT}
 
-echo "===> Download Linux packages from GH and uploading to S3"
+echo "===> Download Linux packages from GH Release Assets and uploading to S3"
 for arch_linux in "${ARCH_LINUX[@]}"; do
   package_name="newrelic-infra_linux_${TAG:1}_${arch_linux}.tar.gz"
   LOCAL_REPO_PATH="${AWS_S3_MOUNTPOINT}${BASE_PATH}/linux/${arch_linux}"
@@ -56,7 +60,7 @@ for arch_linux in "${ARCH_LINUX[@]}"; do
   cp ${package_name} ${LOCAL_REPO_PATH}
 done
 
-echo "===> Download Windows packages from GH and uploading to S3"
+echo "===> Download Windows packages from GH Release Assets and uploading to S3"
 for arch_windows in "${ARCH_WINDOWS[@]}"; do
   package_name="newrelic-infra-${arch_windows}.${TAG:1}.zip"
   LOCAL_REPO_PATH="${AWS_S3_MOUNTPOINT}${BASE_PATH}/windows/${arch_windows}"
