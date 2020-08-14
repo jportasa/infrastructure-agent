@@ -51,38 +51,32 @@ Copy-Item -Path "$flexPath\nri-flex.exe" -Destination "$nraPath" -Force
 # clean
 Remove-Item -Path $flexPath -Force -Recurse
 
-echo "===> Embeding Fluentbit"
-${repo_root_path}='D:\a\infrastructure-agent\infrastructure-agent\'
-$fbArch = "win64"
-if($arch -eq "386") {
-   $fbArch = "win32"
+echo "===> Embeding Fluentbit (optional)"
+# embded fluent-bit
+$includeFluentBit = (
+    -Not [string]::IsNullOrWhitespace($artifactoryToken))
+if ($includeFluentBit) {
+    $fbArch = "win64"
+    if($arch -eq "386") {
+        $fbArch = "win32"
+    }
+    # Download fluent-bit artifacts.
+    $ProgressPreference = 'SilentlyContinue'
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    #Invoke-WebRequest "https://artifacts.datanerd.us/ohai-repo/logging/windows/nrfb-$nrfbArtifactVersion-$fbArch.zip" -Headers @{"X-JFrog-Art-Api"="$artifactoryToken"} -OutFile nrfb.zip
+    Copy-Item -Path "..\..\external_content\windows\amd64\fluentbit\*" -Destination "." -Recurse -Force
+
+    expand-archive -path '.\nrfb.zip' -destinationpath '.'
+    Remove-Item -Force .\nrfb.zip
+    if (-Not $skipSigning) {
+        iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'Contoso'  .\nrfb\fluent-bit.exe"
+    }
+    # Move the files to packaging.
+    $nraPath = "..\..\target\bin\windows_$arch\"
+    New-Item -path "$nraPath\logging" -type directory -Force
+    Copy-Item -Path ".\nrfb\*" -Destination "$nraPath\logging" -Recurse -Force
+    Remove-Item -Path ".\nrfb" -Force -Recurse
 }
-# Download fluent-bit artifacts.
-#$ProgressPreference = 'SilentlyContinue'
-#[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-#Invoke-WebRequest "https://artifacts.datanerd.us/ohai-repo/logging/windows/nrfb-$nrfbArtifactVersion-$fbArch.zip" -Headers @{"X-JFrog-Art-Api"="$artifactoryToken"} -OutFile nrfb.zip
-
-#expand-archive -path '.\nrfb.zip' -destinationpath '.\'
-#Remove-Item -Force .\nrfb.zip
-$fluentbitPath = "${repo_root_path}\target\nri-flex"
-
-iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'Contoso'  ${repo_root_path}\external_content\windows\amd64\fluentbit\fluent-bit.exe"
-
-#Move the files to packaging.
-#$nraPath = "$root_path\external_content\windows\amd64\fluentbit\target\bin\windows_$arch\"
-#New-Item -path "$nraPath\logging" -type directory -Force
-#Copy-Item -Path ".\nrfb\*" -Destination "$nraPath\logging" -Recurse -Force
-#Remove-Item -Path ".\nrfb" -Force -Recurse
-
-#Move the files to packaging.
-New-Item -path  "${repo_root_path}\logging.d" -type directory -Force
-New-Item -path  "${repo_root_path}\target\newrelic-integrations\logging" -type directory -Force
-echo "===> Embeding Fluentbit yml and company"
-Copy-Item -Path "${repo_root_path}\external_content\windows\amd64\fluentbit\file.yml.example" -Destination "${repo_root_path}\target\logging.d" -Force
-Copy-Item -Path "${repo_root_path}\external_content\windows\amd64\fluentbit\fluentbit.yml.example" -Destination "${repo_root_path}\target\logging.d" -Force
-Copy-Item -Path "${repo_root_path}\external_content\windows\amd64\fluentbit\fluent-bit.dll" -Destination "${repo_root_path}\target\newrelic-integrations\logging" -Force
-Copy-Item -Path "${repo_root_path}\external_content\windows\amd64\fluentbit\fluent-bit.exe" -Destination "${repo_root_path}\target\newrelic-integrations\logging" -Force
-ls "${repo_root_path}\target\newrelic-integrations\logging"
 
 $msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath
 if ($msBuild.Length -eq 0) {
