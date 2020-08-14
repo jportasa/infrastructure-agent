@@ -50,8 +50,8 @@ jobs:
 #
 ##
 
-  harvest-tests:
-    name: Harvest tests in Ubuntu:18.04
+  create-binaries-for-harvest-tests:
+    name: Create-binaries-for-harvest-tests
     runs-on: ubuntu-18.04
     steps:
       - name: Check out code
