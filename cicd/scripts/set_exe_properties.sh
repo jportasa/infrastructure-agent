@@ -5,7 +5,6 @@
 #
 #
 VERSION=$1
-go get github.com/josephspurrier/goversioninfo/cmd/goversioninfo
 
 go generate goversioninfo \
   -file-version="$VERSION" \

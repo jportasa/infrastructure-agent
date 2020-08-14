@@ -143,6 +143,8 @@ builds:
     goarch:
     - amd64
     - 386
+#    hooks:
+#      pre: cicd/scripts/set_exe_properties.sh
 
   - id: windows-newrelic-infra-service
     main: ./cmd/newrelic-infra-service
@@ -157,6 +159,8 @@ builds:
     goarch:
     - amd64
     - 386
+#    hooks:
+#      pre: cicd/scripts/set_exe_properties.sh
 #
 #  ARCHIVES
 #
