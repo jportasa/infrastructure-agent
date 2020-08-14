@@ -75,6 +75,8 @@ echo "===> Embeding Fluentbit (optional)"
     New-Item -path "$nraPath\logging" -type directory -Force
     Copy-Item -Path ".\nrfb\*" -Destination "$nraPath\logging" -Recurse -Force
     Remove-Item -Path ".\nrfb" -Force -Recurse
+    echo "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    ls "$nraPath\logging"
 #}
 
 $msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath
