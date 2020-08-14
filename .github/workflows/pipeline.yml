@@ -63,7 +63,7 @@ jobs:
       - name: Push binary to GH workflow artifacts cache
         uses: actions/upload-artifact@v2
         with:
-          name: Windows-bin-artifacts
+          name: binaries
           path: dist/*
 
 #  goreleaser:
