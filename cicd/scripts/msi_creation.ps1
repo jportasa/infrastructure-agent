@@ -56,7 +56,7 @@ Remove-Item -Path $flexPath -Force -Recurse
 #    -Not [string]::IsNullOrWhitespace($artifactoryToken))
 [bool] $includeFluentBit = 1
 if ($includeFluentBit) {
-    echo "===> Embeding Fluentbit (optional)"
+    echo "===> Embeding Fluentbit"
     $fbArch = "win64"
     if($arch -eq "386") {
         $fbArch = "win32"
