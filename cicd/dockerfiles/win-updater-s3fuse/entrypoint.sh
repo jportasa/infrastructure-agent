@@ -55,7 +55,7 @@ for arch_windows in "${ARCH_WINDOWS[@]}"; do
   wget --quiet https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/${package_name}
 
   echo "===> Uploading ${package_name} to S3 in ${BASE_PATH}/windows/${arch_windows}"
-  cp ${package_name} ${LOCAL_REPO_PATH}
+  cp ${package_name} ${LOCAL_REPO_PATH}/
 done
 
 
