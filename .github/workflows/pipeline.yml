@@ -74,10 +74,10 @@ jobs:
       - name: Download binaries from gh artifacts cache
         uses: actions/download-artifact@v2
         with:
-          name: binary-for-tests
-          path: .
-      - name: Show binaries in current node
-        run: ls -lr
+          name: binary-for-harvest
+          path: binaries
+      - name: Run harvest bin in current node
+        run: binaries/harvest-binary
 
 
 
