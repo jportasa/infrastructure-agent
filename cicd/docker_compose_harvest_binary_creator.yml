@@ -4,7 +4,7 @@ services:
 
   release:
     build:
-      context: dockerfiles/goreleaser-harvest-tests/
+      context: dockerfiles/harvest-binary-creator/
       dockerfile: Dockerfile
     volumes:
       - ${GITHUB_WORKSPACE}:/go/src/github.com/${REPO_FULL_NAME}/
