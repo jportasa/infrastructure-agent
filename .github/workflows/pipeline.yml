@@ -67,7 +67,7 @@ jobs:
   harvest-tests-ubuntu18:
     name: Harvest tests in Ubuntu18
     if: github.event.action == 'released'
-    needs: [goreleaser-create-binaries-harvest-tests]
+    needs: [create-binaries-harvest-tests]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
