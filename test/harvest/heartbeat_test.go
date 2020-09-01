@@ -11,14 +11,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/newrelic/infrastructure-agent/pkg/metrics"
-	metrics_sender "github.com/newrelic/infrastructure-agent/pkg/metrics/sender"
+	"github.com/jportasa/infrastructure-agent/pkg/metrics"
+	metrics_sender "github.com/jportasa/infrastructure-agent/pkg/metrics/sender"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/newrelic/infrastructure-agent/pkg/config"
-	"github.com/newrelic/infrastructure-agent/test/infra"
-	ihttp "github.com/newrelic/infrastructure-agent/test/infra/http"
+	"github.com/jportasa/infrastructure-agent/pkg/config"
+	"github.com/jportasa/infrastructure-agent/test/infra"
+	ihttp "github.com/jportasa/infrastructure-agent/test/infra/http"
 )
 
 func TestHeartBeatSampler(t *testing.T) {

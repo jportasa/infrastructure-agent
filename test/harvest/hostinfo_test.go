@@ -18,8 +18,8 @@ import (
 	"github.com/jportasa/infrastructure-agent/internal/agent/mocks"
 	pluginsLinux "github.com/jportasa/infrastructure-agent/internal/plugins/linux"
 	"github.com/jportasa/infrastructure-agent/internal/testhelpers"
-	"github.com/newrelic/infrastructure-agent/pkg/config"
-	"github.com/newrelic/infrastructure-agent/pkg/plugins/ids"
+	"github.com/jportasa/infrastructure-agent/pkg/config"
+	"github.com/jportasa/infrastructure-agent/pkg/plugins/ids"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
