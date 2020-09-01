@@ -75,14 +75,12 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: harvest-bin
-          path: binaries
       - name: Run harvest bin in current node
         run: |
-          ls -la
-          ls -la binaries
-          chmod a+x binaries/harvest-bin
-          ls -la binaries
-          binaries/harvest-bin
+          ls -la .
+          chmod a+x harvest-bin
+          ls -la .
+          ./harvest-bin
 
 
 
