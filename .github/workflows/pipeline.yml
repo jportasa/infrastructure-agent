@@ -78,8 +78,10 @@ jobs:
       - name: Run harvest bin in current node
         run: |
           ls -la .
-          chmod a+x harvest-bin
+          echo "chmod a+x ./harvest-bin"
+          chmod a+x ./harvest-bin
           ls -la .
+          echo "./harvest-bin"
           ./harvest-bin
 
 
