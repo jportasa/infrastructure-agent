@@ -77,7 +77,7 @@ jobs:
           name: binary-for-harvest
           path: binaries
       - name: Run harvest bin in current node
-        run: binaries/harvest-binary
+        run: ls -la .; ls -la binaries; binaries/harvest-binary
 
 
 
