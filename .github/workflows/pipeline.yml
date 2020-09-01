@@ -56,7 +56,8 @@ jobs:
           PROJECTNAME: $REPO_NAME
           GOPATH: '/go'
         run: |
-          GOOS=linux; GOARCH=amd64; go test ./test/harvest -tags="harvest" -v -c -o harvest-bin
+          cd cicd
+          docker-compose --file docker_compose_harvest_binary_creator.yml up -d
           ls -la
           ./harvest-bin
       - name: Push binary to GH workflow artifacts cache
