@@ -9,8 +9,8 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/jportasa/infrastructure-agent/pkg/metrics/storage"
-	"github.com/jportasa/infrastructure-agent/pkg/sample"
+	"github.com/newrelic/infrastructure-agent/pkg/metrics/storage"
+	"github.com/newrelic/infrastructure-agent/pkg/sample"
 	"github.com/shirou/gopsutil/disk"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

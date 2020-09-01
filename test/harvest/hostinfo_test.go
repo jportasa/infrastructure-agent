@@ -12,14 +12,14 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/jportasa/infrastructure-agent/pkg/sysinfo/cloud"
+	"github.com/newrelic/infrastructure-agent/pkg/sysinfo/cloud"
 
-	"github.com/jportasa/infrastructure-agent/internal/agent"
-	"github.com/jportasa/infrastructure-agent/internal/agent/mocks"
-	pluginsLinux "github.com/jportasa/infrastructure-agent/internal/plugins/linux"
-	"github.com/jportasa/infrastructure-agent/internal/testhelpers"
-	"github.com/jportasa/infrastructure-agent/pkg/config"
-	"github.com/jportasa/infrastructure-agent/pkg/plugins/ids"
+	"github.com/newrelic/infrastructure-agent/internal/agent"
+	"github.com/newrelic/infrastructure-agent/internal/agent/mocks"
+	pluginsLinux "github.com/newrelic/infrastructure-agent/internal/plugins/linux"
+	"github.com/newrelic/infrastructure-agent/internal/testhelpers"
+	"github.com/newrelic/infrastructure-agent/pkg/config"
+	"github.com/newrelic/infrastructure-agent/pkg/plugins/ids"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )

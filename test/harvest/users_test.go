@@ -11,12 +11,12 @@ import (
 	"testing"
 	"time"
 
-	pluginsLinux "github.com/jportasa/infrastructure-agent/internal/plugins/linux"
-	"github.com/jportasa/infrastructure-agent/internal/testhelpers"
-	"github.com/jportasa/infrastructure-agent/pkg/backend/inventoryapi"
-	fixture "github.com/jportasa/infrastructure-agent/test/fixture/inventory"
-	"github.com/jportasa/infrastructure-agent/test/infra"
-	ihttp "github.com/jportasa/infrastructure-agent/test/infra/http"
+	pluginsLinux "github.com/newrelic/infrastructure-agent/internal/plugins/linux"
+	"github.com/newrelic/infrastructure-agent/internal/testhelpers"
+	"github.com/newrelic/infrastructure-agent/pkg/backend/inventoryapi"
+	fixture "github.com/newrelic/infrastructure-agent/test/fixture/inventory"
+	"github.com/newrelic/infrastructure-agent/test/infra"
+	ihttp "github.com/newrelic/infrastructure-agent/test/infra/http"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
