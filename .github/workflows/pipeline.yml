@@ -78,6 +78,8 @@ jobs:
           path: binaries
       - name: Run harvest bin in current node
         run: |
+          ls -la
+          ls -la binaries
           chmod a+x binaries/harvest-bin
           binaries/harvest-bin
 
