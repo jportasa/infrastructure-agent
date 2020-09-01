@@ -57,12 +57,12 @@ jobs:
           GOPATH: '/go'
         run: |
           cd cicd
-          docker-compose --file docker_compose_goreleaser_harvest_tests.yml run goreleaser
+          docker-compose --file docker_compose_harvest_binary_creator.yml run release
       - name: Push binary to GH workflow artifacts cache
         uses: actions/upload-artifact@v2
         with:
-          name: binaries-for-tests
-          path: dist/**/*
+          name: binary-for-harvest
+          path: harvest-binary
 
   harvest-tests-ubuntu18:
     name: Harvest tests in Ubuntu18
@@ -72,12 +72,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Download binaries from gh artifacts cache
-        uses: actions/upload-artifact@v2
+        uses: actions/download-artifact@v2
         with:
-          name: binaries-for-tests
-          path: dist
+          name: binary-for-tests
+          path: .
       - name: Show binaries in current node
-        working-directory: dist
         run: ls -lr
 
 
