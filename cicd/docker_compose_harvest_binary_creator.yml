@@ -10,7 +10,6 @@ services:
       - ${GITHUB_WORKSPACE}:/go/src/github.com/${REPO_FULL_NAME}/
     working_dir: /go/src/github.com/${REPO_FULL_NAME}
     environment:
-      - REPO_NAME=$REPO_NAME
       - REPO_FULL_NAME=$REPO_FULL_NAME
 
 
