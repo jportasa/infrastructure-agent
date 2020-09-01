@@ -11,10 +11,10 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/newrelic/infrastructure-agent/internal/agent/mocks"
-	"github.com/newrelic/infrastructure-agent/internal/testhelpers"
-	"github.com/newrelic/infrastructure-agent/pkg/config"
-	"github.com/newrelic/infrastructure-agent/pkg/metrics/network"
+	"github.com/jportasa/infrastructure-agent/internal/agent/mocks"
+	"github.com/jportasa/infrastructure-agent/internal/testhelpers"
+	"github.com/jportasa/infrastructure-agent/pkg/config"
+	"github.com/jportasa/infrastructure-agent/pkg/metrics/network"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

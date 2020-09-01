@@ -6,10 +6,10 @@
 package harvest
 
 import (
-	"github.com/newrelic/infrastructure-agent/internal/agent/mocks"
-	"github.com/newrelic/infrastructure-agent/pkg/config"
-	"github.com/newrelic/infrastructure-agent/pkg/metrics/storage"
-	"github.com/newrelic/infrastructure-agent/pkg/sample"
+	"github.com/jportasa/infrastructure-agent/internal/agent/mocks"
+	"github.com/jportasa/infrastructure-agent/pkg/config"
+	"github.com/jportasa/infrastructure-agent/pkg/metrics/storage"
+	"github.com/jportasa/infrastructure-agent/pkg/sample"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"

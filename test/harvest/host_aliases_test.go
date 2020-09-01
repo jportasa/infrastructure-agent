@@ -9,14 +9,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/newrelic/infrastructure-agent/pkg/sysinfo/cloud"
+	"github.com/jportasa/infrastructure-agent/pkg/sysinfo/cloud"
 
-	"github.com/newrelic/infrastructure-agent/pkg/backend/inventoryapi"
-	"github.com/newrelic/infrastructure-agent/pkg/config"
-	"github.com/newrelic/infrastructure-agent/pkg/plugins"
-	fixture "github.com/newrelic/infrastructure-agent/test/fixture/inventory"
-	"github.com/newrelic/infrastructure-agent/test/infra"
-	ihttp "github.com/newrelic/infrastructure-agent/test/infra/http"
+	"github.com/jportasa/infrastructure-agent/pkg/backend/inventoryapi"
+	"github.com/jportasa/infrastructure-agent/pkg/config"
+	"github.com/jportasa/infrastructure-agent/pkg/plugins"
+	fixture "github.com/jportasa/infrastructure-agent/test/fixture/inventory"
+	"github.com/jportasa/infrastructure-agent/test/infra"
+	ihttp "github.com/jportasa/infrastructure-agent/test/infra/http"
 	"github.com/stretchr/testify/assert"
 )
 
