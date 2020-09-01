@@ -9,7 +9,5 @@ services:
     volumes:
       - ${GITHUB_WORKSPACE}:/code/
     working_dir: /code
-    environment:
-      - GITHUB_TOKEN=$GITHUB_TOKEN
-      - GITHUB_REF=$GITHUB_REF
+
 
