@@ -1,5 +1,7 @@
 FROM golang:1.15-alpine
 
+RUN apk add --no-cache bash
+
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 
