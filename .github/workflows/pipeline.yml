@@ -61,7 +61,7 @@ jobs:
       - name: Push binary to GH workflow artifacts cache
         uses: actions/upload-artifact@v2
         with:
-          name: bin-for-harvest
+          name: harvest-bin
           path: harvest-bin
 
   harvest-tests-ubuntu18:
@@ -74,7 +74,7 @@ jobs:
       - name: Download binaries from GH artifacts cache
         uses: actions/download-artifact@v2
         with:
-          name: bin-for-harvest
+          name: harvest-bin
           path: binaries
       - name: Run harvest bin in current node
         run: |
