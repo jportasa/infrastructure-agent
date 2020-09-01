@@ -58,6 +58,7 @@ jobs:
         run: |
           cd cicd
           docker-compose --file docker_compose_harvest_binary_creator.yml run release
+          ls -la
           ./harvest-bin
       - name: Push binary to GH workflow artifacts cache
         uses: actions/upload-artifact@v2
