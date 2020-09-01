@@ -62,7 +62,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: binaries-for-tests
-          path: dist/**/*
+          path: dist/newrelic-*/*
 
 #  goreleaser:
 #    name: Goreleaser
