@@ -81,6 +81,7 @@ jobs:
           ls -la
           ls -la binaries
           chmod a+x binaries/harvest-bin
+          ls -la binaries
           binaries/harvest-bin
 
 
