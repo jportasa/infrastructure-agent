@@ -46,7 +46,7 @@ env:
 jobs:
 
   goreleaser-create-binaries-harvest-tests:
-    name: Goreleaser to create bin for harvest tests
+    name:  Create bin for harvest tests
     if: github.event.action == 'released'
     runs-on: ubuntu-latest
     steps:
