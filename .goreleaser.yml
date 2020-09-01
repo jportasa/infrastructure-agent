@@ -3,7 +3,7 @@ before:
     # You may remove this if you don't use go modules.
     #- go mod download
     # you may remove this if you don't need go generate
-    #- go generate ./...
+    - go generate ./...
     #- make validate
 #
 #
