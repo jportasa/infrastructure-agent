@@ -1,4 +1,4 @@
-module github.com/newrelic/infrastructure-agent
+module github.com/jportasa/infrastructure-agent
 
 go 1.14
 
