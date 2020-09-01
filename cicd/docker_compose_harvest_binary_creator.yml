@@ -7,7 +7,7 @@ services:
       context: dockerfiles/harvest-binary-creator/
       dockerfile: Dockerfile
     volumes:
-      - ${GITHUB_WORKSPACE}:/code/
-    working_dir: /code
+      - ${GITHUB_WORKSPACE}:/src/
+    working_dir: /src
 
 
