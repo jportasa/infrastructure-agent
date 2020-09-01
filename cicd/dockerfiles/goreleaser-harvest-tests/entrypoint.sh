@@ -14,5 +14,5 @@ gpg --list-keys
 
 TAG='0.0.0'
 
-echo "===> Run Goreleaser";
+echo "===> Run Goreleaser and put binaries in /dist";
 goreleaser release --config=.goreleaser_harvest_tests.yml --rm-dist --snapshot
