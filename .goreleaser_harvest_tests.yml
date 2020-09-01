@@ -18,6 +18,28 @@ builds:
     - -s -w -X main.integrationVersion={{.Version}}
     goarch:
     - amd64
+  - id: linux-newrelic-infra-ctl
+    main: ./cmd/newrelic-infra-ctl
+    binary: newrelic-infra-ctl
+    env:
+    - CGO_ENABLED=0
+    goos:
+    - linux
+    ldflags:
+    - -s -w -X main.integrationVersion={{.Version}}
+    goarch:
+    - amd64
+  - id: linux-newrelic-infra-service
+    main: ./cmd/newrelic-infra-service
+    binary: newrelic-infra-service
+    env:
+    - CGO_ENABLED=0
+    goos:
+    - linux
+    ldflags:
+    - -s -w -X main.integrationVersion={{.Version}}
+    goarch:
+    - amd64
 
 archives:
   - id: linux-tarball-infrastructure-agent
