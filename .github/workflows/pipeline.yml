@@ -167,19 +167,19 @@ jobs:
 #        run: |
 #          ./harvest-bin
 
-#  proxy-tests:
-#    name: Proxy tests
-#    if: github.event_name == 'push'
-#    runs-on: ubuntu-18.04
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Start environment
-#        run: |
-#          docker-compose -f test/proxy/docker-compose.yml up --build
-#      - name: Run Proxy tests
-#        run: |
-#          go test --tags=proxytests ./test/proxy/
-#          docker-compose -f test/proxy/docker-compose.yml down
+  proxy-tests:
+    name: Proxy tests
+    if: github.event_name == 'push'
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Start environment
+        run: |
+          docker-compose -f test/proxy/docker-compose.yml up -d --build
+      - name: Run Proxy tests
+        run: |
+          go test --tags=proxytests ./test/proxy/
+          docker-compose -f test/proxy/docker-compose.yml down
 
 #  goreleaser:
 #    name: Goreleaser
