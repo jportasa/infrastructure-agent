@@ -64,8 +64,8 @@ jobs:
           name: harvest-bin
           path: harvest-bin
 
-  harvest-tests-ubuntus:
-    name: Harvest tests in ubuntus
+  harvest-tests-runners:
+    name: Harvest tests in runners
     if: github.event.action == 'released'
     needs: [create-bin-harvest-tests]
     runs-on: ${{ matrix.os }}
@@ -78,10 +78,12 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: harvest-bin
-      - name: Setup Ubuntu
+      - name: Setup node
         run: |
-          sudo apt install musl-dev
-          chmod a+x ./harvest-bin
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt install musl-dev
+            chmod a+x ./harvest-bin
+          fi
       - name: Run harvest bin in current runner
         run: |
           ./harvest-bin
