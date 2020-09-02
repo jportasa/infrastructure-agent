@@ -67,7 +67,7 @@ jobs:
   harvest-tests-ubuntus:
     name: Harvest tests in ubuntus
     if: github.event.action == 'released'
-    needs: [create-binaries-harvest-tests]
+    needs: [create-bin-harvest-tests]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
