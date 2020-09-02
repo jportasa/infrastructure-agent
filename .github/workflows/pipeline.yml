@@ -64,7 +64,7 @@ jobs:
           name: harvest-bin
           path: harvest-bin
 
-  harvest-tests-ubuntu-18.04:
+  harvest-tests-ubuntu-1804:
     name: Harvest tests in ubuntu-1804
     if: github.event.action == 'released'
     needs: [create-binaries-harvest-tests]
@@ -81,7 +81,7 @@ jobs:
           chmod a+x ./harvest-bin
           ./harvest-bin
 
-  harvest-tests-ubuntu-16.04:
+  harvest-tests-ubuntu-1604:
     name: Harvest tests in ubuntu-1604
     if: github.event.action == 'released'
     needs: [create-binaries-harvest-tests]
