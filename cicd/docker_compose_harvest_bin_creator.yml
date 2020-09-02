@@ -4,7 +4,7 @@ services:
 
   release:
     build:
-      context: dockerfiles/harvest-binary-creator/
+      context: dockerfiles/harvest-bin-creator/
       dockerfile: Dockerfile
     volumes:
       - ${GITHUB_WORKSPACE}:/src/

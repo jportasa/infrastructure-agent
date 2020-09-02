@@ -45,7 +45,7 @@ env:
 
 jobs:
 
-  create-binaries-harvest-tests:
+  create-bin-harvest-tests:
     name:  Create bin for harvest tests
     if: github.event.action == 'released'
     runs-on: ubuntu-latest
@@ -57,62 +57,33 @@ jobs:
           GOPATH: '/go'
         run: |
           cd cicd
-          docker-compose --file docker_compose_harvest_binary_creator.yml run release
+          docker-compose --file docker_compose_harvest_bin_creator.yml run release
       - name: Push binary to GH workflow artifacts cache
         uses: actions/upload-artifact@v2
         with:
           name: harvest-bin
           path: harvest-bin
 
-  harvest-tests-ubuntu-1804:
-    name: Harvest tests in ubuntu-1804
+  harvest-tests-ubuntus:
+    name: Harvest tests in ubuntus
     if: github.event.action == 'released'
     needs: [create-binaries-harvest-tests]
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+          os: [ubuntu-18.04, ubuntu-16.04]
     steps:
       - uses: actions/checkout@v2
       - name: Download binaries from GH artifacts cache
         uses: actions/download-artifact@v2
         with:
           name: harvest-bin
-      - name: Run harvest bin in current runner
+      - name: Setup Ubuntu
         run: |
           sudo apt install musl-dev
           chmod a+x ./harvest-bin
-          ./harvest-bin
-
-  harvest-tests-ubuntu-1604:
-    name: Harvest tests in ubuntu-1604
-    if: github.event.action == 'released'
-    needs: [create-binaries-harvest-tests]
-    runs-on: ubuntu-16.04
-    steps:
-      - uses: actions/checkout@v2
-      - name: Download binaries from GH artifacts cache
-        uses: actions/download-artifact@v2
-        with:
-          name: harvest-bin
       - name: Run harvest bin in current runner
         run: |
-          sudo apt install musl-dev
-          chmod a+x ./harvest-bin
-          ./harvest-bin
-
-  harvest-tests-windows-2019:
-    name: Harvest tests in windows-2019
-    if: github.event.action == 'released'
-    needs: [create-binaries-harvest-tests]
-    runs-on: windows-2019
-    steps:
-      - uses: actions/checkout@v2
-      - name: Download binaries from GH artifacts cache
-        uses: actions/download-artifact@v2
-        with:
-          name: harvest-bin
-      - name: Run harvest bin in current runner
-        run: |
-          sudo apt install musl-dev
-          chmod a+x ./harvest-bin
           ./harvest-bin
 
 
