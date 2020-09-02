@@ -64,11 +64,11 @@ jobs:
           name: harvest-bin
           path: harvest-bin
 
-  harvest-tests-ubuntu18:
-    name: Harvest tests in Ubuntu18
+  harvest-tests-ubuntu-18.04:
+    name: Harvest tests in ubuntu-18.04
     if: github.event.action == 'released'
     needs: [create-binaries-harvest-tests]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
       - name: Download binaries from GH artifacts cache
@@ -78,14 +78,25 @@ jobs:
       - name: Run harvest bin in current node
         run: |
           sudo apt install musl-dev
-          ls -la .
-          echo "chmod a+x ./harvest-bin"
           chmod a+x ./harvest-bin
-          ls -la .
-          echo "./harvest-bin"
           ./harvest-bin
 
-
+  harvest-tests-ubuntu-16.04:
+    name: Harvest tests in ubuntu-16.04
+    if: github.event.action == 'released'
+    needs: [create-binaries-harvest-tests]
+    runs-on: ubuntu-16.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download binaries from GH artifacts cache
+        uses: actions/download-artifact@v2
+        with:
+          name: harvest-bin
+      - name: Run harvest bin in current node
+        run: |
+          sudo apt install musl-dev
+          chmod a+x ./harvest-bin
+          ./harvest-bin
 
 
 #  goreleaser:
