@@ -45,49 +45,62 @@ env:
 
 jobs:
 
-  create-bin-harvest-tests:
-    name:  Create bin for harvest tests
-    if: github.event.action == 'released'
-    runs-on: ubuntu-latest
+#  create-bin-harvest-tests:
+#    name:  Create bin for harvest tests
+#    if: github.event_name == 'push'
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Create binaries
+#        env:
+#          PROJECTNAME: $REPO_NAME
+#          GOPATH: '/go'
+#        run: |
+#          cd cicd
+#          docker-compose --file docker_compose_harvest_bin_creator.yml run release
+#      - name: Push binary to GH workflow artifacts cache
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: harvest-bin
+#          path: harvest-bin
+#
+#  harvest-tests-runners:
+#    name: Harvest tests in runners
+#    if: github.event_name == 'push'
+#    needs: [create-bin-harvest-tests]
+#    runs-on: ${{ matrix.os }}
+#    strategy:
+#      matrix:
+#          os: [ubuntu-18.04, ubuntu-16.04]
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Download binaries from GH artifacts cache
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: harvest-bin
+#      - name: Setup node
+#        run: |
+#          if [ "$RUNNER_OS" == "Linux" ]; then # if matrix.os == 'ubuntu-latest'
+#            sudo apt install musl-dev
+#            chmod a+x ./harvest-bin
+#          fi
+#      - name: Run harvest bin in current runner
+#        run: |
+#          ./harvest-bin
+
+  proxy-tests:
+    name: Proxy tests
+    if: github.event_name == 'push'
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
-      - name: Create binaries
-        env:
-          PROJECTNAME: $REPO_NAME
-          GOPATH: '/go'
+      - name: Start environment
         run: |
-          cd cicd
-          docker-compose --file docker_compose_harvest_bin_creator.yml run release
-      - name: Push binary to GH workflow artifacts cache
-        uses: actions/upload-artifact@v2
-        with:
-          name: harvest-bin
-          path: harvest-bin
-
-  harvest-tests-runners:
-    name: Harvest tests in runners
-    if: github.event.action == 'released'
-    needs: [create-bin-harvest-tests]
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-          os: [ubuntu-18.04, ubuntu-16.04]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Download binaries from GH artifacts cache
-        uses: actions/download-artifact@v2
-        with:
-          name: harvest-bin
-      - name: Setup node
+          docker-compose -f test/proxy/docker-compose.yml up --build
+      - name: Run Proxy tests
         run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            sudo apt install musl-dev
-            chmod a+x ./harvest-bin
-          fi
-      - name: Run harvest bin in current runner
-        run: |
-          ./harvest-bin
-
+          go test --tags=proxytests ./test/proxy/
+          docker-compose -f test/proxy/docker-compose.yml down
 
 #  goreleaser:
 #    name: Goreleaser
@@ -274,7 +287,7 @@ jobs:
 #    runs-on: ubuntu-latest
 #    steps:
 #    - uses: actions/checkout@v2
-#    - name: Create image creation and push
+#    - name: Create image and push to DockerHub
 #      run: |
 #        cd cicd
 #        docker-compose --file docker_compose_docker_image_creator.yml run release
