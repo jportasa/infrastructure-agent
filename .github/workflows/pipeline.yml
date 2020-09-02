@@ -77,7 +77,7 @@ jobs:
           name: harvest-bin
       - name: Run harvest bin in current node
         run: |
-          apt install musl-dev
+          sudo apt install musl-dev
           ls -la .
           echo "chmod a+x ./harvest-bin"
           chmod a+x ./harvest-bin
