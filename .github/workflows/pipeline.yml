@@ -46,65 +46,51 @@ env:
 jobs:
 
 build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Install Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: '^1.14.4'
-
-      - name: Running unit tests
-        run: make test-coverage
-
-      - name: Install gcov2lcov
-        working-directory: /tmp
-        run: go get -u github.com/jandelgado/gcov2lcov
-
-      - name: Convert coverage.out to lcov.info
-        run: gcov2lcov -infile=coverage.out -outfile=lcov.info
-
-      - name: Coveralls Parallel
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.github_token }}
-          path-to-lcov: lcov.info
-          flag-name: run-linux
-          parallel: true
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v2
+    - name: Install Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '^1.14.4'
+    - name: Running unit tests
+      run: make test-coverage
+    - name: Install gcov2lcov
+      working-directory: /tmp
+      run: go get -u github.com/jandelgado/gcov2lcov
+    - name: Convert coverage.out to lcov.info
+      run: gcov2lcov -infile=coverage.out -outfile=lcov.info
+    - name: Coveralls Parallel
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.github_token }}
+        path-to-lcov: lcov.info
+        flag-name: run-linux
+        parallel: true
 
   build-container:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
-
       - name: Install Go
         uses: actions/setup-go@v2
         with:
           go-version: '^1.14.4'
-
       - name: Build linux agent
         run: make clean linux/amd64
-
       - name: Build container agent
         run: make -C build/container/ build/base
 
   build-windows:
     runs-on: windows-latest
-
     steps:
       - uses: actions/checkout@v2
-
       - name: Install Go
         uses: actions/setup-go@v2
         with:
           go-version: '^1.14.4'
-
       - name: Download deps
         run: go mod vendor
-
       - name: Running unit tests
         run: .\build\win_build.ps1
 
@@ -113,20 +99,16 @@ build:
     defaults:
       run:
         working-directory: src/github.com/newrelic/infrastructure-agent
-
     steps:
       - uses: actions/checkout@v2
         with:
           path: src/github.com/newrelic/infrastructure-agent
-
       - name: Install Go
         uses: actions/setup-go@v2
         with:
           go-version: '^1.14.4'
-
       - name: Setup CentOS 5
         run: make go-get-go-1_9
-
       - name: Running unit tests
         env:
           GOPATH: "${{ github.workspace }}"
