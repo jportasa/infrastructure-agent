@@ -19,6 +19,7 @@ sed \
 
 echo "PATH=$PATH"
 echo "GOPATH=$GOPATH"
+export PATH="$PATH:/go/bin"
 go get github.com/josephspurrier/goversioninfo/cmd/goversioninfo
 echo "===> Go generate"
 go generate github.com/newrelic/infrastructure-agent/cmd/newrelic-infra/
