@@ -17,10 +17,8 @@ sed \
   -e "s/{AgentPatchVersion}/$AgentPatchVersion/g" \
   -e "s/{AgentBuildVersion}/$AgentBuildVersion/g" cmd/newrelic-infra/versioninfo.json.template > cmd/newrelic-infra/versioninfo.json
 
-echo "PATH=$PATH"
-echo "GOPATH=$GOPATH"
+echo "===> Adding metadata to exe with Goversioninfo"
 export PATH="$PATH:/go/bin"
 go get github.com/josephspurrier/goversioninfo/cmd/goversioninfo
-echo "===> Go generate"
 go generate github.com/newrelic/infrastructure-agent/cmd/newrelic-infra/
 
