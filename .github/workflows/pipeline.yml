@@ -144,7 +144,7 @@ jobs:
           path: harvest-bin
 
   harvest-tests-runners:
-    name: Harvest tests in runners
+    name: Harvest tests
     if: github.event_name == 'push'
     needs: [harvest-tests-create-bin]
     runs-on: ${{ matrix.os }}
@@ -184,7 +184,7 @@ jobs:
 
   goreleaser:
     name: Goreleaser, creates deb/rpm/exe & Push to GH
-    if: github.event.action == 'released'
+    if: github.event.pull_request.merged == true || github.event.action == 'released'
     runs-on: ubuntu-latest
     env:
       GITHUB_PUSH_RELEASE_ASSETS: false
@@ -203,9 +203,15 @@ jobs:
         run: |
           cd cicd
           docker-compose --file docker_compose_goreleaser.yml run goreleaser
+      - name: Upload Linux artifacts to Workflow Artifacts Cache
+        if: github.event.pull_request.merged
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifacts-and-binaries
+          path: dist/**/*
 
   tarballs:
-    name: Tarballs for Linux & Win creation
+    name: Tarballs for Linux/Win creation & push to GH
     if: github.event.action == 'released'
     needs: [goreleaser]
     runs-on: ubuntu-latest
@@ -224,9 +230,9 @@ jobs:
           docker-compose --file docker_compose_tarball_creator.yml run tarballcreator
 
   msi:
-    name: MSI creation
-#    if: github.event.action == 'released'
-#    needs: [goreleaser]
+    name: MSI creation & push to GH
+    if: github.event.action == 'released'
+    needs: [goreleaser]
     runs-on: windows-2019
     steps:
     - name: Check out code
@@ -241,8 +247,8 @@ jobs:
         cd cicd/scripts
         #.\msi_creation.ps1 'amd64' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
         #.\msi_creation.ps1 '386' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
-        .\msi_creation.ps1 'amd64' '1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
-        .\msi_creation.ps1 '386' '1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
+        .\msi_creation.ps1 'amd64' '1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION" # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        .\msi_creation.ps1 '386' '1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION" # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     - name: Push Win binary to GH workflow artifacts cache
       if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
       uses: actions/upload-artifact@v2
@@ -252,7 +258,7 @@ jobs:
     - name: Push msi to GH Release assets
       shell: bash
       run: |
-        TAG=v1.0.27
+        TAG=v1.0.27 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         for arch in amd64 386; do
           ls "build/package/windows/newrelic-infra-${arch}-installer/newrelic-infra/bin/Release/"
           ./cicd/scripts/upload_artifact_to_github_release.sh "build/package/windows/newrelic-infra-${arch}-installer/newrelic-infra/bin/Release" "newrelic-infra-${arch}.${TAG:1}.msi"
@@ -320,8 +326,8 @@ jobs:
 
   s3-tarball-update:
     name: S3 Tarball Linux & Windows update
-#    if: github.event.action == 'released'
-#    needs: [goreleaser]
+    if: github.event.action == 'released'
+    needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
       BASE_PATH: "/infrastructure_agent/binaries"
@@ -341,8 +347,8 @@ jobs:
 
   s3-win-update:
     name: S3 Windows .msi update
-#    if: github.event.action == 'released'
-#    needs: [goreleaser]
+    if: github.event.action == 'released'
+    needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
       BASE_PATH: "/infrastructure_agent"
@@ -361,7 +367,7 @@ jobs:
         release_lock
 
   docker-image-update:
-    name: Docker image creation and push to Registry
+    name: Docker image create & push to Registry
     if: github.event.action == 'released'
     needs: [goreleaser]
     runs-on: ubuntu-latest
