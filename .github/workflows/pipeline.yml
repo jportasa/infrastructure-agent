@@ -45,84 +45,84 @@ env:
 
 jobs:
 
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: '^1.14.4'
-      - name: Running unit tests
-        run: make test-coverage
-      - name: Install gcov2lcov
-        working-directory: /tmp
-        run: go get -u github.com/jandelgado/gcov2lcov
-      - name: Convert coverage.out to lcov.info
-        run: gcov2lcov -infile=coverage.out -outfile=lcov.info
-      - name: Coveralls Parallel
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: $GITHUB_TOKEN
-          path-to-lcov: lcov.info
-          flag-name: run-linux
-          parallel: true
-
-  build-container:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: '^1.14.4'
-      - name: Build linux agent
-        run: make clean linux/amd64
-      - name: Build container agent
-        run: make -C build/container/ build/base
-
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: '^1.14.4'
-      - name: Download deps
-        run: go mod vendor
-      - name: Running unit tests
-        run: .\build\win_build.ps1
-
-  build-centos5:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: src/github.com/newrelic/infrastructure-agent
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          path: src/github.com/newrelic/infrastructure-agent
-      - name: Install Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: '^1.14.4'
-      - name: Setup CentOS 5
-        run: make go-get-go-1_9
-      - name: Running unit tests
-        env:
-          GOPATH: "${{ github.workspace }}"
-        run: make test-centos-5
-
-  finish:
-    needs: [ build ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Coveralls Finished
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.github_token }}
-          parallel-finished: true
+#  build:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Install Go
+#        uses: actions/setup-go@v2
+#        with:
+#          go-version: '^1.14.4'
+#      - name: Running unit tests
+#        run: make test-coverage
+#      - name: Install gcov2lcov
+#        working-directory: /tmp
+#        run: go get -u github.com/jandelgado/gcov2lcov
+#      - name: Convert coverage.out to lcov.info
+#        run: gcov2lcov -infile=coverage.out -outfile=lcov.info
+#      - name: Coveralls Parallel
+#        uses: coverallsapp/github-action@master
+#        with:
+#          github-token: $GITHUB_TOKEN
+#          path-to-lcov: lcov.info
+#          flag-name: run-linux
+#          parallel: true
+#
+#  build-container:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Install Go
+#        uses: actions/setup-go@v2
+#        with:
+#          go-version: '^1.14.4'
+#      - name: Build linux agent
+#        run: make clean linux/amd64
+#      - name: Build container agent
+#        run: make -C build/container/ build/base
+#
+#  build-windows:
+#    runs-on: windows-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Install Go
+#        uses: actions/setup-go@v2
+#        with:
+#          go-version: '^1.14.4'
+#      - name: Download deps
+#        run: go mod vendor
+#      - name: Running unit tests
+#        run: .\build\win_build.ps1
+#
+#  build-centos5:
+#    runs-on: ubuntu-latest
+#    defaults:
+#      run:
+#        working-directory: src/github.com/newrelic/infrastructure-agent
+#    steps:
+#      - uses: actions/checkout@v2
+#        with:
+#          path: src/github.com/newrelic/infrastructure-agent
+#      - name: Install Go
+#        uses: actions/setup-go@v2
+#        with:
+#          go-version: '^1.14.4'
+#      - name: Setup CentOS 5
+#        run: make go-get-go-1_9
+#      - name: Running unit tests
+#        env:
+#          GOPATH: "${{ github.workspace }}"
+#        run: make test-centos-5
+#
+#  finish:
+#    needs: [ build ]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Coveralls Finished
+#        uses: coverallsapp/github-action@master
+#        with:
+#          github-token: ${{ secrets.github_token }}
+#          parallel-finished: true
 
 #  create-bin-harvest-tests:
 #    name:  Create bin for harvest tests
@@ -181,46 +181,46 @@ jobs:
 #          go test --tags=proxytests ./test/proxy/
 #          docker-compose -f test/proxy/docker-compose.yml down
 
-#  goreleaser:
-#    name: Goreleaser
-#    if: github.event.action == 'released'
-#    runs-on: ubuntu-latest
-#    env:
-#      GITHUB_PUSH_RELEASE_ASSETS: false
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Unshallowify the repo clone # So GoReleaser can generate the changelog properly
-#        run: git fetch --prune --unshallow
-#      - name: Check GH event is Release or Prerelease
-#        if: github.event_name == 'release'
-#        run: echo "::set-env name=GITHUB_PUSH_RELEASE_ASSETS::true"
-#      - name: Create binaries/.deb/rpm & Push to GH Release Assets (if Release/Prerelease)
-#        env:
-#          GITHUB_REF: $GITHUB_REF
-#          PROJECTNAME: $REPO_NAME
-#          GOPATH: '/go'
-#        run: |
-#          cd cicd
-#          docker-compose --file docker_compose_goreleaser.yml run goreleaser
-#
-#  tarballs:
-#    name: Tarballs for Linux & Win creation
-#    if: github.event.action == 'released'
-#    needs: [goreleaser]
-#    runs-on: ubuntu-latest
-#    env:
-#      GITHUB_PUSH_RELEASE_ASSETS: false
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Unshallowify the repo clone # So GoReleaser can generate the changelog properly
-#        run: git fetch --prune --unshallow
-#      - name: Check GH event is Release or Prerelease
-#        if: github.event_name == 'release'
-#        run: echo "::set-env name=GITHUB_PUSH_RELEASE_ASSETS::true"
-#      - name: Create tarballs for Linux & Windows and push to GH Release Assets (if Release/Prerelease)
-#        run: |
-#          cd cicd
-#          docker-compose --file docker_compose_tarball_creator.yml run tarballcreator
+  goreleaser:
+    name: Goreleaser
+    if: github.event.action == 'released'
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PUSH_RELEASE_ASSETS: false
+    steps:
+      - uses: actions/checkout@v2
+      - name: Unshallowify the repo clone # So GoReleaser can generate the changelog properly
+        run: git fetch --prune --unshallow
+      - name: Check GH event is Release or Prerelease
+        if: github.event_name == 'release'
+        run: echo "::set-env name=GITHUB_PUSH_RELEASE_ASSETS::true"
+      - name: Create binaries/.deb/rpm & Push to GH Release Assets (if Release/Prerelease)
+        env:
+          GITHUB_REF: $GITHUB_REF
+          PROJECTNAME: $REPO_NAME
+          GOPATH: '/go'
+        run: |
+          cd cicd
+          docker-compose --file docker_compose_goreleaser.yml run goreleaser
+
+  tarballs:
+    name: Tarballs for Linux & Win creation
+    if: github.event.action == 'released'
+    needs: [goreleaser]
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PUSH_RELEASE_ASSETS: false
+    steps:
+      - uses: actions/checkout@v2
+      - name: Unshallowify the repo clone # So GoReleaser can generate the changelog properly
+        run: git fetch --prune --unshallow
+      - name: Check GH event is Release or Prerelease
+        if: github.event_name == 'release'
+        run: echo "::set-env name=GITHUB_PUSH_RELEASE_ASSETS::true"
+      - name: Create tarballs for Linux & Windows and push to GH Release Assets (if Release/Prerelease)
+        run: |
+          cd cicd
+          docker-compose --file docker_compose_tarball_creator.yml run tarballcreator
 #
 #  msi:
 #    name: MSI creation
