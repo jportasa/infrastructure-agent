@@ -6,6 +6,13 @@
 #
 VERSION=$1
 
+if [ -n "$1" ]; then
+  echo "===> Release Version is $VERSION"
+else
+  echo "===> Release Version not specified will be v0.0.0"
+  VERSION='v0.0.0'
+fi
+
 AgentMajorVersion=$(echo ${VERSION:1} | cut -d "." -f 1)
 AgentMinorVersion=$(echo ${VERSION:1} | cut -d "." -f 2)
 AgentPatchVersion=$(echo ${VERSION:1} | cut -d "." -f 3)
