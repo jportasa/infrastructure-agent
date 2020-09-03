@@ -146,7 +146,7 @@ jobs:
   harvest-tests-runners:
     name: Harvest tests in runners
     if: github.event_name == 'push'
-    needs: [create-bin-harvest-tests]
+    needs: [harvest-tests-create-bin]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
