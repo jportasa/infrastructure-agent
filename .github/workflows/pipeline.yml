@@ -194,7 +194,7 @@ jobs:
       - name: Check GH event is Release or Prerelease
         if: github.event_name == 'release'
         run: echo "::set-env name=GITHUB_PUSH_RELEASE_ASSETS::true"
-      - name: Create binaries/.deb/rpm & Push to GH Release Assets (if Release/Prerelease)
+      - name: Create binaries/.deb/rpm/exe & Push to GH Release Assets (if Release/Prerelease)
         env:
           GITHUB_REF: $GITHUB_REF
           PROJECTNAME: $REPO_NAME
