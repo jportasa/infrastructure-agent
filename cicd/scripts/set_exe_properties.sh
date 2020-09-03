@@ -13,6 +13,7 @@ else
   VERSION='v0.0.0'
 fi
 
+
 AgentMajorVersion=$(echo ${VERSION:1} | cut -d "." -f 1)
 AgentMinorVersion=$(echo ${VERSION:1} | cut -d "." -f 2)
 AgentPatchVersion=$(echo ${VERSION:1} | cut -d "." -f 3)
@@ -23,7 +24,8 @@ sed \
   -e "s/{AgentMinorVersion}/$AgentMinorVersion/g" \
   -e "s/{AgentPatchVersion}/$AgentPatchVersion/g" \
   -e "s/{AgentBuildVersion}/$AgentBuildVersion/g" cmd/newrelic-infra/versioninfo.json.template > cmd/newrelic-infra/versioninfo.json
-
+echo "===> Show json"
+cat cmd/newrelic-infra/versioninfo.json
 echo "===> Adding metadata to exe with Goversioninfo"
 export PATH="$PATH:/go/bin"
 echo "===> go get goversioninfo"
