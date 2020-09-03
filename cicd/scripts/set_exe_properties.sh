@@ -6,9 +6,9 @@
 #
 VERSION=$1
 
-AgentMajorVersion=$(echo $VERSION | cut -d "." -f 1)
-AgentMinorVersion=$(echo $VERSION | cut -d "." -f 2)
-AgentPatchVersion=$(echo $VERSION | cut -d "." -f 3)
+AgentMajorVersion=$(echo ${VERSION:1} | cut -d "." -f 1)
+AgentMinorVersion=$(echo ${VERSION:1} | cut -d "." -f 2)
+AgentPatchVersion=$(echo ${VERSION:1} | cut -d "." -f 3)
 AgentBuildVersion='0'
 
 sed \
