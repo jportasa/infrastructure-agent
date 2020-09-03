@@ -19,6 +19,8 @@ sed \
 
 echo "===> Adding metadata to exe with Goversioninfo"
 export PATH="$PATH:/go/bin"
+echo "===> go get goversioninfo"
 go get github.com/josephspurrier/goversioninfo/cmd/goversioninfo
+echo "===> go generate goversioninfo"
 go generate github.com/newrelic/infrastructure-agent/cmd/newrelic-infra/
 
