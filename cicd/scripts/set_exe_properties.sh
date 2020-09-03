@@ -4,19 +4,18 @@
 # Create the metadata for the exe file, called by .goreleser as a hook in the build section
 #
 #
-VERSION=$1
+TAG=$1
 
 if [ -n "$1" ]; then
-  echo "===> Release Version is $VERSION"
+  echo "===> Tag is $TAG"
 else
-  echo "===> Release Version not specified will be v0.0.0"
-  VERSION='v0.0.0'
+  echo "===> Tag not specified will be 0.0.0"
+  TAG='0.0.0'
 fi
 
-
-AgentMajorVersion=$(echo ${VERSION:1} | cut -d "." -f 1)
-AgentMinorVersion=$(echo ${VERSION:1} | cut -d "." -f 2)
-AgentPatchVersion=$(echo ${VERSION:1} | cut -d "." -f 3)
+AgentMajorVersion=$(echo $TAG | cut -d "." -f 1)
+AgentMinorVersion=$(echo $TAG | cut -d "." -f 2)
+AgentPatchVersion=$(echo $TAG | cut -d "." -f 3)
 AgentBuildVersion='0'
 
 sed \
