@@ -130,14 +130,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Create binaries
+      - name: Create bin
         env:
           PROJECTNAME: $REPO_NAME
           GOPATH: '/go'
         run: |
           cd cicd
           docker-compose --file docker_compose_harvest_bin_creator.yml run release
-      - name: Push binary to GH workflow artifacts cache
+      - name: Push bin to GH workflow artifacts cache
         uses: actions/upload-artifact@v2
         with:
           name: harvest-bin
@@ -150,7 +150,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-          os: [ubuntu-18.04, ubuntu-16.04]
+          os: [ubuntu-18.04]
+          #os: [ubuntu-18.04, ubuntu-16.04]
     steps:
       - uses: actions/checkout@v2
       - name: Download binaries from GH artifacts cache
@@ -182,7 +183,7 @@ jobs:
           docker-compose -f test/proxy/docker-compose.yml down
 
   goreleaser:
-    name: Goreleaser
+    name: Goreleaser, creates deb/rpm/exe & Push to GH
     if: github.event.action == 'released'
     runs-on: ubuntu-latest
     env:
@@ -221,152 +222,152 @@ jobs:
         run: |
           cd cicd
           docker-compose --file docker_compose_tarball_creator.yml run tarballcreator
-#
-#  msi:
-#    name: MSI creation
-##    if: github.event.action == 'released'
-##    needs: [goreleaser]
-#    runs-on: windows-2019
-#    steps:
-#    - name: Check out code
-#      uses: actions/checkout@v2
-#    - name: Get PFX certificate from GH secrets
-#      shell: bash
-#      run: |
-#        printf "%s" "$PFX_CERTIFICATE_BASE64" | base64 -d - > ./mycert.pfx
-#    - name: Import certif. + embed external + sign + create msi
-#      shell: pwsh
-#      run: |
-#        cd cicd/scripts
-#        #.\msi_creation.ps1 'amd64' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
-#        #.\msi_creation.ps1 '386' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
-#        .\msi_creation.ps1 'amd64' '1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
-#        .\msi_creation.ps1 '386' '1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
-#    - name: Push Win binary to GH workflow artifacts cache
-#      if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
-#      uses: actions/upload-artifact@v2
-#      with:
-#        name: Windows-msi-artifact
-#        path: build\package\windows\**\newrelic-infra/bin/Release/*
-#    - name: Push msi to GH Release assets
-#      shell: bash
-#      run: |
-#        TAG=v1.0.27
-#        for arch in amd64 386; do
-#          ls "build/package/windows/newrelic-infra-${arch}-installer/newrelic-infra/bin/Release/"
-#          ./cicd/scripts/upload_artifact_to_github_release.sh "build/package/windows/newrelic-infra-${arch}-installer/newrelic-infra/bin/Release" "newrelic-infra-${arch}.${TAG:1}.msi"
-#        done
 
-#  s3-apt-update:
-#    name: S3 repo APT update
+  msi:
+    name: MSI creation
 #    if: github.event.action == 'released'
 #    needs: [goreleaser]
-#    runs-on: ubuntu-latest
-#    env:
-#      BASE_PATH: "infrastructure_agent/linux/apt"
-#      LOCK_REPO_TYPE: 'apt' # yum | apt | zypp | win
-#    steps:
-#    - uses: actions/checkout@v2
-#    - name: Update APT repo
-#      run: |
-#        cd cicd
-#        source scripts/pipeline_functions.sh
-#        create_dynamo_table
-#        wait_free_lock
-#        lock
-#        docker-compose --file docker_compose_apt_updater.yml run release
-#        release_lock
-#
-#  s3-yum-update:
-#    name: S3 YUM update
-#    if: github.event.action == 'released'
-#    needs: [goreleaser]
-#    runs-on: ubuntu-latest
-#    env:
-#      BASE_PATH: "/infrastructure_agent/linux/yum/el"
-#      LOCK_REPO_TYPE: 'yum'
-#    steps:
-#    - uses: actions/checkout@v2
-#    - name: Upload & update YUM repo
-#      run: |
-#        cd cicd
-#        source scripts/pipeline_functions.sh # import functions
-#        create_dynamo_table
-#        wait_free_lock
-#        lock
-#        docker-compose --file docker_compose_yum_updater.yml run release
-#        release_lock
-#
-#  s3-zypp-update:
-#    name: S3 ZYPP update
-#    if: github.event.action == 'released'
-#    needs: [goreleaser]
-#    runs-on: ubuntu-latest
-#    env:
-#      BASE_PATH: "/infrastructure_agent/linux/zypp/sles"
-#      LOCK_REPO_TYPE: 'zypp'
-#    steps:
-#    - uses: actions/checkout@v2
-#    - name: Upload & update ZYPP repo
-#      run: |
-#        cd cicd
-#        source scripts/pipeline_functions.sh # import functions
-#        create_dynamo_table
-#        wait_free_lock
-#        lock
-#        docker-compose --file docker_compose_zypp_updater.yml run release
-#        release_lock
-#
-#  s3-tarball-update:
-#    name: S3 Tarball Linux & Windows update
-##    if: github.event.action == 'released'
-##    needs: [goreleaser]
-#    runs-on: ubuntu-latest
-#    env:
-#      BASE_PATH: "/infrastructure_agent/binaries"
-#      LOCK_REPO_TYPE: 'tarball'
-#    steps:
-#    - uses: actions/checkout@v2
-#    - name: Upload tarballs
-#      run: |
-#        TAG=v1.0.27
-#        cd cicd
-#        source scripts/pipeline_functions.sh # import functions
-#        create_dynamo_table
-#        wait_free_lock
-#        lock
-#        docker-compose --file docker_compose_tarball_updater.yml run release
-#        release_lock
-#
-#  s3-win-update:
-#    name: S3 Windows .msi update
-##    if: github.event.action == 'released'
-##    needs: [goreleaser]
-#    runs-on: ubuntu-latest
-#    env:
-#      BASE_PATH: "/infrastructure_agent"
-#      LOCK_REPO_TYPE: 'win'
-#    steps:
-#    - uses: actions/checkout@v2
-#    - name: Upload .msi's
-#      run: |
-#        TAG=v1.0.27
-#        cd cicd
-#        source scripts/pipeline_functions.sh # import functions
-#        create_dynamo_table
-#        wait_free_lock
-#        lock
-#        docker-compose --file docker_compose_win_updater.yml run release
-#        release_lock
+    runs-on: windows-2019
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Get PFX certificate from GH secrets
+      shell: bash
+      run: |
+        printf "%s" "$PFX_CERTIFICATE_BASE64" | base64 -d - > ./mycert.pfx
+    - name: Import certif. + embed external + sign + create msi
+      shell: pwsh
+      run: |
+        cd cicd/scripts
+        #.\msi_creation.ps1 'amd64' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
+        #.\msi_creation.ps1 '386' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
+        .\msi_creation.ps1 'amd64' '1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
+        .\msi_creation.ps1 '386' '1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
+    - name: Push Win binary to GH workflow artifacts cache
+      if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+      uses: actions/upload-artifact@v2
+      with:
+        name: Windows-msi-artifact
+        path: build\package\windows\**\newrelic-infra/bin/Release/*
+    - name: Push msi to GH Release assets
+      shell: bash
+      run: |
+        TAG=v1.0.27
+        for arch in amd64 386; do
+          ls "build/package/windows/newrelic-infra-${arch}-installer/newrelic-infra/bin/Release/"
+          ./cicd/scripts/upload_artifact_to_github_release.sh "build/package/windows/newrelic-infra-${arch}-installer/newrelic-infra/bin/Release" "newrelic-infra-${arch}.${TAG:1}.msi"
+        done
 
-#  docker-image-update:
-#    name: Docker image creation and push to Registry
+  s3-apt-update:
+    name: S3 repo APT update
+    if: github.event.action == 'released'
+    needs: [goreleaser]
+    runs-on: ubuntu-latest
+    env:
+      BASE_PATH: "infrastructure_agent/linux/apt"
+      LOCK_REPO_TYPE: 'apt' # yum | apt | zypp | win
+    steps:
+    - uses: actions/checkout@v2
+    - name: Update APT repo
+      run: |
+        cd cicd
+        source scripts/pipeline_functions.sh
+        create_dynamo_table
+        wait_free_lock
+        lock
+        docker-compose --file docker_compose_apt_updater.yml run release
+        release_lock
+
+  s3-yum-update:
+    name: S3 YUM update
+    if: github.event.action == 'released'
+    needs: [goreleaser]
+    runs-on: ubuntu-latest
+    env:
+      BASE_PATH: "/infrastructure_agent/linux/yum/el"
+      LOCK_REPO_TYPE: 'yum'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Upload & update YUM repo
+      run: |
+        cd cicd
+        source scripts/pipeline_functions.sh # import functions
+        create_dynamo_table
+        wait_free_lock
+        lock
+        docker-compose --file docker_compose_yum_updater.yml run release
+        release_lock
+
+  s3-zypp-update:
+    name: S3 ZYPP update
+    if: github.event.action == 'released'
+    needs: [goreleaser]
+    runs-on: ubuntu-latest
+    env:
+      BASE_PATH: "/infrastructure_agent/linux/zypp/sles"
+      LOCK_REPO_TYPE: 'zypp'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Upload & update ZYPP repo
+      run: |
+        cd cicd
+        source scripts/pipeline_functions.sh # import functions
+        create_dynamo_table
+        wait_free_lock
+        lock
+        docker-compose --file docker_compose_zypp_updater.yml run release
+        release_lock
+
+  s3-tarball-update:
+    name: S3 Tarball Linux & Windows update
 #    if: github.event.action == 'released'
 #    needs: [goreleaser]
-#    runs-on: ubuntu-latest
-#    steps:
-#    - uses: actions/checkout@v2
-#    - name: Create image and push to DockerHub
-#      run: |
-#        cd cicd
-#        docker-compose --file docker_compose_docker_image_creator.yml run release
+    runs-on: ubuntu-latest
+    env:
+      BASE_PATH: "/infrastructure_agent/binaries"
+      LOCK_REPO_TYPE: 'tarball'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Upload tarballs
+      run: |
+        TAG=v1.0.27
+        cd cicd
+        source scripts/pipeline_functions.sh # import functions
+        create_dynamo_table
+        wait_free_lock
+        lock
+        docker-compose --file docker_compose_tarball_updater.yml run release
+        release_lock
+
+  s3-win-update:
+    name: S3 Windows .msi update
+#    if: github.event.action == 'released'
+#    needs: [goreleaser]
+    runs-on: ubuntu-latest
+    env:
+      BASE_PATH: "/infrastructure_agent"
+      LOCK_REPO_TYPE: 'win'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Upload .msi's
+      run: |
+        TAG=v1.0.27
+        cd cicd
+        source scripts/pipeline_functions.sh # import functions
+        create_dynamo_table
+        wait_free_lock
+        lock
+        docker-compose --file docker_compose_win_updater.yml run release
+        release_lock
+
+  docker-image-update:
+    name: Docker image creation and push to Registry
+    if: github.event.action == 'released'
+    needs: [goreleaser]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Create image and push to DockerHub
+      run: |
+        cd cicd
+        docker-compose --file docker_compose_docker_image_creator.yml run release
