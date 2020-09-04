@@ -213,7 +213,7 @@
 #
 #  tarballs:
 #    name: Tarballs for Linux/Win creation & push to GH
-#    if: github.event.name == 'release' && github.event.action == 'prereleased'
+#    if: github.event.action == 'prereleased'
 #    needs: [goreleaser]
 #    runs-on: ubuntu-latest
 #    env:
