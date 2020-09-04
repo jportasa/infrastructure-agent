@@ -246,8 +246,8 @@ jobs:
       shell: pwsh
       run: |
         cd cicd/scripts
-        .\msi_creation.ps1 'amd64' "$env:TAG.substring(1)" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
-        .\msi_creation.ps1 '386' "$env:TAG.substring(1)" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
+        .\msi_creation.ps1 'amd64' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
+        .\msi_creation.ps1 '386' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
         #.\msi_creation.ps1 'amd64' '1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION" # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         #.\msi_creation.ps1 '386' '1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION" # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     - name: Push Win binary to GH workflow artifacts cache
@@ -267,7 +267,7 @@ jobs:
 
   s3-apt-update:
     name: S3 repo APT update
-    if: github.event.action == 'released' && github.event.release.prerelease == false
+    if: github.event_name == 'release' && github.event.release.prerelease == false
     needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
@@ -287,7 +287,7 @@ jobs:
 
   s3-yum-update:
     name: S3 YUM update
-    if: github.event.action == 'released' && github.event.release.prerelease == false
+    if: github.event_name == 'release' && github.event.release.prerelease == false
     needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
@@ -307,7 +307,7 @@ jobs:
 
   s3-zypp-update:
     name: S3 ZYPP update
-    if: github.event.action == 'released' && github.event.release.prerelease == false
+    if: github.event_name == 'release' && github.event.release.prerelease == false
     needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
@@ -327,7 +327,7 @@ jobs:
 
   s3-tarball-update:
     name: S3 Tarball Linux & Windows update
-    if: github.event.action == 'released' && github.event.release.prerelease == false
+    if: github.event_name == 'release' && github.event.release.prerelease == false
     needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
@@ -348,7 +348,7 @@ jobs:
 
   s3-win-update:
     name: S3 Windows .msi update
-    if: github.event.action == 'released' && github.event.release.prerelease == false
+    if: github.event_name == 'release' && github.event.release.prerelease == false
     needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
@@ -369,7 +369,7 @@ jobs:
 
   docker-image-update:
     name: Docker image create & push to Registry
-    if: github.event.action == 'released' && github.event.release.prerelease == false
+    if: github.event_name == 'release' && github.event.release.prerelease == false
     needs: [goreleaser]
     runs-on: ubuntu-latest
     steps:
