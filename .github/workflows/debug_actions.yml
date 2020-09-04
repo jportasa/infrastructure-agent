@@ -1,27 +1,35 @@
-#name: Debug-pipeline-action-names
-#
-#on:
-#  push:
-#  pull_request:
-#  release:
-#    types:
-#      - prereleased
-#      - released
-#    tags:
-#      - 'v*'
-#
-#jobs:
-#  TEST:
-#    name: Test
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Information about workflow run
-#        env:
-#          GITHUB_CONTEXT: ${{ toJson(github) }}
-#        run: |
-#          echo "******************************************"
-#          echo "Event name: ${{ github.event_name }}"
-#          echo "Action type: ${{ github.event.action}}"
-#          echo "******************************************"
-#          echo "$GITHUB_CONTEXT"
-#          echo "******************************************"
+name: Debug-pipeline-action-names
+
+on:
+  push:
+  pull_request:
+  release:
+    types:
+      - prereleased
+      - released
+    tags:
+      - 'v*'
+
+jobs:
+  TEST:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Information about workflow run
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "******************************************"
+          echo "Event name: ${{ github.event_name }}"
+          echo "Action type: ${{ github.event.action}}"
+          echo "******************************************"
+          echo "$GITHUB_CONTEXT"
+          echo "******************************************"
+
+      - name: Check if prereleased
+        if: github.event.action == 'prereleased'
+        run: echo "===> IS a PRERELEASE"
+
+      - name: Check if released
+        if: github.event.action == 'released'
+        run: echo "===> IS a RELEASE"
