@@ -1,5 +1,11 @@
 name: Pipeline
 
+on:
+  push:
+  pull_request:
+  release:
+
+
 jobs:
   TEST:
     name: Test
