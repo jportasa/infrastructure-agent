@@ -232,7 +232,7 @@ jobs:
 
   msi:
     name: MSI creation & push to GH
-    if: github.event.name == 'release' && github.event.action == 'prereleased'
+    if: github.event.action == 'prereleased'
     needs: [goreleaser]
     runs-on: windows-2019
     steps:
@@ -264,7 +264,7 @@ jobs:
 
   s3-apt-update:
     name: S3 repo APT update
-    if: github.event.name == 'release' && github.event.action == 'released'
+    if: github.event.action == 'released'
     needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
@@ -284,7 +284,7 @@ jobs:
 
   s3-yum-update:
     name: S3 YUM update
-    if: github.event.name == 'release' && github.event.action == 'released'
+    if: github.event.action == 'released'
     needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
@@ -304,7 +304,7 @@ jobs:
 
   s3-zypp-update:
     name: S3 ZYPP update
-    if: github.event.name == 'release' && github.event.action == 'released'
+    if: github.event.action == 'released'
     needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
@@ -324,7 +324,7 @@ jobs:
 
   s3-tarball-update:
     name: S3 Tarball Linux & Windows update
-    if: github.event.name == 'release' && github.event.action == 'released'
+    if: github.event.action == 'released'
     needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
@@ -344,7 +344,7 @@ jobs:
 
   s3-win-update:
     name: S3 Windows .msi update
-    if: github.event.name == 'release' && github.event.action == 'released'
+    if: github.event.action == 'released'
     needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
@@ -364,7 +364,7 @@ jobs:
 
   docker-image-update:
     name: Docker image create & push to Registry
-    if: github.event.name == 'release' && github.event.action == 'released'
+    if: github.event.action == 'released'
     needs: [goreleaser]
     runs-on: ubuntu-latest
     steps:
