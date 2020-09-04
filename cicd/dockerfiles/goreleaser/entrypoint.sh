@@ -24,7 +24,7 @@ download_urls=$(curl --header "authorization: Bearer $GITHUB_TOKEN" --url https:
 echo "===> Strip from TAG v character"
 TAG=`echo ${TAG:1}`
 
-if $GITHUB_PUSH_RELEASE_ASSETS; then
+if $GITHUB_PUSH_PRERELEASE_ASSETS; then
   if [ $download_urls == 'empty' ]; then
     echo "===> No GH Release Assets, so I run Goreleaser and push to GH release assets";
     goreleaser release --config=.goreleaser.yml --rm-dist
