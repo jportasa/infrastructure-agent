@@ -6,9 +6,10 @@ set -e
 # Create infrastructure-agent docker image and push it to Registry
 #
 #
-if ( $PRERELEASE ); then
+if [ $GHACTION == 'prereleased' ]; then
   export AGENT_BUILD_NUMBER=${TAG:1}-rc
-else
+fi
+if [ $GHACTION == 'released' ]; then
   export AGENT_BUILD_NUMBER=${TAG:1}
 fi
 
@@ -22,10 +23,11 @@ cd /${REPO_FULL_NAME}/build/container
 make build/base
 
 docker login --username ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD}
-if ( $PRERELEASE ); then
+if [ $GHACTION == 'prereleased' ]; then
   echo "===> Push release candidate image to dockerhub registry"
   docker push $DOCKERHUB_NAMESPACE/infrastructure:${TAG:1}-rc
-else
+fi
+if [ $GHACTION == 'released' ]; then
   echo "===> Push release image to dockerhub registry"
   docker push $DOCKERHUB_NAMESPACE/infrastructure:latest
   docker push $DOCKERHUB_NAMESPACE/infrastructure:${TAG:1}

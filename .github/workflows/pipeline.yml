@@ -262,6 +262,20 @@ jobs:
           ./cicd/scripts/upload_artifact_to_github_release.sh "build/package/windows/newrelic-infra-${arch}-installer/newrelic-infra/bin/Release" "newrelic-infra-${arch}.${TAG:1}.msi"
         done
 
+  docker-image-update-rc:
+    name: Docker image create & push to Registry
+    if: github.event.action == 'prereleased'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Create image and push to DockerHub
+      env:
+        GHACTION: 'prereleased'
+      run: |
+        cd cicd
+        docker-compose --file docker_compose_docker_image_creator.yml run release
+
+
   s3-apt-update:
     name: S3 repo APT update
     if: github.event.action == 'released'
@@ -365,7 +379,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Create image and push to DockerHub
       env:
-        PRERELEASE: ${{ github.event.release.prerelease }}
+        GHACTION: 'released'
       run: |
         cd cicd
         docker-compose --file docker_compose_docker_image_creator.yml run release
