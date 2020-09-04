@@ -19,6 +19,7 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_DEFAULT_REGION: 'us-east-1'
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_S3_FQDN: 'http://nr-clone.s3-website-us-east-1.amazonaws.com' # 'https://download.newrelic.com'
   AWS_S3_REPO_URL: 's3://nr-clone'
   AWS_STORAGE_BUCKET_NAME: 'nr-clone'
   DEPOT_REPO: 'https://github.com/jportasa/depot' # Script to push .deb to APT repo
@@ -268,7 +269,7 @@ jobs:
     needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
-      GITHUB_ACTION: 'prereleased'
+      PIPELINE_ACTION: 'prereleased'
     steps:
     - uses: actions/checkout@v2
     - name: Create image and push to DockerHub
@@ -297,7 +298,6 @@ jobs:
     - name: Fake trigger of canaries
       run: |
         cd cicd
-
 
   s3-apt-update:
     name: S3 repo APT update
@@ -399,7 +399,7 @@ jobs:
     if: github.event.action == 'released'
     runs-on: ubuntu-latest
     env:
-      GITHUB_ACTION: 'released'
+      PIPELINE_ACTION: 'released'
     steps:
     - uses: actions/checkout@v2
     - name: Create image and push to DockerHub
