@@ -1,0 +1,19 @@
+name: Pipeline
+
+jobs:
+  TEST:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Information about workflow run
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "******************************************"
+          echo "Event name: ${{ github.event_name }}"
+          echo "Action type: ${{ github.event.action}}"
+          echo "******************************************"
+          echo "$GITHUB_CONTEXT"
+          echo "******************************************"
+
+
