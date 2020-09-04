@@ -28,7 +28,7 @@ for codename in "${CODENAMES[@]}"; do
    echo "==> Uploading to S3 newrelic-infra_${boot}_${TAG:1}_amd64.deb to component=main and codename=${codename}"
    DEB_PACKAGE="newrelic-infra_${boot}_${TAG:1}_amd64.deb"
    POOL_PATH="pool/main/n/newrelic-infra/${DEB_PACKAGE}"
-   depot --storage=${S3_REPO_URL}/${BASE_PATH} \
+   depot --storage=${AWS_S3_REPO_URL}/${BASE_PATH} \
       --component=main \
       --codename=${codename} \
       --pool-path=${POOL_PATH} \
