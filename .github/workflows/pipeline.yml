@@ -185,7 +185,7 @@ jobs:
 
   goreleaser:
     name: Goreleaser, creates deb/rpm/exe & Push to GH
-    if: github.event.pull_request.merged == true || github.event_name == 'release'
+    if: github.event.pull_request.merged == true || github.event.release.prerelease == true
     runs-on: ubuntu-latest
     env:
       GITHUB_PUSH_PRERELEASE_ASSETS: false
@@ -248,8 +248,6 @@ jobs:
         cd cicd/scripts
         .\msi_creation.ps1 'amd64' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
         .\msi_creation.ps1 '386' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
-        #.\msi_creation.ps1 'amd64' '1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION" # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        #.\msi_creation.ps1 '386' '1.0.27' "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION" # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     - name: Push Win binary to GH workflow artifacts cache
       if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
       uses: actions/upload-artifact@v2
@@ -259,7 +257,6 @@ jobs:
     - name: Push msi to GH Release assets
       shell: bash
       run: |
-        #TAG=v1.0.27 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         for arch in amd64 386; do
           ls "build/package/windows/newrelic-infra-${arch}-installer/newrelic-infra/bin/Release/"
           ./cicd/scripts/upload_artifact_to_github_release.sh "build/package/windows/newrelic-infra-${arch}-installer/newrelic-infra/bin/Release" "newrelic-infra-${arch}.${TAG:1}.msi"
@@ -337,7 +334,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: Upload tarballs
       run: |
-        #TAG=v1.0.27 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
         cd cicd
         source scripts/pipeline_functions.sh # import functions
         create_dynamo_table
@@ -358,7 +354,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: Upload .msi's
       run: |
-        #TAG=v1.0.27 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         cd cicd
         source scripts/pipeline_functions.sh # import functions
         create_dynamo_table

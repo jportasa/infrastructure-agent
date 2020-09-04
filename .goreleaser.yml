@@ -614,10 +614,8 @@ nfpms:
     replacements:
       amd64: x86_64
 
-
-
 release:
-  prerelease: auto
+  prerelease: true
 
 signs:
   - artifacts: checksum
