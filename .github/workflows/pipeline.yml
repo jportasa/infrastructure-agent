@@ -185,7 +185,7 @@ jobs:
 
   goreleaser:
     name: Goreleaser, creates deb/rpm/exe & Push to GH
-    if: github.event.pull_request.merged == true || github.event.action == 'released'
+    if: github.event.pull_request.merged == true || github.event_name == 'release'
     runs-on: ubuntu-latest
     env:
       GITHUB_PUSH_PRERELEASE_ASSETS: false
