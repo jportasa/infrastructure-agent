@@ -267,11 +267,11 @@ jobs:
     if: github.event.action == 'prereleased'
     needs: [goreleaser]
     runs-on: ubuntu-latest
+    env:
+      GITHUB_ACTION: 'prereleased'
     steps:
     - uses: actions/checkout@v2
     - name: Create image and push to DockerHub
-      env:
-        GITHUB_ACTION: 'prereleased'
       run: |
         cd cicd
         docker-compose --file docker_compose_docker_image_creator.yml run release
@@ -385,11 +385,11 @@ jobs:
     name: Docker image create & push to Registry
     if: github.event.action == 'released'
     runs-on: ubuntu-latest
+    env:
+      GITHUB_ACTION: 'released'
     steps:
     - uses: actions/checkout@v2
     - name: Create image and push to DockerHub
-      env:
-        GITHUB_ACTION: 'released'
       run: |
         cd cicd
         docker-compose --file docker_compose_docker_image_creator.yml run release
