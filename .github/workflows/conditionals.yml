@@ -1,6 +1,6 @@
 name: Pipeline
 
-on: *
+on: [push, pull_request, release]
 
 
 jobs:
