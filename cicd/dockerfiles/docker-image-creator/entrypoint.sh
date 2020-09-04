@@ -8,7 +8,6 @@ set -e
 #
 echo "===> Init docker vars fefore build image"
 export NS=${DOCKERHUB_NAMESPACE}
-
 if [ $PIPELINE_ACTION == 'prereleased' ]; then
   export AGENT_BUILD_NUMBER=${TAG:1}-rc
 fi
