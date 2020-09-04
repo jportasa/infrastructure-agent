@@ -263,18 +263,17 @@ jobs:
         done
 
   docker-image-update-rc:
-    name: Docker image create & push to Registry
+    name: Docker image RC create & push to Registry
     if: github.event.action == 'prereleased'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Create image and push to DockerHub
       env:
-        GHACTION: 'prereleased'
+        GITHUB_ACTION: 'prereleased'
       run: |
         cd cicd
         docker-compose --file docker_compose_docker_image_creator.yml run release
-
 
   s3-apt-update:
     name: S3 repo APT update
@@ -379,7 +378,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Create image and push to DockerHub
       env:
-        GHACTION: 'released'
+        GITHUB_ACTION: 'released'
       run: |
         cd cicd
         docker-compose --file docker_compose_docker_image_creator.yml run release
