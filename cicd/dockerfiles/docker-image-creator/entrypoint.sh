@@ -6,12 +6,12 @@ set -e
 # Create infrastructure-agent docker image and push it to Registry
 #
 #
-echo "===> GITHUB_ACTION = $GITHUB_ACTION"
+echo "===> PIPELINE_ACTION = $PIPELINE_ACTION"
 
-if [ $GITHUB_ACTION == 'prereleased' ]; then
+if [ $PIPELINE_ACTION == 'prereleased' ]; then
   export AGENT_BUILD_NUMBER=${TAG:1}-rc
 fi
-if [ $GITHUB_ACTION == 'released' ]; then
+if [ $PIPELINE_ACTION == 'released' ]; then
   export AGENT_BUILD_NUMBER=${TAG:1}
 fi
 
@@ -25,11 +25,11 @@ cd /${REPO_FULL_NAME}/build/container
 make build/base
 
 docker login --username ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD}
-if [ $GITHUB_ACTION == 'prereleased' ]; then
+if [ $PIPELINE_ACTION == 'prereleased' ]; then
   echo "===> Push release candidate image to dockerhub registry"
   docker push $DOCKERHUB_NAMESPACE/infrastructure:${TAG:1}-rc
 fi
-if [ $GITHUB_ACTION == 'released' ]; then
+if [ $PIPELINE_ACTION == 'released' ]; then
   echo "===> Push release image to dockerhub registry"
   docker push $DOCKERHUB_NAMESPACE/infrastructure:latest
   docker push $DOCKERHUB_NAMESPACE/infrastructure:${TAG:1}
