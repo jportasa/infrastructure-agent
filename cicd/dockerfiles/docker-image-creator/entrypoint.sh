@@ -6,8 +6,8 @@ set -e
 # Create infrastructure-agent docker image and push it to Registry
 #
 #
-echo "===> PIPELINE_ACTION = $PIPELINE_ACTION"
-
+echo "===> Init docker vars fefore build image"
+export NS=${DOCKERHUB_NAMESPACE}
 if [ $PIPELINE_ACTION == 'prereleased' ]; then
   export AGENT_BUILD_NUMBER=${TAG:1}-rc
 fi
@@ -26,7 +26,7 @@ make build/base
 
 docker login --username ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD}
 if [ $PIPELINE_ACTION == 'prereleased' ]; then
-  echo "===> Push release candidate image to dockerhub registry"
+  echo "===> Push $DOCKERHUB_NAMESPACE/infrastructure:${TAG:1}-rc to dockerhub registry"
   docker push $DOCKERHUB_NAMESPACE/infrastructure:${TAG:1}-rc
 fi
 if [ $PIPELINE_ACTION == 'released' ]; then
