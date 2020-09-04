@@ -337,7 +337,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Upload tarballs
       run: |
-        TAG=v1.0.27
+        #TAG=v1.0.27 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
         cd cicd
         source scripts/pipeline_functions.sh # import functions
         create_dynamo_table
@@ -358,7 +358,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Upload .msi's
       run: |
-        TAG=v1.0.27 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        #TAG=v1.0.27 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         cd cicd
         source scripts/pipeline_functions.sh # import functions
         create_dynamo_table
