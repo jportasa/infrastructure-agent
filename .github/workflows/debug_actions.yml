@@ -1,4 +1,4 @@
-name: Pipeline
+name: Debug-pipeline-action-names
 
 on:
   push:
