@@ -26,10 +26,10 @@ jobs:
           echo "$GITHUB_CONTEXT"
           echo "******************************************"
 
-       - name: Check if prereleased
-         if: github.event.action == 'prereleased'
-         run: echo "===> IS a PRERELEASE"
+      - name: Check if prereleased
+        if: github.event.action == 'prereleased'
+        run: echo "===> IS a PRERELEASE"
 
-       - name: Check if released
-         if: github.event.action == 'released'
-         run: echo "===> IS a RELEASE"
+      - name: Check if released
+        if: github.event.action == 'released'
+        run: echo "===> IS a RELEASE"
