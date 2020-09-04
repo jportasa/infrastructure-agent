@@ -281,10 +281,23 @@ jobs:
     if: github.event.action == 'prereleased'
     needs: [goreleaser]
     runs-on: ubuntu-latest
+
     steps:
     - name: Fake trigger of canaries
       run: |
         echo "Fake starting of Canaries"
+
+  installation-testing:
+    if: github.event.action == 'prereleased'
+    needs: [goreleaser]
+    runs-on: ubuntu-latest
+    env:
+      AWS_S3_FQDN: 'http://nr-clone.s3-website-us-east-1.amazonaws.com' # 'download.newrelic.com'
+    steps:
+    - name: Fake trigger of canaries
+      run: |
+        cd cicd
+
 
   s3-apt-update:
     name: S3 repo APT update

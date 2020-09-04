@@ -6,6 +6,8 @@ set -e
 # Create infrastructure-agent docker image and push it to Registry
 #
 #
+echo "===> GITHUB_ACTION = $GITHUB_ACTION"
+
 if [ $GITHUB_ACTION == 'prereleased' ]; then
   export AGENT_BUILD_NUMBER=${TAG:1}-rc
 fi
