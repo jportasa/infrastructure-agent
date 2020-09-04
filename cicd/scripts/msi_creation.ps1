@@ -2,7 +2,7 @@ param (
     # Target architecture: amd64 (default) or 386
     [ValidateSet("amd64", "386")]
     [string]$arch="amd64",
-    [string]$version="0.0.0",
+    [string]$tag="v0.0.0",
     [string]$pfx_passphrase="none",
     # nri-flex
     [string]$nriFlexVersion,
@@ -11,6 +11,8 @@ param (
     # Signing tool
     [string]$signtool='"C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe"'
 )
+
+$version=$tag.substring(1)
 
 echo "===> Import .pfx certificate from GH Secrets"
 Import-PfxCertificate -FilePath ..\..\mycert.pfx -Password (ConvertTo-SecureString -String $pfx_passphrase -AsPlainText -Force) -CertStoreLocation Cert:\CurrentUser\My
