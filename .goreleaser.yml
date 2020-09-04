@@ -24,7 +24,7 @@ builds:
     - amd64
 #    - arm
 #    - arm64
-#    - 386
+    - 386
 #    - mips
 #    - mips64
 #    - mipsle
@@ -44,7 +44,7 @@ builds:
     - amd64
 #    - arm
 #    - arm64
-#    - 386
+    - 386
 #    - mips
 #    - mips64
 #    - mipsle
@@ -65,7 +65,7 @@ builds:
     - amd64
 #    - arm
 #    - arm64
-#    - 386
+    - 386
 #    - mips
 #    - mips64
 #    - mipsle
