@@ -1,13 +1,13 @@
 name: Pipeline
 
 on:
-  push:
-    branches:
-      - '*'
-      - '!master'
-  pull_request:
-    types:
-      - closed
+#  push:
+#    branches:
+#      - '*'
+#      - '!master'
+#  pull_request:
+#    types:
+#      - closed
   release:
     types:
       - prereleased
@@ -213,8 +213,9 @@ jobs:
           path: dist/**/*
 
   s3-apt-update-prerelease:
-    name: S3 repo APT update
+    name: S3 repo APT update prerelease as codename=tests
     if: github.event.action == 'prereleased'
+    needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
       PIPELINE_ACTION: 'prereleased'
