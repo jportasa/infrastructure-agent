@@ -482,9 +482,8 @@ jobs:
     if: github.event.action == 'released'
     runs-on: ubuntu-latest
     steps:
-    - name: Fastly purge key cache # A key defines a group of dir paths
+    - name: Fastly purge whole cache
       run: |
-         # curl -XPOST -H "Fastly-Key:${FASTLY_API_KEY}" https://api.fastly.com/service/${FASTLY_SERVICE_ID}/purge/${FASTLY_REPOS_KEY}
          curl -XPOST -H "Fastly-Key:${FASTLY_API_KEY}" https://api.fastly.com/service/${FASTLY_SERVICE_ID}/purge_all
 
   conclusion_slack_notification:
