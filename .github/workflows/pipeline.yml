@@ -5,9 +5,9 @@ on:
 #    branches:
 #      - '*'
 #      - '!master'
-#  pull_request:
-#    types:
-#      - closed
+  pull_request:
+    types:
+      - closed
   release:
     types:
       - prereleased
@@ -19,7 +19,7 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_DEFAULT_REGION: 'us-east-1'
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_S3_FQDN: 'http://nr-clone.s3-website-us-east-1.amazonaws.com' # 'https://download.newrelic.com'
+  AWS_S3_FQDN: 'nr-clone.s3-website-us-east-1.amazonaws.com' # 'download.newrelic.com'
   AWS_S3_REPO_URL: 's3://nr-clone'
   AWS_STORAGE_BUCKET_NAME: 'nr-clone'
   DEPOT_REPO: 'https://github.com/jportasa/depot' # Script to push .deb to APT repo
@@ -30,6 +30,7 @@ env:
   FASTLY_API_KEY: ${{ secrets.FASTLY_API_KEY }}
   FASTLY_SERVICE_ID: '2RMeBJ1ZTGnNJYvrWMgQhk'
   FASTLY_REPOS_KEY: '123456789'
+  FLUENTBIT_VERSION: '1.3.0'
   GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
   GITHUB_WORKSPACE: ${{ github.workspace }}
   GPG_APT_MAIL: 'infrastructure-eng@newrelic.com' # Mail associated to GPG key
@@ -52,84 +53,84 @@ env:
 
 jobs:
 
-#  build:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Install Go
-#        uses: actions/setup-go@v2
-#        with:
-#          go-version: '^1.14.4'
-#      - name: Running unit tests
-#        run: make test-coverage
-#      - name: Install gcov2lcov
-#        working-directory: /tmp
-#        run: go get -u github.com/jandelgado/gcov2lcov
-#      - name: Convert coverage.out to lcov.info
-#        run: gcov2lcov -infile=coverage.out -outfile=lcov.info
-#      - name: Coveralls Parallel
-#        uses: coverallsapp/github-action@master
-#        with:
-#          github-token: $GITHUB_TOKEN
-#          path-to-lcov: lcov.info
-#          flag-name: run-linux
-#          parallel: true
-#
-#  build-container:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Install Go
-#        uses: actions/setup-go@v2
-#        with:
-#          go-version: '^1.14.4'
-#      - name: Build linux agent
-#        run: make clean linux/amd64
-#      - name: Build container agent
-#        run: make -C build/container/ build/base
-#
-#  build-windows:
-#    runs-on: windows-latest
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Install Go
-#        uses: actions/setup-go@v2
-#        with:
-#          go-version: '^1.14.4'
-#      - name: Download deps
-#        run: go mod vendor
-#      - name: Running unit tests
-#        run: .\build\win_build.ps1
-#
-#  build-centos5:
-#    runs-on: ubuntu-latest
-#    defaults:
-#      run:
-#        working-directory: src/github.com/newrelic/infrastructure-agent
-#    steps:
-#      - uses: actions/checkout@v2
-#        with:
-#          path: src/github.com/newrelic/infrastructure-agent
-#      - name: Install Go
-#        uses: actions/setup-go@v2
-#        with:
-#          go-version: '^1.14.4'
-#      - name: Setup CentOS 5
-#        run: make go-get-go-1_9
-#      - name: Running unit tests
-#        env:
-#          GOPATH: "${{ github.workspace }}"
-#        run: make test-centos-5
-#
-#  finish:
-#    needs: [ build ]
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Coveralls Finished
-#        uses: coverallsapp/github-action@master
-#        with:
-#          github-token: ${{ secrets.github_token }}
-#          parallel-finished: true
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '^1.14.4'
+      - name: Running unit tests
+        run: make test-coverage
+      - name: Install gcov2lcov
+        working-directory: /tmp
+        run: go get -u github.com/jandelgado/gcov2lcov
+      - name: Convert coverage.out to lcov.info
+        run: gcov2lcov -infile=coverage.out -outfile=lcov.info
+      - name: Coveralls Parallel
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: $GITHUB_TOKEN
+          path-to-lcov: lcov.info
+          flag-name: run-linux
+          parallel: true
+
+  build-container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '^1.14.4'
+      - name: Build linux agent
+        run: make clean linux/amd64
+      - name: Build container agent
+        run: make -C build/container/ build/base
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '^1.14.4'
+      - name: Download deps
+        run: go mod vendor
+      - name: Running unit tests
+        run: .\build\win_build.ps1
+
+  build-centos5:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/github.com/newrelic/infrastructure-agent
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: src/github.com/newrelic/infrastructure-agent
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '^1.14.4'
+      - name: Setup CentOS 5
+        run: make go-get-go-1_9
+      - name: Running unit tests
+        env:
+          GOPATH: "${{ github.workspace }}"
+        run: make test-centos-5
+
+  finish:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
+          parallel-finished: true
 
   harvest-tests-create-bin:
     name:  Create bin for harvest tests
@@ -273,8 +274,8 @@ jobs:
       shell: pwsh
       run: |
         cd cicd/scripts
-        .\msi_creation.ps1 'amd64' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
-        .\msi_creation.ps1 '386' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION"
+        .\msi_creation.ps1 'amd64' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION" "$env:FLUENTBIT_VERSION"
+        .\msi_creation.ps1 '386' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION" "$env:FLUENTBIT_VERSION"
     - name: Push Win binary to GH workflow artifacts cache
       if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
       uses: actions/upload-artifact@v2
@@ -319,7 +320,7 @@ jobs:
 #    needs: [goreleaser]
 #    runs-on: ubuntu-latest
 #    env:
-#      AWS_S3_FQDN: 'http://nr-clone.s3-website-us-east-1.amazonaws.com' # 'download.newrelic.com'
+#      AWS_S3_FQDN: 'nr-clone.s3-website-us-east-1.amazonaws.com' # 'download.newrelic.com'
 #    steps:
 #    - name: Fake trigger of canaries
 #      run: |

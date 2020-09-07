@@ -10,6 +10,7 @@ services:
       - ${GITHUB_WORKSPACE}:/go/src/github.com/${REPO_FULL_NAME}/
     working_dir: /go/src/github.com/${REPO_FULL_NAME}
     environment:
+      - AWS_S3_FQDN=$AWS_S3_FQDN
       - GITHUB_TOKEN=$GITHUB_TOKEN
       - GITHUB_REF=$GITHUB_REF
       - GITHUB_PUSH_PRERELEASE_ASSETS=$GITHUB_PUSH_PRERELEASE_ASSETS
@@ -25,6 +26,7 @@ services:
       - NRI_FLEX_VERSION=$NRI_FLEX_VERSION
       - NRI_FLEX_OS=$NRI_FLEX_OS
       - NRI_FLEX_ARCH=$NRI_FLEX_ARCH
+      - FLUENTBIT_VERSION=$FLUENTBIT_VERSION
 
 
 
