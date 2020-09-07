@@ -228,9 +228,9 @@ nfpms:
       '/other-repos/nri-docker/etc/newrelic-infra/integrations.d/docker-config.yml': '/etc/newrelic-infra/integrations.d/docker-config.yml'
       '/other-repos/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
       '/other-repos/nri-flex/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/fluent-bit' ????? PENDING WORKAROUND
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/out_newrelic.so' ????? PENDING WORKAROUND
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/parsers.conf' ????? PENDING WORKAROUND
+      '/other-repos/fluent-bit/fluent-bit': '/var/db/newrelic-infra/newrelic-integrations/logging/fluent-bit'
+      '/other-repos/fluent-bit/out_newrelic.so': '/var/db/newrelic-infra/newrelic-integrations/logging/out_newrelic.so'
+      '/other-repos/fluent-bit/parsers.conf':  '/var/db/newrelic-infra/newrelic-integrations/logging/parsers.conf'
     empty_folders:
       - /var/db/newrelic-infra/custom-integrations
       - /var/db/newrelic-infra/integrations.d
@@ -259,6 +259,9 @@ nfpms:
       'LICENSE': '/var/db/newrelic-infra/LICENSE.txt'
       '/other-repos/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
       '/other-repos/nri-flex/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
+      '/other-repos/fluent-bit/fluent-bit': '/var/db/newrelic-infra/newrelic-integrations/logging/fluent-bit'
+      '/other-repos/fluent-bit/out_newrelic.so': '/var/db/newrelic-infra/newrelic-integrations/logging/out_newrelic.so'
+      '/other-repos/fluent-bit/parsers.conf':  '/var/db/newrelic-infra/newrelic-integrations/logging/parsers.conf'
     empty_folders:
       - /var/db/newrelic-infra/custom-integrations
       - /var/db/newrelic-infra/integrations.d
@@ -286,6 +289,10 @@ nfpms:
       'LICENSE': '/var/db/newrelic-infra/LICENSE.txt'
       '/other-repos/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
       '/other-repos/nri-flex/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
+      '/other-repos/fluent-bit/fluent-bit': '/var/db/newrelic-infra/newrelic-integrations/logging/fluent-bit'
+      '/other-repos/fluent-bit/out_newrelic.so': '/var/db/newrelic-infra/newrelic-integrations/logging/out_newrelic.so'
+      '/other-repos/fluent-bit/parsers.conf':  '/var/db/newrelic-infra/newrelic-integrations/logging/parsers.conf'
+
     empty_folders:
       - /var/db/newrelic-infra/custom-integrations
       - /var/db/newrelic-infra/integrations.d
@@ -348,9 +355,9 @@ nfpms:
       'LICENSE': '/var/db/newrelic-infra/LICENSE.txt'
       '/other-repos/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
       '/other-repos/nri-flex/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/fluent-bit' ????? PENDING WORKAROUND
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/out_newrelic.so' ????? PENDING WORKAROUND
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/parsers.conf' ????? PENDING WORKAROUND
+      '/other-repos/fluent-bit/fluent-bit': '/var/db/newrelic-infra/newrelic-integrations/logging/fluent-bit'
+      '/other-repos/fluent-bit/out_newrelic.so': '/var/db/newrelic-infra/newrelic-integrations/logging/out_newrelic.so'
+      '/other-repos/fluent-bit/parsers.conf':  '/var/db/newrelic-infra/newrelic-integrations/logging/parsers.conf'
     empty_folders:
       - /var/db/newrelic-infra/custom-integrations
       - /var/db/newrelic-infra/integrations.d
@@ -387,9 +394,9 @@ nfpms:
       'LICENSE': '/var/db/newrelic-infra/LICENSE.txt'
       '/other-repos/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
       '/other-repos/nri-flex/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/fluent-bit' ????? PENDING WORKAROUND
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/out_newrelic.so' ????? PENDING WORKAROUND
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/parsers.conf' ????? PENDING WORKAROUND
+      '/other-repos/fluent-bit/fluent-bit': '/var/db/newrelic-infra/newrelic-integrations/logging/fluent-bit'
+      '/other-repos/fluent-bit/out_newrelic.so': '/var/db/newrelic-infra/newrelic-integrations/logging/out_newrelic.so'
+      '/other-repos/fluent-bit/parsers.conf':  '/var/db/newrelic-infra/newrelic-integrations/logging/parsers.conf'
     empty_folders:
       - /var/db/newrelic-infra/custom-integrations
       - /var/db/newrelic-infra/integrations.d
@@ -426,9 +433,9 @@ nfpms:
       'LICENSE': '/var/db/newrelic-infra/LICENSE.txt'
       '/other-repos/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
       '/other-repos/nri-flex/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/fluent-bit' ????? PENDING WORKAROUND
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/out_newrelic.so' ????? PENDING WORKAROUND
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/parsers.conf' ????? PENDING WORKAROUND
+      '/other-repos/fluent-bit/fluent-bit': '/var/db/newrelic-infra/newrelic-integrations/logging/fluent-bit'
+      '/other-repos/fluent-bit/out_newrelic.so': '/var/db/newrelic-infra/newrelic-integrations/logging/out_newrelic.so'
+      '/other-repos/fluent-bit/parsers.conf':  '/var/db/newrelic-infra/newrelic-integrations/logging/parsers.conf'
     empty_folders:
       - /var/db/newrelic-infra/custom-integrations
       - /var/db/newrelic-infra/integrations.d
@@ -496,9 +503,9 @@ nfpms:
       'LICENSE': '/var/db/newrelic-infra/LICENSE.txt'
       '/other-repos/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
       '/other-repos/nri-flex/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/fluent-bit' ????? PENDING WORKAROUND
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/out_newrelic.so' ????? PENDING WORKAROUND
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/parsers.conf' ????? PENDING WORKAROUND
+      '/other-repos/fluent-bit/fluent-bit': '/var/db/newrelic-infra/newrelic-integrations/logging/fluent-bit'
+      '/other-repos/fluent-bit/out_newrelic.so': '/var/db/newrelic-infra/newrelic-integrations/logging/out_newrelic.so'
+      '/other-repos/fluent-bit/parsers.conf':  '/var/db/newrelic-infra/newrelic-integrations/logging/parsers.conf'
     empty_folders:
       - /var/db/newrelic-infra/custom-integrations
       - /var/db/newrelic-infra/integrations.d
@@ -535,9 +542,9 @@ nfpms:
       'LICENSE': '/var/db/newrelic-infra/LICENSE.txt'
       '/other-repos/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
       '/other-repos/nri-flex/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/fluent-bit' ????? PENDING WORKAROUND
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/out_newrelic.so' ????? PENDING WORKAROUND
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/parsers.conf' ????? PENDING WORKAROUND
+      '/other-repos/fluent-bit/fluent-bit': '/var/db/newrelic-infra/newrelic-integrations/logging/fluent-bit'
+      '/other-repos/fluent-bit/out_newrelic.so': '/var/db/newrelic-infra/newrelic-integrations/logging/out_newrelic.so'
+      '/other-repos/fluent-bit/parsers.conf':  '/var/db/newrelic-infra/newrelic-integrations/logging/parsers.conf'
     empty_folders:
       - /var/db/newrelic-infra/custom-integrations
       - /var/db/newrelic-infra/integrations.d
@@ -574,9 +581,9 @@ nfpms:
       'LICENSE': '/var/db/newrelic-infra/LICENSE.txt'
       '/other-repos/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
       '/other-repos/nri-flex/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/fluent-bit' ????? PENDING WORKAROUND
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/out_newrelic.so' ????? PENDING WORKAROUND
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/parsers.conf' ????? PENDING WORKAROUND
+      '/other-repos/fluent-bit/fluent-bit': '/var/db/newrelic-infra/newrelic-integrations/logging/fluent-bit'
+      '/other-repos/fluent-bit/out_newrelic.so': '/var/db/newrelic-infra/newrelic-integrations/logging/out_newrelic.so'
+      '/other-repos/fluent-bit/parsers.conf':  '/var/db/newrelic-infra/newrelic-integrations/logging/parsers.conf'
     empty_folders:
       - /var/db/newrelic-infra/custom-integrations
       - /var/db/newrelic-infra/integrations.d
@@ -613,9 +620,9 @@ nfpms:
       'LICENSE': '/var/db/newrelic-infra/LICENSE.txt'
       '/other-repos/nri-docker/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-docker'
       '/other-repos/nri-flex/nri-flex': '/var/db/newrelic-infra/newrelic-integrations/bin/nri-flex'
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/fluent-bit' ????? PENDING WORKAROUND
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/out_newrelic.so' ????? PENDING WORKAROUND
-      #: '/var/db/newrelic-infra/newrelic-integrations/logging/parsers.conf' ????? PENDING WORKAROUND
+      '/other-repos/fluent-bit/fluent-bit': '/var/db/newrelic-infra/newrelic-integrations/logging/fluent-bit'
+      '/other-repos/fluent-bit/out_newrelic.so': '/var/db/newrelic-infra/newrelic-integrations/logging/out_newrelic.so'
+      '/other-repos/fluent-bit/parsers.conf':  '/var/db/newrelic-infra/newrelic-integrations/logging/parsers.conf'
     empty_folders:
       - /var/db/newrelic-infra/custom-integrations
       - /var/db/newrelic-infra/integrations.d

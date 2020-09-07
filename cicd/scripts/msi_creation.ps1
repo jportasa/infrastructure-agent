@@ -7,7 +7,7 @@ param (
     # nri-flex
     [string]$nriFlexVersion,
     #fluent-bit
-    #[string]$nrfbArtifactVersion,
+    [string]$nrfbArtifactVersion,
     # Signing tool
     [string]$signtool='"C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe"'
 )
@@ -66,7 +66,7 @@ if ($includeFluentBit) {
     # Download fluent-bit artifacts.
     $ProgressPreference = 'SilentlyContinue'
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    #Invoke-WebRequest "https://artifacts.datanerd.us/ohai-repo/logging/windows/nrfb-$nrfbArtifactVersion-$fbArch.zip" -Headers @{"X-JFrog-Art-Api"="$artifactoryToken"} -OutFile nrfb.zip
+    Invoke-WebRequest "https://$AWS_S3_FQDN/infrastructure_agent/deps/fluent-bit/windows/nrfb-$nrfbArtifactVersion-$fbArch.zip" -OutFile nrfb.zip
     Copy-Item -Path "..\..\external_content\windows\${arch}\fluentbit\*" -Destination "." -Recurse -Force
 
     expand-archive -path '.\nrfb.zip' -destinationpath '.'

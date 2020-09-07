@@ -7,7 +7,7 @@ PKG_DIR_BIN_OHIS    	?= $(NRI_PKG_DIR)/var/db/newrelic-infra/newrelic-integratio
 # nri-docker
 NRI_DOCKER_VERSION ?= $(call get-nri-version,nri-docker)
 NRI_DOCKER_ARCH    ?= amd64
-NRI_DOCKER_URL     ?= https://download.newrelic.com/infrastructure_agent/binaries/linux/$(NRI_DOCKER_ARCH)/nri-docker_linux_$(NRI_DOCKER_VERSION)_$(NRI_DOCKER_ARCH).tar.gz
+NRI_DOCKER_URL     ?= https://${AWS_S3_FQDN}/infrastructure_agent/binaries/linux/$(NRI_DOCKER_ARCH)/nri-docker_linux_$(NRI_DOCKER_VERSION)_$(NRI_DOCKER_ARCH).tar.gz
 
 # flex
 NRI_FLEX_VERSION   ?= $(call get-nri-version,nri-flex)
