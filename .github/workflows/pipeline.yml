@@ -492,7 +492,8 @@ jobs:
     if: github.event.action == 'released'
     steps:
     - name: Pipeline conclusion check
-    - uses: technote-space/workflow-conclusion-action@v1
+      uses: technote-space/workflow-conclusion-action@v1
+    - name: Slack notification
       if: env.WORKFLOW_CONCLUSION == 'success'
       uses: archive/github-actions-slack@master
       with:
