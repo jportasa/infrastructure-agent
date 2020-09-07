@@ -54,6 +54,7 @@ env:
 jobs:
 
   build:
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -77,6 +78,7 @@ jobs:
           parallel: true
 
   build-container:
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -90,6 +92,7 @@ jobs:
         run: make -C build/container/ build/base
 
   build-windows:
+    if: github.event_name == 'push'
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
@@ -103,6 +106,7 @@ jobs:
         run: .\build\win_build.ps1
 
   build-centos5:
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -123,6 +127,7 @@ jobs:
         run: make test-centos-5
 
   finish:
+    if: github.event_name == 'push'
     needs: [ build ]
     runs-on: ubuntu-latest
     steps:
