@@ -490,6 +490,7 @@ jobs:
     name: Slack Pipeline conclusion notification Success
     needs: fastly-purge
     if: github.event.action == 'released'
+    runs-on: ubuntu-latest
     steps:
     - name: Pipeline conclusion check
       uses: technote-space/workflow-conclusion-action@v1
