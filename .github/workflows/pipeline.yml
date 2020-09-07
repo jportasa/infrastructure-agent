@@ -27,6 +27,9 @@ env:
   DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DYNAMO_TABLE_NAME: 's3-repo-lock'
+  FASTLY_API_KEY: ${{ secrets.FASTLY_API_KEY }}
+  FASTLY_SERVICE_ID: '2RMeBJ1ZTGnNJYvrWMgQhk'
+  FASTLY_REPOS_KEY: '123456789'
   GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
   GITHUB_WORKSPACE: ${{ github.workspace }}
   GPG_APT_MAIL: 'infrastructure-eng@newrelic.com' # Mail associated to GPG key
@@ -43,6 +46,8 @@ env:
   PFX_PASSPHRASE: ${{ secrets.PFX_PASSPHRASE }}
   REPO_FULL_NAME: ${{ github.event.repository.full_name }}
   REPO_NAME: ${{ github.event.repository.name }}
+  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+  SLACK_CHANNEL: 'ohai-bots'
   TAG: ${{ github.event.release.tag_name }}
 
 jobs:
@@ -212,26 +217,26 @@ jobs:
           name: artifacts-and-binaries
           path: dist/**/*
 
-  s3-apt-update-prerelease:
-    name: S3 repo APT update prerelease as codename=tests
-    if: github.event.action == 'prereleased'
-    needs: [goreleaser]
-    runs-on: ubuntu-latest
-    env:
-      PIPELINE_ACTION: 'prereleased'
-      BASE_PATH: "infrastructure_agent/linux/apt"
-      LOCK_REPO_TYPE: 'apt' # yum | apt | zypp | win
-    steps:
-    - uses: actions/checkout@v2
-    - name: Update APT repo
-      run: |
-        cd cicd
-        source scripts/pipeline_functions.sh
-        create_dynamo_table
-        wait_free_lock
-        lock
-        docker-compose --file docker_compose_apt_updater.yml run release
-        release_lock
+#  s3-apt-update-prerelease:
+#    name: S3 repo APT update prerelease as codename=tests
+#    if: github.event.action == 'prereleased'
+#    needs: [goreleaser]
+#    runs-on: ubuntu-latest
+#    env:
+#      PIPELINE_ACTION: 'prereleased'
+#      BASE_PATH: "infrastructure_agent/linux/apt"
+#      LOCK_REPO_TYPE: 'apt' # yum | apt | zypp | win
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: Update APT repo
+#      run: |
+#        cd cicd
+#        source scripts/pipeline_functions.sh
+#        create_dynamo_table
+#        wait_free_lock
+#        lock
+#        docker-compose --file docker_compose_apt_updater.yml run release
+#        release_lock
 
   tarballs:
     name: Tarballs for Linux/Win creation & push to GH
@@ -309,16 +314,16 @@ jobs:
       run: |
         echo "Fake starting of Canaries"
 
-  installation-testing:
-    if: github.event.action == 'prereleased'
-    needs: [goreleaser]
-    runs-on: ubuntu-latest
-    env:
-      AWS_S3_FQDN: 'http://nr-clone.s3-website-us-east-1.amazonaws.com' # 'download.newrelic.com'
-    steps:
-    - name: Fake trigger of canaries
-      run: |
-        cd cicd
+#  installation-testing:
+#    if: github.event.action == 'prereleased'
+#    needs: [goreleaser]
+#    runs-on: ubuntu-latest
+#    env:
+#      AWS_S3_FQDN: 'http://nr-clone.s3-website-us-east-1.amazonaws.com' # 'download.newrelic.com'
+#    steps:
+#    - name: Fake trigger of canaries
+#      run: |
+#        echo "Fake trigger of canaries"
 
   s3-apt-update:
     name: S3 repo APT update
@@ -338,6 +343,13 @@ jobs:
         lock
         docker-compose --file docker_compose_apt_updater.yml run release
         release_lock
+    - name: Notify failure via Slack
+      if: ${{ failure() }}
+      uses: archive/github-actions-slack@master
+      with:
+        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+        slack-channel: ${{ env.SLACK_CHANNEL }}
+        slack-text: ':shit: Repo: ${{ github.event.repository.full_name }}, S3 repo APT update FAILURE!'
 
   s3-yum-update:
     name: S3 YUM update
@@ -357,6 +369,13 @@ jobs:
         lock
         docker-compose --file docker_compose_yum_updater.yml run release
         release_lock
+    - name: Notify failure via Slack
+      if: ${{ failure() }}
+      uses: archive/github-actions-slack@master
+      with:
+        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+        slack-channel: ${{ env.SLACK_CHANNEL }}
+        slack-text: ':shit: Repo: ${{ github.event.repository.full_name }}, S3 YUM update FAILURE!'
 
   s3-zypp-update:
     name: S3 ZYPP update
@@ -376,6 +395,13 @@ jobs:
         lock
         docker-compose --file docker_compose_zypp_updater.yml run release
         release_lock
+    - name: Notify failure via Slack
+      if: ${{ failure() }}
+      uses: archive/github-actions-slack@master
+      with:
+        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+        slack-channel: ${{ env.SLACK_CHANNEL }}
+        slack-text: ':shit: Repo: ${{ github.event.repository.full_name }}, S3 ZYPP update FAILURE!'
 
   s3-tarball-update:
     name: S3 Tarball Linux & Windows update
@@ -395,6 +421,13 @@ jobs:
         lock
         docker-compose --file docker_compose_tarball_updater.yml run release
         release_lock
+    - name: Notify failure via Slack
+      if: ${{ failure() }}
+      uses: archive/github-actions-slack@master
+      with:
+        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+        slack-channel: ${{ env.SLACK_CHANNEL }}
+        slack-text: ':shit: Repo: ${{ github.event.repository.full_name }}, S3 Tarball Linux & Windows update FAILURE!'
 
   s3-win-update:
     name: S3 Windows .msi update
@@ -414,6 +447,13 @@ jobs:
         lock
         docker-compose --file docker_compose_win_updater.yml run release
         release_lock
+    - name: Notify failure via Slack
+      if: ${{ failure() }}
+      uses: archive/github-actions-slack@master
+      with:
+        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+        slack-channel: ${{ env.SLACK_CHANNEL }}
+        slack-text: ':shit: Repo: ${{ github.event.repository.full_name }}, S3 Windows .msi update FAILURE!'
 
   docker-image-update:
     name: Docker image create & push to Registry
@@ -427,3 +467,35 @@ jobs:
       run: |
         cd cicd
         docker-compose --file docker_compose_docker_image_creator.yml run release
+    - name: Notify failure via Slack
+      if: ${{ failure() }}
+      uses: archive/github-actions-slack@master
+      with:
+        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+        slack-channel: ${{ env.SLACK_CHANNEL }}
+        slack-text: ':shit: Repo: ${{ github.event.repository.full_name }}, Docker image create & push to Registry FAILURE!'
+
+  fastly-purge:
+    name: Fastly purge
+    needs: [s3-apt-update, s3-yum-update, s3-zypp-update, s3-tarball-update, s3-win-update, docker-image-update]
+    if: github.event.action == 'released'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Fastly purge key cache # A key defines a group of dir paths
+      run: |
+         # curl -XPOST -H "Fastly-Key:${FASTLY_API_KEY}" https://api.fastly.com/service/${FASTLY_SERVICE_ID}/purge/${FASTLY_REPOS_KEY}
+         curl -XPOST -H "Fastly-Key:${FASTLY_API_KEY}" https://api.fastly.com/service/${FASTLY_SERVICE_ID}/purge_all
+
+  conclusion_slack_notification:
+    name: Slack Pipeline conclusion notification Success
+    needs: fastly-purge
+    if: github.event.action == 'released'
+    steps:
+    - name: Pipeline conclusion check
+    - uses: technote-space/workflow-conclusion-action@v1
+      if: env.WORKFLOW_CONCLUSION == 'success'
+      uses: archive/github-actions-slack@master
+      with:
+        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+        slack-channel: ${{ env.SLACK_CHANNEL }}
+        slack-text: ':clap: Repo: ${{ github.event.repository.full_name }}, Whole steps in pipeline finished OK!'
