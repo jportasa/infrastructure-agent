@@ -12,7 +12,7 @@ curl -SL "https://download.newrelic.com/infrastructure_agent/binaries/linux/${NR
 curl -SL "https://github.com/newrelic/nri-flex/releases/download/v${NRI_FLEX_VERSION}/nri-flex_${NRI_FLEX_VERSION}_${NRI_FLEX_OS}_${NRI_FLEX_ARCH}.tar.gz" | tar xz -C /other-repos/nri-flex
 
 echo "===> Adding Fluentbit"
-curl -SL https://${AWS_S3_FQDN}/infrastructure_agent/deps/fluent-bit/linux/nrfb-${FLUENTBIT-VERSION}-linux-amd64.tar.gz | tar xz -C /other-repos/fluent-bit
+curl -SL https://${AWS_S3_FQDN}/infrastructure_agent/deps/fluent-bit/linux/nrfb-${FLUENTBIT_VERSION}-linux-amd64.tar.gz | tar xz -C /other-repos/fluent-bit
 
 echo "===> Importing GPG private key from GHA secrets..."
 printf %s ${GPG_APT_PRIVATE_KEY} | base64 -d | gpg --batch --import -
