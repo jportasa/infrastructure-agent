@@ -212,6 +212,26 @@ jobs:
           name: artifacts-and-binaries
           path: dist/**/*
 
+  s3-apt-update-prerelease:
+    name: S3 repo APT update
+    if: github.event.action == 'prereleased'
+    runs-on: ubuntu-latest
+    env:
+      PIPELINE_ACTION: 'prereleased'
+      BASE_PATH: "infrastructure_agent/linux/apt"
+      LOCK_REPO_TYPE: 'apt' # yum | apt | zypp | win
+    steps:
+    - uses: actions/checkout@v2
+    - name: Update APT repo
+      run: |
+        cd cicd
+        source scripts/pipeline_functions.sh
+        create_dynamo_table
+        wait_free_lock
+        lock
+        docker-compose --file docker_compose_apt_updater.yml run release
+        release_lock
+
   tarballs:
     name: Tarballs for Linux/Win creation & push to GH
     if: github.event.action == 'prereleased'
