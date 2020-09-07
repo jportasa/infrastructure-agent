@@ -7,11 +7,14 @@ set -e
 #
 #
 echo "===> Get files from other repos and put them in /other-repos"
-mkdir -p /other-repos/{nri-docker,nri-flex}
+echo "===> Adding nri-docker"
+mkdir -p /other-repos/nri-docker
 curl -SL "https://download.newrelic.com/infrastructure_agent/binaries/linux/${NRI_DOCKER_ARCH}/nri-docker_linux_${NRI_DOCKER_VERSION}_${NRI_DOCKER_ARCH}.tar.gz" | tar xz -C /other-repos/nri-docker
+echo "===> Adding nri-flex"
+mkdir -p /other-repos/nri-flex
 curl -SL "https://github.com/newrelic/nri-flex/releases/download/v${NRI_FLEX_VERSION}/nri-flex_${NRI_FLEX_VERSION}_${NRI_FLEX_OS}_${NRI_FLEX_ARCH}.tar.gz" | tar xz -C /other-repos/nri-flex
-
 echo "===> Adding Fluentbit"
+mkdir -p /other-repos/fluent-bit
 curl -SL https://${AWS_S3_FQDN}/infrastructure_agent/deps/fluent-bit/linux/nrfb-${FLUENTBIT_VERSION}-linux-amd64.tar.gz | tar xz -C /other-repos/fluent-bit
 
 echo "===> Importing GPG private key from GHA secrets..."
