@@ -222,7 +222,7 @@ jobs:
           path: dist/**/*
 
   s3-apt-update-prerelease:
-    name: S3 repo APT update prerelease as codename=tests
+    name: S3 repo APT update prerelease
     if: github.event.action == 'prereleased'
     needs: [goreleaser]
     runs-on: ubuntu-latest
@@ -319,13 +319,15 @@ jobs:
         echo "Fake starting of Canaries"
 
   installation-testing:
+    name: APT installation test
     if: github.event.action == 'prereleased'
-    needs: [goreleaser]
+    needs: [goreleaser,s3-apt-update-prerelease]
     runs-on: ubuntu-latest
     steps:
-    - name: Fake trigger of canaries
+    - uses: actions/checkout@v2
+    - name: Install with APT Release and Prerelease
       run: |
-        echo "Fake trigger of canaries"
+        cicd/scripts/installation_testing_ubuntu.sh
 
   s3-apt-update:
     name: S3 repo APT update

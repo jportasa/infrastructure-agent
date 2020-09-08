@@ -6,7 +6,7 @@
 #
 set -e
 
-AWS_S3_FQDN='nr-clone.s3.amazonaws.com'
+# AWS_S3_FQDN='nr-clone.s3.amazonaws.com'
 
 sudo apt-get update
 sudo apt install gnupg curl -y
