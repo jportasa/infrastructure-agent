@@ -63,6 +63,7 @@ if ($includeFluentBit) {
 #    if($arch -eq "386") {
 #        $fbArch = "win32"
 #    }
+
     # Download fluent-bit artifacts.
     $ProgressPreference = 'SilentlyContinue'
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
