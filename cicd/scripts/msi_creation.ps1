@@ -93,18 +93,26 @@ if ($includeWinPkg) {
     $ProgressPreference = 'SilentlyContinue'
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     Invoke-WebRequest "https://$env:AWS_S3_FQDN/infrastructure_agent/deps/nr-winpkg/$WinPkgArch/nr-winpkg-$WinPkgArch.zip" -OutFile nr-winpkg.zip
-
     expand-archive -path '.\nr-winpkg.zip' -destinationpath '.\nr-winpkg'
     Remove-Item -Force .\nr-winpkg.zip
-    #if (-Not $skipSigning) {
-    #    iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'Contoso'  .\nr-winpkg\nr-winpkg.exe"
-    #}
-    # Move the files to packaging.
     $nraPath = "..\..\external_content\windows\$WinPkgArch"
     New-Item -path "$nraPath\winpkg" -type directory -Force
     Copy-Item -Path ".\nr-winpkg\*" -Destination "$nraPath\winpkg" -Recurse -Force
     Remove-Item -Path ".\nr-winpkg" -Force -Recurse
     ls "$nraPath\winpkg"
+}
+
+[bool] $includeYamlGen = 1
+if ($includeYamlGen) {
+    echo "===> Embeding yamlgen $arch"
+    $ProgressPreference = 'SilentlyContinue'
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    Invoke-WebRequest "https://$env:AWS_S3_FQDN/infrastructure_agent/deps/yamlgen/yamlgen.exe" -OutFile yamlgen.exe
+    $nraPath = "..\..\external_content\windows"
+    New-Item -path "$nraPath\yamlgen" -type directory -Force
+    Copy-Item -Path "yamlgen.exe" -Destination "$nraPath\yamlgen" -Recurse -Force
+    Remove-Item -Path "yamlgen.exe" -Force -Recurse
+    ls "$nraPath\yamlgen"
 }
 
 $msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath
