@@ -96,9 +96,9 @@ if ($includeWinPkg) {
 
     expand-archive -path '.\nr-winpkg.zip' -destinationpath '.\nr-winpkg'
     Remove-Item -Force .\nr-winpkg.zip
-    if (-Not $skipSigning) {
-        iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'Contoso'  .\nr-winpkg\nr-winpkg.exe"
-    }
+    #if (-Not $skipSigning) {
+    #    iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'Contoso'  .\nr-winpkg\nr-winpkg.exe"
+    #}
     # Move the files to packaging.
     $nraPath = "..\..\external_content\windows\$WinPkgArch"
     New-Item -path "$nraPath\winpkg" -type directory -Force
