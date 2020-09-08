@@ -93,7 +93,7 @@ if ($includeWinPkg) {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     Invoke-WebRequest "https://$env:AWS_S3_FQDN/infrastructure_agent/deps/nr-winpkg/amd64/nr-winpkg-$WinPkgArch.zip" -OutFile nr-winpkg.zip
 
-    expand-archive -path '.\nr-winpkg.zip' -destinationpath '.'
+    expand-archive -path '.\nr-winpkg.zip' -destinationpath '.\nr-winpkg'
     Remove-Item -Force .\nr-winpkg.zip
     if (-Not $skipSigning) {
         iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'Contoso'  .\nr-winpkg\nr-winpkg.exe"
