@@ -67,7 +67,7 @@ if ($includeFluentBit) {
     $ProgressPreference = 'SilentlyContinue'
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     Invoke-WebRequest "https://$AWS_S3_FQDN/infrastructure_agent/deps/fluent-bit/windows/nrfb-$nrfbArtifactVersion-$fbArch.zip" -OutFile nrfb.zip
-    Copy-Item -Path "..\..\external_content\windows\${arch}\fluentbit\*" -Destination "." -Recurse -Force
+    #Copy-Item -Path "..\..\external_content\windows\${arch}\fluentbit\*" -Destination "." -Recurse -Force
 
     expand-archive -path '.\nrfb.zip' -destinationpath '.'
     Remove-Item -Force .\nrfb.zip
@@ -82,7 +82,32 @@ if ($includeFluentBit) {
     ls "$nraPath\logging"
 }
 
-$msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath
+[bool] $includeWinPkg = 1
+if ($includeWinPkg) {
+    echo "===> Embeding Winpkg"
+    $WinPkgArch = "amd64"
+    if($arch -eq "386") {
+        $WinPkgArch = "386"
+    }
+    # Download WinPkg artifacts.
+    $ProgressPreference = 'SilentlyContinue'
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    Invoke-WebRequest "https://$AWS_S3_FQDN/infrastructure_agent/deps/nr-winpkg/amd64/nr-winpkg-$WinPkgArch.zip" -OutFile nr-winpkg.zip
+
+    expand-archive -path '.\nr-winpkg.zip' -destinationpath '.'
+    Remove-Item -Force .\nr-winpkg.zip
+    if (-Not $skipSigning) {
+        iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'Contoso'  .\nr-winpkg\nr-winpkg.exe"
+    }
+    # Move the files to packaging.
+    $nraPath = "..\..\external_content\windows\$WinPkgArch"
+    New-Item -path "$nraPath\winpkg" -type directory -Force
+    Copy-Item -Path ".\nr-winpkg\*" -Destination "$nraPath\winpkg" -Recurse -Force
+    Remove-Item -Path ".\nr-winpkg" -Force -Recurse
+    ls "$nraPath\winpkg"
+}
+
+$msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath$WinPckgArch
 if ($msBuild.Length -eq 0) {
     echo "Can't find MSBuild tool. .NET Framework 4.0.x must be installed"
     exit -1

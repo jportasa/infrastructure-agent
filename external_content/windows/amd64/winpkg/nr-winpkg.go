@@ -1,5 +1,0 @@
-package winpkg
-
-func main() {
-
-}
