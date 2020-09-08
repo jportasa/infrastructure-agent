@@ -29,7 +29,6 @@ env:
   DYNAMO_TABLE_NAME: 's3-repo-lock'
   FASTLY_API_KEY: ${{ secrets.FASTLY_API_KEY }}
   FASTLY_SERVICE_ID: '2RMeBJ1ZTGnNJYvrWMgQhk'
-  FASTLY_REPOS_KEY: '123456789'
   FLUENTBIT_VERSION: '1.3.0'
   GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
   GITHUB_WORKSPACE: ${{ github.workspace }}
@@ -163,8 +162,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-          os: [ubuntu-18.04]
-          #os: [ubuntu-18.04, ubuntu-16.04]
+        os: [ubuntu-18.04, ubuntu-16.04]
     steps:
       - uses: actions/checkout@v2
       - name: Download binaries from GH artifacts cache
@@ -223,26 +221,26 @@ jobs:
           name: artifacts-and-binaries
           path: dist/**/*
 
-#  s3-apt-update-prerelease:
-#    name: S3 repo APT update prerelease as codename=tests
-#    if: github.event.action == 'prereleased'
-#    needs: [goreleaser]
-#    runs-on: ubuntu-latest
-#    env:
-#      PIPELINE_ACTION: 'prereleased'
-#      BASE_PATH: "infrastructure_agent/linux/apt"
-#      LOCK_REPO_TYPE: 'apt' # yum | apt | zypp | win
-#    steps:
-#    - uses: actions/checkout@v2
-#    - name: Update APT repo
-#      run: |
-#        cd cicd
-#        source scripts/pipeline_functions.sh
-#        create_dynamo_table
-#        wait_free_lock
-#        lock
-#        docker-compose --file docker_compose_apt_updater.yml run release
-#        release_lock
+  s3-apt-update-prerelease:
+    name: S3 repo APT update prerelease as codename=tests
+    if: github.event.action == 'prereleased'
+    needs: [goreleaser]
+    runs-on: ubuntu-latest
+    env:
+      PIPELINE_ACTION: 'prereleased'
+      BASE_PATH: "infrastructure_agent/test/linux/apt"
+      LOCK_REPO_TYPE: 'apt' # yum | apt | zypp | win
+    steps:
+    - uses: actions/checkout@v2
+    - name: Update APT repo
+      run: |
+        cd cicd
+        source scripts/pipeline_functions.sh
+        create_dynamo_table
+        wait_free_lock
+        lock
+        docker-compose --file docker_compose_apt_updater.yml run release
+        release_lock
 
   tarballs:
     name: Tarballs for Linux/Win creation & push to GH
@@ -320,16 +318,14 @@ jobs:
       run: |
         echo "Fake starting of Canaries"
 
-#  installation-testing:
-#    if: github.event.action == 'prereleased'
-#    needs: [goreleaser]
-#    runs-on: ubuntu-latest
-#    env:
-#      AWS_S3_FQDN: 'nr-clone.s3-website-us-east-1.amazonaws.com' # 'download.newrelic.com'
-#    steps:
-#    - name: Fake trigger of canaries
-#      run: |
-#        echo "Fake trigger of canaries"
+  installation-testing:
+    if: github.event.action == 'prereleased'
+    needs: [goreleaser]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Fake trigger of canaries
+      run: |
+        echo "Fake trigger of canaries"
 
   s3-apt-update:
     name: S3 repo APT update

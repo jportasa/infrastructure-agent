@@ -26,11 +26,11 @@ make build/base
 
 docker login --username ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD}
 if [ $PIPELINE_ACTION == 'prereleased' ]; then
-  echo "===> Push $DOCKERHUB_NAMESPACE/infrastructure:${TAG:1}-rc to dockerhub registry"
-  docker push $DOCKERHUB_NAMESPACE/infrastructure:${TAG:1}-rc
+  echo "===> Push ${DOCKERHUB_NAMESPACE}/infrastructure:${TAG:1}-rc to dockerhub registry"
+  docker push ${DOCKERHUB_NAMESPACE}/infrastructure:${TAG:1}-rc
 fi
 if [ $PIPELINE_ACTION == 'released' ]; then
   echo "===> Push release image to dockerhub registry"
-  docker push $DOCKERHUB_NAMESPACE/infrastructure:latest
-  docker push $DOCKERHUB_NAMESPACE/infrastructure:${TAG:1}
+  docker push ${DOCKERHUB_NAMESPACE}/infrastructure:latest
+  docker push ${DOCKERHUB_NAMESPACE}/infrastructure:${TAG:1}
 fi
