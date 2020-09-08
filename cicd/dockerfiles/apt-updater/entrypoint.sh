@@ -1,9 +1,18 @@
 #!/bin/bash
-
 set -e
-
-CODENAMES=( bionic buster jessie precise stretch trusty wheezy xenial )
-BOOT=( systemd upstart sysv )
+#
+#
+# Uses github "depot" python script to update the APT repo in S3
+#
+#
+if [ $PIPELINE_ACTION == 'prereleased' ]; then
+  CODENAMES=( bionic )
+  BOOT=( systemd )
+fi
+if [ $PIPELINE_ACTION == 'released' ]; then
+  CODENAMES=( bionic buster jessie precise stretch trusty wheezy xenial )
+  BOOT=( systemd upstart sysv )
+fi
 
 echo "===> Importing GPG signature and getting KeyId"
 printf %s ${GPG_APT_PRIVATE_KEY} | base64 --decode | gpg --batch --import -
@@ -22,36 +31,18 @@ for boot in "${BOOT[@]}"; do
   curl -SL https://github.com/${REPO_FULL_NAME}/releases/download/${TAG}/${DEB_PACKAGE} -o ${DEB_PACKAGE}
 done
 
-if [ $PIPELINE_ACTION == 'prereleased' ]; then
-  boot='systemd'
-  codename='tests'
-  echo "===> Prerelease: Uploading to S3 newrelic-infra_${boot}_${TAG:1}_amd64.deb to component=tests and codename=${codename}"
-  DEB_PACKAGE="newrelic-infra_${boot}_${TAG:1}_amd64.deb"
-  POOL_PATH="pool/main/n/newrelic-infra/${DEB_PACKAGE}"
-  depot --storage=${AWS_S3_REPO_URL}/${BASE_PATH} \
-     --component=main \
-     --codename=${codename} \
-     --pool-path=${POOL_PATH} \
-     --gpg-key ${GPG_APT_KEY_ID} \
-     --passphrase ${GPG_APT_PASSPHRASE} \
-     /artifacts/${DEB_PACKAGE} \
-     --force
-fi
-
-if [ $PIPELINE_ACTION == 'released' ]; then
-  for codename in "${CODENAMES[@]}"; do
-    for boot in "${BOOT[@]}"; do
-     echo "==> Release: Uploading to S3 newrelic-infra_${boot}_${TAG:1}_amd64.deb to component=main and codename=${codename}"
-     DEB_PACKAGE="newrelic-infra_${boot}_${TAG:1}_amd64.deb"
-     POOL_PATH="pool/main/n/newrelic-infra/${DEB_PACKAGE}"
-     depot --storage=${AWS_S3_REPO_URL}/${BASE_PATH} \
-        --component=main \
-        --codename=${codename} \
-        --pool-path=${POOL_PATH} \
-        --gpg-key ${GPG_APT_KEY_ID} \
-        --passphrase ${GPG_APT_PASSPHRASE} \
-        /artifacts/${DEB_PACKAGE} \
-        --force
-    done
+for codename in "${CODENAMES[@]}"; do
+  for boot in "${BOOT[@]}"; do
+   echo "==> Release: Uploading to S3 newrelic-infra_${boot}_${TAG:1}_amd64.deb to component=main and codename=${codename}"
+   DEB_PACKAGE="newrelic-infra_${boot}_${TAG:1}_amd64.deb"
+   POOL_PATH="pool/main/n/newrelic-infra/${DEB_PACKAGE}"
+   depot --storage=${AWS_S3_REPO_URL}/${BASE_PATH} \
+      --component=main \
+      --codename=${codename} \
+      --pool-path=${POOL_PATH} \
+      --gpg-key ${GPG_APT_KEY_ID} \
+      --passphrase ${GPG_APT_PASSPHRASE} \
+      /artifacts/${DEB_PACKAGE} \
+      --force
   done
-fi
+done

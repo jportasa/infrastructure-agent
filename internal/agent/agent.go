@@ -5,7 +5,6 @@ package agent
 import (
 	context2 "context"
 	"fmt"
-	"github.com/newrelic/infrastructure-agent/pkg/metrics/sampler"
 	"net"
 	"net/http"
 	"net/url"
@@ -16,7 +15,12 @@ import (
 	"sort"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
+
+	"github.com/newrelic/infrastructure-agent/internal/feature_flags"
+	"github.com/newrelic/infrastructure-agent/pkg/metrics/sampler"
+	"github.com/newrelic/infrastructure-agent/pkg/trace"
 
 	"github.com/newrelic/infrastructure-agent/pkg/helpers/metric"
 	"github.com/sirupsen/logrus"
@@ -63,28 +67,31 @@ type registerableSender interface {
 }
 
 type Agent struct {
-	plugins       []Plugin              // Slice of registered plugins
-	oldPlugins    []ids.PluginID        // Deprecated plugins whose cached data must be removed, if existing
-	agentDir      string                // Base data directory for the agent
-	extDir        string                // Location of external data input
-	userAgent     string                // User-Agent making requests to warlock
-	inventories   map[string]*inventory // Inventory reaper and sender instances (key: entity ID)
-	Context       *context              // Agent context data that is passed around the place
-	metricsSender registerableSender
-	store         *delta.Store
-	debugProvide  debug.Provide
-	httpClient    backendhttp.Client // http client for both data submission types: events and inventory
-
-	connectSrv *identityConnectService
-
-	provideIDs ProvideIDs
-	entityMap  entity.KnownIDs
-
+	inv                 inventoryState
+	plugins             []Plugin              // Slice of registered plugins
+	oldPlugins          []ids.PluginID        // Deprecated plugins whose cached data must be removed, if existing
+	agentDir            string                // Base data directory for the agent
+	extDir              string                // Location of external data input
+	userAgent           string                // User-Agent making requests to warlock
+	inventories         map[string]*inventory // Inventory reaper and sender instances (key: entity ID)
+	Context             *context              // Agent context data that is passed around the place
+	metricsSender       registerableSender
+	store               *delta.Store
+	debugProvide        debug.Provide
+	httpClient          backendhttp.Client // http client for both data submission types: events and inventory
+	connectSrv          *identityConnectService
+	provideIDs          ProvideIDs
+	entityMap           entity.KnownIDs
 	fpHarvester         fingerprint.Harvester
 	cloudHarvester      cloud.Harvester                          // If it's the case returns information about the cloud where instance is running.
 	agentID             *entity.ID                               // pointer as it's referred from several points
 	mtx                 sync.Mutex                               // Protect plugins
 	notificationHandler *ctl.NotificationHandlerWithCancellation // Handle ipc messaging.
+}
+
+type inventoryState struct {
+	readyToReap    bool
+	sendErrorCount uint32
 }
 
 // inventory holds the reaper and sender for the inventories of a given entity (local or remote), as well as their status
@@ -131,7 +138,7 @@ type context struct {
 	CancelFn       context2.CancelFunc
 	cfg            *config.Config
 	id             *id.Context
-	agentKey       string
+	agentKey       atomic.Value
 	reconnecting   *sync.Map         // Plugins that must be re-executed after a long disconnection
 	ch             chan PluginOutput // Channel of inbound plugin data payloads
 	activeEntities chan string       // Channel will be reported about the local/remote entities that are active
@@ -143,11 +150,8 @@ type context struct {
 	resolver           hostname.ResolverChangeNotifier
 	EntityMap          entity.KnownIDs
 	idLookup           IDLookup
-	shouldIncludeEvent includeSampleMatcher
+	shouldIncludeEvent sampler.IncludeSampleMatchFn
 }
-
-// func that satisfies the metrics matcher (processor.MatcherChain) interface while avoiding the import
-type includeSampleMatcher func(sample interface{}) bool
 
 // AgentID provides agent ID, blocking until it's available
 func (c *context) AgentID() entity.ID {
@@ -186,10 +190,17 @@ func (c *context) IDLookup() IDLookup {
 type IDLookup map[string]string
 
 //NewContext creates a new context.
-func NewContext(cfg *config.Config, buildVersion string, resolver hostname.ResolverChangeNotifier, lookup IDLookup,
-	sampleMatcher includeSampleMatcher) *context {
+func NewContext(
+	cfg *config.Config,
+	buildVersion string,
+	resolver hostname.ResolverChangeNotifier,
+	lookup IDLookup,
+	sampleMatchFn sampler.IncludeSampleMatchFn,
+) *context {
 	ctx, cancel := context2.WithCancel(context2.Background())
 
+	var agentKey atomic.Value
+	agentKey.Store("")
 	return &context{
 		cfg:                cfg,
 		Ctx:                ctx,
@@ -201,7 +212,8 @@ func NewContext(cfg *config.Config, buildVersion string, resolver hostname.Resol
 		servicePids:        make(map[string]map[int]string),
 		resolver:           resolver,
 		idLookup:           lookup,
-		shouldIncludeEvent: sampleMatcher,
+		shouldIncludeEvent: sampleMatchFn,
+		agentKey:           agentKey,
 	}
 }
 
@@ -274,24 +286,8 @@ func checkCollectorConnectivity(ctx context2.Context, cfg *config.Config, retrie
 	return
 }
 
-func getSampleMatcher(c *config.Config) func(interface{}) bool {
-	ec := sampler.NewMatcherChain(c.IncludeMetricsMatchers)
-	if ec.Enabled {
-		return func(sample interface{}) bool {
-			return ec.Evaluate(sample)
-		}
-	}
-
-	alog.Debug("Evaluation chain is DISABLED, using default behaviour")
-
-	// default matching function. All samples/event will be included
-	return func(sample interface{}) bool {
-		return true
-	}
-}
-
 // NewAgent returns a new instance of an agent built from the config.
-func NewAgent(cfg *config.Config, buildVersion string) (a *Agent, err error) {
+func NewAgent(cfg *config.Config, buildVersion string, ffRetriever feature_flags.Retriever) (a *Agent, err error) {
 
 	hostnameResolver := hostname.CreateResolver(
 		cfg.OverrideHostname, cfg.OverrideHostnameShort, cfg.DnsHostnameResolution)
@@ -301,14 +297,14 @@ func NewAgent(cfg *config.Config, buildVersion string) (a *Agent, err error) {
 	cloudHarvester.Initialize()
 
 	idLookupTable := NewIdLookup(hostnameResolver, cloudHarvester, cfg.DisplayName)
-	sampleMatcher := getSampleMatcher(cfg)
-	ctx := NewContext(cfg, buildVersion, hostnameResolver, idLookupTable, sampleMatcher)
+	sampleMatchFn := sampler.NewSampleMatchFn(cfg.EnableProcessMetrics, cfg.IncludeMetricsMatchers, ffRetriever)
+	ctx := NewContext(cfg, buildVersion, hostnameResolver, idLookupTable, sampleMatchFn)
 
 	agentKey, err := idLookupTable.getAgentKey()
 	if err != nil {
 		return
 	}
-	ctx.agentKey = agentKey
+	ctx.setAgentKey(agentKey)
 
 	var dataDir string
 	if cfg.AppDataDir != "" {
@@ -370,15 +366,37 @@ func NewAgent(cfg *config.Config, buildVersion string) (a *Agent, err error) {
 	// notificationHandler will map ipc messages to functions
 	notificationHandler := ctl.NewNotificationHandlerWithCancellation(ctx.Ctx)
 
-	return New(cfg, ctx, userAgent, idLookupTable, s, connectSrv, provideIDs, httpClient, transport, cloudHarvester,
-		fpHarvester, notificationHandler)
+	return New(
+		cfg,
+		ctx,
+		userAgent,
+		idLookupTable,
+		s,
+		connectSrv,
+		provideIDs,
+		httpClient,
+		transport,
+		cloudHarvester,
+		fpHarvester,
+		notificationHandler,
+	)
 }
 
 // New creates a new agent using given context and services.
-func New(cfg *config.Config, ctx *context, userAgent string, idLookupTable IDLookup, s *delta.Store,
-	connectSrv *identityConnectService, provideIDs ProvideIDs, dataClient backendhttp.Client,
-	transport *http.Transport, cloudHarvester cloud.Harvester, fpHarvester fingerprint.Harvester,
-	notificationHandler *ctl.NotificationHandlerWithCancellation) (*Agent, error) {
+func New(
+	cfg *config.Config,
+	ctx *context,
+	userAgent string,
+	idLookupTable IDLookup,
+	s *delta.Store,
+	connectSrv *identityConnectService,
+	provideIDs ProvideIDs,
+	dataClient backendhttp.Client,
+	transport *http.Transport,
+	cloudHarvester cloud.Harvester,
+	fpHarvester fingerprint.Harvester,
+	notificationHandler *ctl.NotificationHandlerWithCancellation,
+) (*Agent, error) {
 	a := &Agent{
 		Context:             ctx,
 		debugProvide:        debug.ProvideFn,
@@ -413,7 +431,7 @@ func New(cfg *config.Config, ctx *context, userAgent string, idLookupTable IDLoo
 	a.inventories = map[string]*inventory{}
 
 	// Make sure the network is working before continuing with identity
-	if err := checkCollectorConnectivity(ctx.Ctx, cfg, backoff.NewRetrier(), a.userAgent, a.Context.agentKey, transport); err != nil {
+	if err := checkCollectorConnectivity(ctx.Ctx, cfg, backoff.NewRetrier(), a.userAgent, a.Context.getAgentKey(), transport); err != nil {
 		alog.WithError(err).Error("network is not available")
 		return nil, err
 	}
@@ -431,7 +449,8 @@ func New(cfg *config.Config, ctx *context, userAgent string, idLookupTable IDLoo
 	}
 
 	// Create input channel for plugins to feed data back to the agent
-	a.Context.ch = make(chan PluginOutput)
+	trace.Inventory("parallelize queue: %v", a.Context.cfg.InventoryQueueLen)
+	a.Context.ch = make(chan PluginOutput, a.Context.cfg.InventoryQueueLen)
 	a.Context.activeEntities = make(chan string, activeEntitiesBufferLength)
 
 	if cfg.RegisterEnabled {
@@ -521,9 +540,11 @@ func (a *Agent) registerEntityInventory(entityKey string) error {
 
 	var err error
 	if a.Context.cfg.RegisterEnabled {
-		inv.sender, err = newPatchSenderVortex(entityKey, a.Context.agentKey, a.Context, a.store, a.userAgent, a.Context.AgentIdentity, a.provideIDs, a.entityMap, a.httpClient)
+		inv.sender, err = newPatchSenderVortex(entityKey, a.Context.getAgentKey(), a.Context, a.store, a.userAgent, a.Context.AgentIdentity, a.provideIDs, a.entityMap, a.httpClient)
 	} else {
-		inv.sender, err = newPatchSender(entityKey, a.Context, a.store, a.userAgent, a.Context.AgentIdentity, a.httpClient)
+		lastSubmission := delta.NewLastSubmissionStore(a.store.DataDir, entityKey)
+		lastEntityID := delta.NewEntityIDFilePersist(a.store.DataDir, entityKey)
+		inv.sender, err = newPatchSender(entityKey, a.Context, a.store, lastSubmission, lastEntityID, a.userAgent, a.Context.AgentIdentity, a.httpClient)
 	}
 	if err != nil {
 		return err
@@ -678,9 +699,9 @@ func (a *Agent) setAgentKey(idLookupTable IDLookup) error {
 		return err
 	}
 
-	alog.WithField("old", a.Context.agentKey).WithField("new", key).Debug("Updating identity.")
+	alog.WithField("old", a.Context.getAgentKey()).WithField("new", key).Debug("Updating identity.")
 
-	a.Context.agentKey = key
+	a.Context.setAgentKey(key)
 
 	if a.store != nil {
 		a.store.ChangeDefaultEntity(key)
@@ -753,10 +774,6 @@ func (a *Agent) Run() (err error) {
 			alog.WithError(err).Error("failed to start metrics subsystem")
 		}
 	}
-
-	// State variables
-	var readyToReap bool          // Do we need to execute a reap phase?
-	var sendErrorCount uint32 = 0 // Send error counter
 
 	// Timers
 	reapTimer := time.NewTicker(cfg.FirstReapInterval)
@@ -863,10 +880,10 @@ func (a *Agent) Run() (err error) {
 		case <-reapTimer.C:
 			{
 				for _, inventory := range a.inventories {
-					if !readyToReap {
+					if !a.inv.readyToReap {
 						if len(distinctPlugins) <= len(idsReporting) {
 							alog.Debug("Signalling initial reap.")
-							readyToReap = true
+							a.inv.readyToReap = true
 							inventory.needsCleanup = true
 						} else {
 							pluginIds := make([]ids.PluginID, 0)
@@ -878,7 +895,7 @@ func (a *Agent) Run() (err error) {
 							alog.WithField("pluginIds", pluginIds).Debug("Still waiting on plugins.")
 						}
 					}
-					if readyToReap && inventory.needsReaping {
+					if a.inv.readyToReap && inventory.needsReaping {
 						reapTimer.Stop()
 						reapTimer = time.NewTicker(cfg.ReapInterval)
 						inventory.reaper.Reap()
@@ -892,40 +909,15 @@ func (a *Agent) Run() (err error) {
 			}
 		case <-initialReapTimeout.C:
 			// If we've waited too long and still not received data from all plugins, we can just send what we have.
-			if !readyToReap {
+			if !a.inv.readyToReap {
 				alog.Debug("Maximum initial reap delay exceeded - marking inventory as ready to report.")
-				readyToReap = true
+				a.inv.readyToReap = true
 				for _, inventory := range a.inventories {
 					inventory.needsCleanup = true
 				}
 			}
 		case <-sendTimer.C:
-			{
-				backoffMax := config.MAX_BACKOFF
-				for _, inventory := range a.inventories {
-					err := inventory.sender.Process()
-					if err != nil {
-						if ingestError, ok := err.(*inventoryapi.IngestError); ok {
-							if ingestError.StatusCode == http.StatusTooManyRequests {
-								alog.Warn("server is rate limiting inventory for this Infrastructure Agent")
-								backoffMax = config.RATE_LIMITED_BACKOFF
-								sendErrorCount = helpers.MaxBackoffErrorCount
-							}
-						} else {
-							sendErrorCount++
-						}
-						alog.WithError(err).WithField("errorCount", sendErrorCount).
-							Debug("Inventory sender can't process after retrying.")
-						break // Assuming break will try to send later the data from the missing inventory senders
-					} else {
-						sendErrorCount = 0
-					}
-				}
-				sendTimerVal := helpers.ExpBackoff(cfg.SendInterval,
-					time.Duration(backoffMax)*time.Second,
-					sendErrorCount)
-				sendTimer.Reset(sendTimerVal)
-			}
+			a.sendInventory(sendTimer)
 		case <-debugTimer:
 			{
 				debugInfo, err := a.debugProvide()
@@ -942,6 +934,33 @@ func (a *Agent) Run() (err error) {
 			a.removeOutdatedEntities(pastPeriodReportedEntities)
 		}
 	}
+}
+
+func (a *Agent) sendInventory(sendTimer *time.Timer) {
+	backoffMax := config.MAX_BACKOFF
+	for _, i := range a.inventories {
+		err := i.sender.Process()
+		if err != nil {
+			if ingestError, ok := err.(*inventoryapi.IngestError); ok &&
+				ingestError.StatusCode == http.StatusTooManyRequests {
+				alog.Warn("server is rate limiting inventory submission")
+				backoffMax = config.RATE_LIMITED_BACKOFF
+				a.inv.sendErrorCount = helpers.MaxBackoffErrorCount
+			} else {
+				a.inv.sendErrorCount++
+			}
+			alog.WithError(err).WithField("errorCount", a.inv.sendErrorCount).
+				Debug("Inventory sender can't process after retrying.")
+			// Assuming break will try to send later the data from the missing inventory senders
+			break
+		} else {
+			a.inv.sendErrorCount = 0
+		}
+	}
+	sendTimerVal := helpers.ExpBackoff(a.Context.cfg.SendInterval,
+		time.Duration(backoffMax)*time.Second,
+		a.inv.sendErrorCount)
+	sendTimer.Reset(sendTimerVal)
 }
 
 func (a *Agent) removeOutdatedEntities(reportedEntities map[string]bool) {
@@ -1020,7 +1039,7 @@ func (c *context) Config() *config.Config {
 }
 
 func (c *context) AgentIdentifier() string {
-	return c.agentKey
+	return c.getAgentKey()
 }
 
 func (c *context) Version() string {
@@ -1085,6 +1104,14 @@ func (c *context) HostnameResolver() hostname.Resolver {
 // HostnameResolver returns the host name change notifier associated to the agent context
 func (c *context) HostnameChangeNotifier() hostname.ChangeNotifier {
 	return c.resolver
+}
+
+func (c *context) setAgentKey(agentKey string) {
+	c.agentKey.Store(agentKey)
+}
+
+func (c *context) getAgentKey() (agentKey string) {
+	return c.agentKey.Load().(string)
 }
 
 func (a *Agent) connect() {

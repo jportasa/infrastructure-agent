@@ -19,11 +19,9 @@ import (
 const maxInventoryDataSize = 3 * 1000 * 1000
 
 var plugin = &delta.PluginInfo{
-	Source:       "metadata/plugin",
-	Plugin:       "metadata",
-	FileName:     "plugin.json",
-	MostRecentID: int64(0),
-	LastSentID:   int64(0),
+	Source:   "metadata/plugin",
+	Plugin:   "metadata",
+	FileName: "plugin.json",
 }
 
 // createDelta creates and stores a delta JSON for a given entity, with a size approximate to the given size

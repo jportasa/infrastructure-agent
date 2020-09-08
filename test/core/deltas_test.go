@@ -9,58 +9,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/newrelic/infrastructure-agent/internal/agent"
+	"github.com/newrelic/infrastructure-agent/pkg/entity"
+
 	"github.com/newrelic/infrastructure-agent/pkg/backend/inventoryapi"
 	"github.com/newrelic/infrastructure-agent/pkg/config"
 	"github.com/newrelic/infrastructure-agent/pkg/plugins"
-	"github.com/newrelic/infrastructure-agent/pkg/plugins/ids"
 	fixture "github.com/newrelic/infrastructure-agent/test/fixture/inventory"
 	"github.com/newrelic/infrastructure-agent/test/infra"
 	ihttp "github.com/newrelic/infrastructure-agent/test/infra/http"
 	"github.com/stretchr/testify/assert"
 )
-
-type dummyPlugin struct {
-	agent.PluginCommon
-	ticker chan interface{}
-	value  string
-}
-
-type valueEntry struct {
-	Id    string `json:"id"`
-	Value string `json:"value"`
-}
-
-func (v *valueEntry) SortKey() string {
-	return v.Id
-}
-
-func newDummyPlugin(initialValue string, context agent.AgentContext) *dummyPlugin {
-	return &dummyPlugin{
-		PluginCommon: agent.PluginCommon{
-			ID:      ids.PluginID{"test", "dummy"},
-			Context: context,
-		},
-		ticker: make(chan interface{}),
-		value:  initialValue,
-	}
-}
-
-func (cp *dummyPlugin) Run() {
-	for {
-		select {
-		case <-cp.ticker:
-			dataset := agent.PluginInventoryDataset{
-				&valueEntry{Id: "dummy", Value: cp.value},
-			}
-			cp.EmitInventory(dataset, cp.Context.AgentIdentifier())
-		}
-	}
-}
-
-func (cp *dummyPlugin) Id() ids.PluginID {
-	return cp.ID
-}
 
 func TestDeltas_BasicWorkflow(t *testing.T) {
 	const timeout = 5 * time.Second
@@ -70,6 +28,7 @@ func TestDeltas_BasicWorkflow(t *testing.T) {
 		ihttp.AcceptedResponse("test/dummy", 1),
 		ihttp.AcceptedResponse("test/dummy", 2))
 	a := infra.NewAgent(testClient.Client)
+	a.Context.SetAgentIdentity(entity.Identity{10, "abcdef"})
 
 	// That runs a plugin
 	plugin := newDummyPlugin("hello", a.Context)
@@ -78,7 +37,7 @@ func TestDeltas_BasicWorkflow(t *testing.T) {
 	go a.Run()
 
 	// When the plugin harvests inventory data
-	plugin.ticker <- 1
+	plugin.harvest()
 
 	var req http.Request
 	select {
@@ -103,7 +62,7 @@ func TestDeltas_BasicWorkflow(t *testing.T) {
 	})
 
 	// And if the plugin harvests again the same inventory data
-	plugin.ticker <- 1
+	plugin.harvest()
 
 	// No deltas are sent
 	select {
@@ -119,7 +78,7 @@ func TestDeltas_BasicWorkflow(t *testing.T) {
 
 	// And if the plugin harvests new inventory data
 	plugin.value = "goodbye"
-	plugin.ticker <- 1
+	plugin.harvest()
 
 	// A new delta is submitted
 	select {
@@ -155,6 +114,7 @@ func TestDeltas_ResendIfFailure(t *testing.T) {
 		ihttp.AcceptedResponse("test/dummy", 2))
 
 	a := infra.NewAgent(testClient.Client)
+	a.Context.SetAgentIdentity(entity.Identity{10, "abcdef"})
 
 	// That runs a plugin
 	plugin := newDummyPlugin("hello", a.Context)
@@ -163,7 +123,7 @@ func TestDeltas_ResendIfFailure(t *testing.T) {
 	go a.Run()
 
 	// When the plugin harvests inventory data
-	plugin.ticker <- 1
+	plugin.harvest()
 
 	var req http.Request
 	select {
@@ -189,7 +149,7 @@ func TestDeltas_ResendIfFailure(t *testing.T) {
 
 	// And if the plugin harvests new inventory data
 	plugin.value = "goodbye"
-	plugin.ticker <- 1
+	plugin.harvest()
 
 	// A new delta is submitted
 	select {
@@ -240,7 +200,7 @@ func TestDeltas_ResendIfFailure(t *testing.T) {
 }
 
 func TestDeltas_ResendAfterReset(t *testing.T) {
-	const timeout = 5 * time.Second
+	const timeout = 10 * time.Second
 
 	agentDir, err := ioutil.TempDir("", "prefix")
 	if err != nil {
@@ -253,6 +213,7 @@ func TestDeltas_ResendAfterReset(t *testing.T) {
 		config.SendInterval = time.Hour
 		config.AgentDir = agentDir
 	})
+	a.Context.SetAgentIdentity(entity.Identity{10, "abcdef"})
 
 	// That runs a plugin
 	plugin1 := newDummyPlugin("hello", a.Context)
@@ -261,7 +222,7 @@ func TestDeltas_ResendAfterReset(t *testing.T) {
 	go a.Run()
 
 	// When the plugin harvests inventory data
-	plugin1.ticker <- 1
+	plugin1.harvest()
 
 	// And the agent restarts before data is submitted
 	select {
@@ -276,6 +237,7 @@ func TestDeltas_ResendAfterReset(t *testing.T) {
 	a = infra.NewAgent(testClient.Client, func(config *config.Config) {
 		config.AgentDir = agentDir
 	})
+	a.Context.SetAgentIdentity(entity.Identity{10, "abcdef"})
 	a.RegisterPlugin(plugin1)
 	go a.Run()
 
@@ -283,23 +245,22 @@ func TestDeltas_ResendAfterReset(t *testing.T) {
 	var req http.Request
 	select {
 	case req = <-testClient.RequestCh:
-		a.Terminate()
-	case <-time.After(timeout):
-		a.Terminate()
-		assert.FailNow(t, "timeout while waiting for a response")
-	}
-	fixture.AssertRequestContainsInventoryDeltas(t, req, []*inventoryapi.RawDelta{
-		{
-			Source:   "test/dummy",
-			ID:       1,
-			FullDiff: true,
-			Diff: map[string]interface{}{
-				"dummy": map[string]interface{}{
-					"value": "hello",
+		fixture.AssertRequestContainsInventoryDeltas(t, req, []*inventoryapi.RawDelta{
+			{
+				Source:   "test/dummy",
+				ID:       1,
+				FullDiff: true,
+				Diff: map[string]interface{}{
+					"dummy": map[string]interface{}{
+						"value": "hello",
+					},
 				},
 			},
-		},
-	})
+		})
+	case <-time.After(timeout):
+		assert.FailNow(t, "timeout while waiting for a response")
+	}
+	a.Terminate()
 }
 
 func TestDeltas_HarvestAfterStoreCleanup(t *testing.T) {
@@ -317,15 +278,17 @@ func TestDeltas_HarvestAfterStoreCleanup(t *testing.T) {
 		}
 		cfg.Verbose = 1
 	})
+	a.Context.SetAgentIdentity(entity.Identity{10, "abcdef"})
+
 	go a.Terminate()
 
 	plugin := newDummyPlugin("hi", a.Context)
 	a.RegisterPlugin(plugin)
-	// That runs a reconnectable plugin (e.g. Custom Attributes plugin)
+	// That runs a re-connectable plugin (e.g. Custom Attributes plugin)
 	a.RegisterPlugin(plugins.NewCustomAttrsPlugin(a.Context))
 	go a.Run()
 
-	plugin.ticker <- 1
+	plugin.harvest()
 
 	// That has successfully submitted data on start
 	var req1 http.Request
@@ -350,14 +313,14 @@ func TestDeltas_HarvestAfterStoreCleanup(t *testing.T) {
 
 	// When the server gets a reset all request
 	plugin.value = "ho"
-	plugin.ticker <- 1
+	plugin.harvest()
 	select {
 	case _ = <-testClient.RequestCh:
 	case <-time.After(timeout):
 		assert.FailNow(t, "timeout while waiting for a response")
 	}
 
-	// The reconnectable plugins are run again and the removed inventory is resubmitted
+	// The re-connectable plugins are run again and the removed inventory is resubmitted
 	var req2 http.Request
 	select {
 	case req2 = <-testClient.RequestCh:

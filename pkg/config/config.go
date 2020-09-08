@@ -592,6 +592,11 @@ type Config struct {
 	// Public: No
 	BatchQueueDepth int `yaml:"batch_queue_depth" envconfig:"batch_queue_depth" public:"false"` // See event_sender.go
 
+	// InventoryQueueLen sets the inventory processing queue size. Zero value makes inventory processing synchronous (blocking call).
+	// Default: 0
+	// Public: Yes
+	InventoryQueueLen int  `yaml:"inventory_queue_len" envconfig:"inventory_queue_len" public:"true"`
+
 	// EnableWinUpdatePlugin enables the windows updates plugin which retrieves the lists of hotfix that are installed
 	// on the host.
 	// Default: False
@@ -960,6 +965,11 @@ type Config struct {
 	// send this to the integrations for them to use for persisting data.
 	DefaultIntegrationsTempDir string
 
+	// EnableProcessMetrics enables/disables process metrics, it does not enforce when not set.
+	// Default: empty
+	// Public: Yes
+	EnableProcessMetrics *bool `yaml:"enable_process_metrics" envconfig:"enable_process_metrics"`
+
 	// IncludeMetricsMatchers Configuration of the metrics matchers that determine which metric data should the agent
 	// send to the New Relic backend.
 	// If no configuration is defined, the previous behaviour is maintained, i.e., every metric data captured is sent.
@@ -1080,6 +1090,26 @@ func (c *Config) SetBoolValueByYamlAttribute(attribute string, value bool) error
 		if ftags.Get("yaml") == attribute {
 			f := s.Field(i)
 			f.SetBool(value)
+			return nil
+		}
+	}
+
+	return fmt.Errorf("unknown field for yaml attribute '%s'", attribute)
+}
+
+func (c *Config) SetIntValueByYamlAttribute(attribute string, value int64) error {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
+	s := reflect.ValueOf(c)
+	s = s.Elem()
+	t := s.Type()
+	for i := 0; i < s.NumField(); i++ {
+		ftype := t.Field(i)
+		ftags := ftype.Tag
+		if ftags.Get("yaml") == attribute {
+			f := s.Field(i)
+			f.SetInt(value)
 			return nil
 		}
 	}
@@ -1240,6 +1270,7 @@ func NewConfig() *Config {
 		SmartVerboseModeEntryLimit:  DefaultSmartVerboseModeEntryLimit,
 		DefaultIntegrationsTempDir:  defaultIntegrationsTempDir,
 		IncludeMetricsMatchers:      defaultMetricsMatcherConfig,
+		InventoryQueueLen:			 DefaultInventoryQueue,
 	}
 }
 
@@ -1249,6 +1280,14 @@ func NewTest(dataDir string) *Config {
 	c.AgentDir = dataDir
 	c.AppDataDir = dataDir
 	c.OfflineLoggingMode = true
+
+	return c
+}
+
+// NewTestWithDeltas creates a default testing Config submitting deltas.
+func NewTestWithDeltas(dataDir string) *Config {
+	c := NewTest(dataDir)
+	c.OfflineLoggingMode = false
 
 	return c
 }
@@ -1634,6 +1673,10 @@ func NormalizeConfig(cfg *Config, cfgMetadata config_loader.YAMLMetadata) (err e
 	nlog.WithField("defaultCloudMetadataExpiryInSec", defaultCloudMetadataExpiryInSec).Debug("Using default cloud metadata expiry time.")
 
 	cfg.IsForwardOnly = cfg.IsForwardOnly || cfg.K8sIntegration
+
+	if cfg.IsForwardOnly {
+		cfg.ConnectEnabled = false
+	}
 
 	// For backwards compatibility FileDevicesBlacklist is deprecated.
 	if len(cfg.FileDevicesBlacklist) > 0 {

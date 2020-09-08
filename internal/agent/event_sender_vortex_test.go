@@ -29,7 +29,6 @@ import (
 )
 
 var (
-	agentKey             = "agentKey"
 	remoteKey entity.Key = "remoteKey"
 	ev                   = mapEvent{
 		"eventType": "TestEvent",
@@ -305,8 +304,10 @@ func TestVortexEventSender_QueueEvent_DecoratesRemoteEntityID(t *testing.T) {
 }
 
 func newContextWithVortex() *context {
+	var agentKeyVal atomic.Value
+	agentKeyVal.Store(agentKey)
 	c := &context{
-		agentKey: agentKey,
+		agentKey: agentKeyVal,
 		cfg: &config.Config{
 			ConnectEnabled:          true,
 			PayloadCompressionLevel: gzip.NoCompression,

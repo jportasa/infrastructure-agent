@@ -41,10 +41,11 @@ func Discoverer(d discovery.Container) (fetchDiscoveries func() (discoveries []d
 func fetch(d discovery.Container, matcher *discovery.FieldsMatcher) ([]discovery.Discovery, error) {
 	var matches []discovery.Discovery
 
-	dc, err := client.NewClientWithOpts(client.FromEnv, client.WithVersion(d.ApiVersion))
+	dc, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
 		return nil, err
 	}
+	defer dc.Close()
 
 	containers, err := dc.ContainerList(context.Background(), types.ContainerListOptions{})
 	if err != nil {
