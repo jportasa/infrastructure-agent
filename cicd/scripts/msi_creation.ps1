@@ -67,7 +67,6 @@ if ($includeFluentBit) {
     $ProgressPreference = 'SilentlyContinue'
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     Invoke-WebRequest "https://$AWS_S3_FQDN/infrastructure_agent/deps/fluent-bit/windows/nrfb-$nrfbArtifactVersion-$fbArch.zip" -OutFile nrfb.zip
-    #Copy-Item -Path "..\..\external_content\windows\${arch}\fluentbit\*" -Destination "." -Recurse -Force
 
     expand-archive -path '.\nrfb.zip' -destinationpath '.'
     Remove-Item -Force .\nrfb.zip
@@ -107,7 +106,7 @@ if ($includeWinPkg) {
     ls "$nraPath\winpkg"
 }
 
-$msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath$WinPkgArch
+$msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath
 if ($msBuild.Length -eq 0) {
     echo "Can't find MSBuild tool. .NET Framework 4.0.x must be installed"
     exit -1
