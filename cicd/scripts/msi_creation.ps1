@@ -107,7 +107,7 @@ if ($includeWinPkg) {
     ls "$nraPath\winpkg"
 }
 
-$msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath$WinPckgArch
+$msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath$WinPkgArch
 if ($msBuild.Length -eq 0) {
     echo "Can't find MSBuild tool. .NET Framework 4.0.x must be installed"
     exit -1
