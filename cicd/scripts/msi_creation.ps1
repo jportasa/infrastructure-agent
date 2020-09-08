@@ -92,7 +92,7 @@ if ($includeWinPkg) {
     # Download WinPkg artifacts.
     $ProgressPreference = 'SilentlyContinue'
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    Invoke-WebRequest "https://$env:AWS_S3_FQDN/infrastructure_agent/deps/nr-winpkg/amd64/nr-winpkg-$WinPkgArch.zip" -OutFile nr-winpkg.zip
+    Invoke-WebRequest "https://$env:AWS_S3_FQDN/infrastructure_agent/deps/nr-winpkg/$WinPkgArch/nr-winpkg-$WinPkgArch.zip" -OutFile nr-winpkg.zip
 
     expand-archive -path '.\nr-winpkg.zip' -destinationpath '.\nr-winpkg'
     Remove-Item -Force .\nr-winpkg.zip
