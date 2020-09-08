@@ -66,7 +66,7 @@ if ($includeFluentBit) {
     # Download fluent-bit artifacts.
     $ProgressPreference = 'SilentlyContinue'
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    Invoke-WebRequest "https://$AWS_S3_FQDN/infrastructure_agent/deps/fluent-bit/windows/nrfb-$nrfbArtifactVersion-$fbArch.zip" -OutFile nrfb.zip
+    Invoke-WebRequest "https://$env:AWS_S3_FQDN/infrastructure_agent/deps/fluent-bit/windows/nrfb-$nrfbArtifactVersion-$fbArch.zip" -OutFile nrfb.zip
 
     expand-archive -path '.\nrfb.zip' -destinationpath '.'
     Remove-Item -Force .\nrfb.zip
@@ -91,7 +91,7 @@ if ($includeWinPkg) {
     # Download WinPkg artifacts.
     $ProgressPreference = 'SilentlyContinue'
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    Invoke-WebRequest "https://$AWS_S3_FQDN/infrastructure_agent/deps/nr-winpkg/amd64/nr-winpkg-$WinPkgArch.zip" -OutFile nr-winpkg.zip
+    Invoke-WebRequest "https://$env:AWS_S3_FQDN/infrastructure_agent/deps/nr-winpkg/amd64/nr-winpkg-$WinPkgArch.zip" -OutFile nr-winpkg.zip
 
     expand-archive -path '.\nr-winpkg.zip' -destinationpath '.'
     Remove-Item -Force .\nr-winpkg.zip
