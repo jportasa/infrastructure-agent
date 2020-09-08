@@ -30,7 +30,7 @@ Expand-Archive $file -DestinationPath "..\..\target\bin\windows_$arch\"
 ls "..\..\target\bin\windows_$arch\"
 
 echo "===> Embedding external components"
-echo "===> Embeding Flex"
+echo "===> Embeding Flex $arch"
 # embded flex
 # download
 [string]$release="v${nriFlexVersion}"
@@ -58,11 +58,12 @@ Remove-Item -Path $flexPath -Force -Recurse
 #    -Not [string]::IsNullOrWhitespace($artifactoryToken))
 [bool] $includeFluentBit = 1
 if ($includeFluentBit) {
-    echo "===> Embeding Fluentbit"
+    echo "===> Embeding Fluentbit $arch"
     $fbArch = "win64"
-    if($arch -eq "386") {
-        $fbArch = "win32"
-    }
+#    if($arch -eq "386") {
+#        $fbArch = "win32"
+#    }
+
     # Download fluent-bit artifacts.
     $ProgressPreference = 'SilentlyContinue'
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -83,7 +84,7 @@ if ($includeFluentBit) {
 
 [bool] $includeWinPkg = 1
 if ($includeWinPkg) {
-    echo "===> Embeding Winpkg"
+    echo "===> Embeding Winpkg $arch"
     $WinPkgArch = "amd64"
     if($arch -eq "386") {
         $WinPkgArch = "386"
