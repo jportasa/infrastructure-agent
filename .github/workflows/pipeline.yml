@@ -72,7 +72,7 @@ jobs:
       - name: Coveralls Parallel
         uses: coverallsapp/github-action@master
         with:
-          github-token: $GITHUB_TOKEN
+          github-token: ${{ secrets.github_token }}
           path-to-lcov: lcov.info
           flag-name: run-linux
           parallel: true
