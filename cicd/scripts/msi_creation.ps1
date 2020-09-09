@@ -108,7 +108,7 @@ if ($includeYamlGen) {
     Invoke-WebRequest "https://$env:AWS_S3_FQDN/infrastructure_agent/deps/yamlgen/yamlgen.exe" -OutFile yamlgen.exe
     Copy-Item -Path "yamlgen.exe" -Destination "..\..\target\bin\windows_$arch\" -Recurse -Force
     Remove-Item -Path "yamlgen.exe" -Force -Recurse
-    ls "$nraPath\yamlgen"
+    ls "..\..\target\bin\windows_$arch\"
 }
 
 $msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath
