@@ -176,7 +176,7 @@ func TestNoRaces(t *testing.T) {
 	for i := 0; i < 100; i++ {
 		ctx, cancel := context.WithCancel(context.Background())
 		cmd := FromCmdSlice([]string{"echo", hugeLine}, &Config{})
-		go cmd.Execute(ctx)
+		cmd.Execute(ctx)
 		cancel()
 	}
 }
