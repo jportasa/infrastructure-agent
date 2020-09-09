@@ -31,8 +31,6 @@ ls "..\..\target\bin\windows_$arch\"
 
 echo "===> Embedding external components"
 echo "===> Embeding Flex $arch"
-# embded flex
-# download
 [string]$release="v${nriFlexVersion}"
 [string]$file="nri-flex_${nriFlexVersion}_Windows_x86_64.zip"
 $ProgressPreference = 'SilentlyContinue'
@@ -108,9 +106,7 @@ if ($includeYamlGen) {
     $ProgressPreference = 'SilentlyContinue'
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     Invoke-WebRequest "https://$env:AWS_S3_FQDN/infrastructure_agent/deps/yamlgen/yamlgen.exe" -OutFile yamlgen.exe
-    $nraPath = "..\..\external_content\windows"
-    New-Item -path "$nraPath\yamlgen" -type directory -Force
-    Copy-Item -Path "yamlgen.exe" -Destination "$nraPath\yamlgen" -Recurse -Force
+    Copy-Item -Path "yamlgen.exe" -Destination "..\..\target\bin\windows_$arch\" -Recurse -Force
     Remove-Item -Path "yamlgen.exe" -Force -Recurse
     ls "$nraPath\yamlgen"
 }
@@ -126,7 +122,6 @@ echo "===> Create msi"
 $env:path = "$env:path;C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin"
 Push-Location -Path "..\..\build\package\windows\newrelic-infra-$arch-installer\newrelic-infra"
 . $msBuild/MSBuild.exe newrelic-infra-installer.wixproj /p:AgentVersion=${version} /p:IncludeFluentBit=$includeFluentBit
-
 
 echo "===>Making versioned installed copy"
 cd bin\Release
