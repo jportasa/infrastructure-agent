@@ -3,7 +3,7 @@ name: Pipeline
 on:
   push:
     branches:
-      - '**'
+      - '*'
       - '!master'
   pull_request:
     types:
@@ -52,6 +52,7 @@ env:
 
 jobs:
   build:
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -61,17 +62,13 @@ jobs:
           go-version: '^1.14.4'
       - name: Validate code
         run: make validate
-
       - name: Running unit tests
         run: make test-coverage
-
       - name: Install gcov2lcov
         working-directory: /tmp
         run: go get -u github.com/jandelgado/gcov2lcov
-
       - name: Convert coverage.out to lcov.info
         run: gcov2lcov -infile=coverage.out -outfile=lcov.info
-
       - name: Coveralls Parallel
         uses: coverallsapp/github-action@master
         with:
@@ -79,3 +76,433 @@ jobs:
           path-to-lcov: lcov.info
           flag-name: run-linux
           parallel: true
+
+  build-container:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '^1.14.4'
+      - name: Build linux agent
+        run: make clean linux/amd64
+      - name: Build container agent
+        run: make -C build/container/ build/base
+
+  build-windows:
+    if: github.event_name == 'push'
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '^1.14.4'
+      - name: Download deps
+        run: go mod vendor
+      - name: Running unit tests
+        run: .\build\win_build.ps1
+
+  build-centos5:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/github.com/newrelic/infrastructure-agent
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: src/github.com/newrelic/infrastructure-agent
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '^1.14.4'
+      - name: Setup CentOS 5
+        run: make go-get-go-1_9
+      - name: Running unit tests
+        env:
+          GOPATH: "${{ github.workspace }}"
+        run: make test-centos-5
+
+  finish:
+    if: github.event_name == 'push'
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
+          parallel-finished: true
+
+  harvest-tests-create-bin:
+    name:  Create bin for harvest tests
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create bin
+        env:
+          PROJECTNAME: $REPO_NAME
+          GOPATH: '/go'
+        run: |
+          cd cicd
+          docker-compose --file docker_compose_harvest_bin_creator.yml run release
+      - name: Push bin to GH workflow artifacts cache
+        uses: actions/upload-artifact@v2
+        with:
+          name: harvest-bin
+          path: harvest-bin
+
+  harvest-tests-runners:
+    name: Harvest tests
+    if: github.event_name == 'push'
+    needs: [harvest-tests-create-bin]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, ubuntu-16.04]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download binaries from GH artifacts cache
+        uses: actions/download-artifact@v2
+        with:
+          name: harvest-bin
+      - name: Setup node
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then # if matrix.os == 'ubuntu-latest'
+            sudo apt install musl-dev
+            chmod a+x ./harvest-bin
+          fi
+      - name: Run harvest bin in current runner
+        run: |
+          ./harvest-bin
+
+  proxy-tests:
+    name: Proxy tests
+    if: github.event_name == 'push'
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Start environment
+        run: |
+          docker-compose -f test/proxy/docker-compose.yml up -d --build
+      - name: Run Proxy tests
+        run: |
+          go test --tags=proxytests ./test/proxy/
+          docker-compose -f test/proxy/docker-compose.yml down
+
+  goreleaser:
+    name: Goreleaser, creates deb/rpm/exe & Push to GH
+    if: github.event.pull_request.merged == true || github.event.action == 'prereleased'
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PUSH_PRERELEASE_ASSETS: false
+    steps:
+      - uses: actions/checkout@v2
+      - name: Unshallowify the repo clone # So GoReleaser can generate the changelog properly
+        run: git fetch --prune --unshallow
+      - name: Check GH event is Prerelease
+        if: github.event.release.prerelease == true
+        run: echo "::set-env name=GITHUB_PUSH_PRERELEASE_ASSETS::true"
+      - name: Create binaries/.deb/rpm/exe & Push to GH Release Assets when Prerelease
+        env:
+          GITHUB_REF: $GITHUB_REF
+          PROJECTNAME: $REPO_NAME
+          GOPATH: '/go'
+        run: |
+          cd cicd
+          docker-compose --file docker_compose_goreleaser.yml run goreleaser
+      - name: Upload Linux artifacts to GH Cache if merge to master
+        if: github.event.pull_request.merged == true
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifacts-and-binaries
+          path: dist/**/*
+
+  s3-apt-update-prerelease:
+    name: S3 repo APT update prerelease
+    if: github.event.action == 'prereleased'
+    needs: [goreleaser]
+    runs-on: ubuntu-latest
+    env:
+      PIPELINE_ACTION: 'prereleased'
+      BASE_PATH: "infrastructure_agent/test/linux/apt"
+      LOCK_REPO_TYPE: 'apt' # yum | apt | zypp | win
+    steps:
+    - uses: actions/checkout@v2
+    - name: Update APT repo
+      run: |
+        cd cicd
+        source scripts/pipeline_functions.sh
+        create_dynamo_table
+        wait_free_lock
+        lock
+        docker-compose --file docker_compose_apt_updater.yml run release
+        release_lock
+
+  tarballs:
+    name: Tarballs for Linux/Win creation & push to GH
+    if: github.event.action == 'prereleased'
+    needs: [goreleaser]
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PUSH_PRERELEASE_ASSETS: false
+    steps:
+      - uses: actions/checkout@v2
+      - name: Unshallowify the repo clone # So GoReleaser can generate the changelog properly
+        run: git fetch --prune --unshallow
+      - name: Check GH event is Release or Prerelease
+        if: github.event_name == 'release'
+        run: echo "::set-env name=GITHUB_PUSH_PRERELEASE_ASSETS::true"
+      - name: Create tarballs for Linux & Windows and push to GH Release Assets (if Release/Prerelease)
+        run: |
+          cd cicd
+          docker-compose --file docker_compose_tarball_creator.yml run tarballcreator
+
+  msi:
+    name: MSI creation & push to GH
+    if: github.event.action == 'prereleased'
+    needs: [goreleaser]
+    runs-on: windows-2019
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Get PFX certificate from GH secrets
+      shell: bash
+      run: |
+        printf "%s" "$PFX_CERTIFICATE_BASE64" | base64 -d - > ./mycert.pfx
+    - name: Import certif. + embed external + sign + create msi
+      shell: pwsh
+      run: |
+        cd cicd/scripts
+        .\msi_creation.ps1 'amd64' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION" "$env:FLUENTBIT_VERSION"
+        .\msi_creation.ps1 '386' "$env:TAG" "$env:PFX_PASSPHRASE" "$env:NRI_FLEX_VERSION" "$env:FLUENTBIT_VERSION"
+    - name: Push Win binary to GH workflow artifacts cache
+      if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+      uses: actions/upload-artifact@v2
+      with:
+        name: Windows-msi-artifact
+        path: build\package\windows\**\newrelic-infra/bin/Release/*
+    - name: Push msi to GH Release assets
+      shell: bash
+      run: |
+        for arch in amd64 386; do
+          ls "build/package/windows/newrelic-infra-${arch}-installer/newrelic-infra/bin/Release/"
+          ./cicd/scripts/upload_artifact_to_github_release.sh "build/package/windows/newrelic-infra-${arch}-installer/newrelic-infra/bin/Release" "newrelic-infra-${arch}.${TAG:1}.msi"
+        done
+
+  docker-image-update-rc:
+    name: Docker image RC create & push to Registry
+    if: github.event.action == 'prereleased'
+    needs: [goreleaser]
+    runs-on: ubuntu-latest
+    env:
+      PIPELINE_ACTION: 'prereleased'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Create image and push to DockerHub
+      run: |
+        cd cicd
+        docker-compose --file docker_compose_docker_image_creator.yml run release
+
+  canaries:
+    name: Run Canaries when prereleased
+    if: github.event.action == 'prereleased'
+    needs: [goreleaser]
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Fake trigger of canaries
+      run: |
+        echo "Fake starting of Canaries"
+
+  installation-testing:
+    name: APT installation test
+    if: github.event.action == 'prereleased'
+    needs: [goreleaser,s3-apt-update-prerelease]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install with APT Release and Prerelease
+      run: |
+        cicd/scripts/installation_testing_ubuntu.sh
+
+  s3-apt-update:
+    name: S3 repo APT update
+    if: github.event.action == 'released'
+    runs-on: ubuntu-latest
+    env:
+      PIPELINE_ACTION: 'released'
+      BASE_PATH: "infrastructure_agent/linux/apt"
+      LOCK_REPO_TYPE: 'apt' # yum | apt | zypp | win
+    steps:
+    - uses: actions/checkout@v2
+    - name: Update APT repo
+      run: |
+        cd cicd
+        source scripts/pipeline_functions.sh
+        create_dynamo_table
+        wait_free_lock
+        lock
+        docker-compose --file docker_compose_apt_updater.yml run release
+        release_lock
+    - name: Notify failure via Slack
+      if: ${{ failure() }}
+      uses: archive/github-actions-slack@master
+      with:
+        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_WEBHOOK }}
+        slack-channel: ${{ env.SLACK_CHANNEL }}
+        slack-text: ':shit: Repo: ${{ github.event.repository.full_name }}, S3 repo APT update FAILURE!'
+
+  s3-yum-update:
+    name: S3 YUM update
+    if: github.event.action == 'released'
+    runs-on: ubuntu-latest
+    env:
+      BASE_PATH: "/infrastructure_agent/linux/yum/el"
+      LOCK_REPO_TYPE: 'yum'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Upload & update YUM repo
+      run: |
+        cd cicd
+        source scripts/pipeline_functions.sh # import functions
+        create_dynamo_table
+        wait_free_lock
+        lock
+        docker-compose --file docker_compose_yum_updater.yml run release
+        release_lock
+    - name: Notify failure via Slack
+      if: ${{ failure() }}
+      uses: archive/github-actions-slack@master
+      with:
+        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_WEBHOOK }}
+        slack-channel: ${{ env.SLACK_CHANNEL }}
+        slack-text: ':shit: Repo: ${{ github.event.repository.full_name }}, S3 YUM update FAILURE!'
+
+  s3-zypp-update:
+    name: S3 ZYPP update
+    if: github.event.action == 'released'
+    runs-on: ubuntu-latest
+    env:
+      BASE_PATH: "/infrastructure_agent/linux/zypp/sles"
+      LOCK_REPO_TYPE: 'zypp'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Upload & update ZYPP repo
+      run: |
+        cd cicd
+        source scripts/pipeline_functions.sh # import functions
+        create_dynamo_table
+        wait_free_lock
+        lock
+        docker-compose --file docker_compose_zypp_updater.yml run release
+        release_lock
+    - name: Notify failure via Slack
+      if: ${{ failure() }}
+      uses: archive/github-actions-slack@master
+      with:
+        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_WEBHOOK }}
+        slack-channel: ${{ env.SLACK_CHANNEL }}
+        slack-text: ':shit: Repo: ${{ github.event.repository.full_name }}, S3 ZYPP update FAILURE!'
+
+  s3-tarball-update:
+    name: S3 Tarball Linux & Windows update
+    if: github.event.action == 'released'
+    runs-on: ubuntu-latest
+    env:
+      BASE_PATH: "/infrastructure_agent/binaries"
+      LOCK_REPO_TYPE: 'tarball'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Upload tarballs
+      run: |
+        cd cicd
+        source scripts/pipeline_functions.sh # import functions
+        create_dynamo_table
+        wait_free_lock
+        lock
+        docker-compose --file docker_compose_tarball_updater.yml run release
+        release_lock
+    - name: Notify failure via Slack
+      if: ${{ failure() }}
+      uses: archive/github-actions-slack@master
+      with:
+        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_WEBHOOK }}
+        slack-channel: ${{ env.SLACK_CHANNEL }}
+        slack-text: ':shit: Repo: ${{ github.event.repository.full_name }}, S3 Tarball Linux & Windows update FAILURE!'
+
+  s3-win-update:
+    name: S3 Windows .msi update
+    if: github.event.action == 'released'
+    runs-on: ubuntu-latest
+    env:
+      BASE_PATH: "/infrastructure_agent"
+      LOCK_REPO_TYPE: 'win'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Upload .msi's
+      run: |
+        cd cicd
+        source scripts/pipeline_functions.sh # import functions
+        create_dynamo_table
+        wait_free_lock
+        lock
+        docker-compose --file docker_compose_win_updater.yml run release
+        release_lock
+    - name: Notify failure via Slack
+      if: ${{ failure() }}
+      uses: archive/github-actions-slack@master
+      with:
+        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_WEBHOOK }}
+        slack-channel: ${{ env.SLACK_CHANNEL }}
+        slack-text: ':shit: Repo: ${{ github.event.repository.full_name }}, S3 Windows .msi update FAILURE!'
+
+  docker-image-update:
+    name: Docker image create & push to Registry
+    if: github.event.action == 'released'
+    runs-on: ubuntu-latest
+    env:
+      PIPELINE_ACTION: 'released'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Create image and push to DockerHub
+      run: |
+        cd cicd
+        docker-compose --file docker_compose_docker_image_creator.yml run release
+    - name: Notify failure via Slack
+      if: ${{ failure() }}
+      uses: archive/github-actions-slack@master
+      with:
+        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_WEBHOOK }}
+        slack-channel: ${{ env.SLACK_CHANNEL }}
+        slack-text: ':shit: Repo: ${{ github.event.repository.full_name }}, Docker image create & push to Registry FAILURE!'
+
+  fastly-purge:
+    name: Fastly purge
+    needs: [s3-apt-update, s3-yum-update, s3-zypp-update, s3-tarball-update, s3-win-update, docker-image-update]
+    if: github.event.action == 'released'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Fastly purge whole cache
+      run: |
+         curl -XPOST -H "Fastly-Key:${FASTLY_API_KEY}" https://api.fastly.com/service/${FASTLY_SERVICE_ID}/purge_all
+
+  conclusion_slack_notification:
+    name: Slack Pipeline conclusion notification Success
+    needs: fastly-purge
+    if: github.event.action == 'released'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Pipeline conclusion check
+      uses: technote-space/workflow-conclusion-action@v1
+    - name: Slack notification
+      if: env.WORKFLOW_CONCLUSION == 'success'
+      uses: archive/github-actions-slack@master
+      with:
+        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_WEBHOOK }}
+        slack-channel: ${{ env.SLACK_CHANNEL }}
+        slack-text: ':clap: Repo: ${{ github.event.repository.full_name }}, Whole steps in pipeline finished OK!'
