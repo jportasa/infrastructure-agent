@@ -135,12 +135,12 @@
                       Source="$(var.ExternalFilesPath)LICENSE.windows.txt"
                       KeyPath="yes" />
               </Component>
-            <!-- <Component Id="CMP_YAMLGENERATOR_EXE" Guid="BA69F9AA-977F-415C-B70B-9ADE31D98E9F" Win64="yes">
+            <Component Id="CMP_YAMLGENERATOR_EXE" Guid="BA69F9AA-977F-415C-B70B-9ADE31D98E9F" Win64="yes">
                 <File Id="FILE_AgentBinaryFolder_YAMLGENERATOR_EXE"
                      Name ="yamlgen.exe"
                      Source="$(var.BinariesPath)yamlgen.exe"
                      KeyPath="yes" />
-            </Component> -->
+            </Component>
             <Component Id="CMP_AGENT_CTL_EXE" Guid="A9108F57-1785-46D5-A879-D2A55AEA62F6" Win64="yes">
                   <File Id="FILE_AgentBinaryFolder_AGENT_CTL_EXE"
                         Name ="newrelic-infra-ctl.exe"
@@ -148,7 +148,7 @@
                         KeyPath="yes" />
             </Component>
 		</ComponentGroup>
-        <!-- <CustomAction Id="yamlgen.nribase" Property="nribase" Value="-license_key  &quot;[LICENSE_KEY]&quot; -display_name &quot;[DISPLAY_NAME]&quot; -proxy &quot;[PROXY]&quot; -custom_attributes &quot;[CUSTOM_ATTRIBUTES]&quot; " />
+        <CustomAction Id="yamlgen.nribase" Property="nribase" Value="-license_key  &quot;[LICENSE_KEY]&quot; -display_name &quot;[DISPLAY_NAME]&quot; -proxy &quot;[PROXY]&quot; -custom_attributes &quot;[CUSTOM_ATTRIBUTES]&quot; " />
         <CustomAction Id="yamlgen.nriconfig0" Property="nriconfig0" Value="-metrics_system_sample_rate &quot;[METRICS_SYSTEM_SAMPLE_RATE]&quot; -metrics_storage_sample_rate &quot;[METRICS_STORAGE_SAMPLE_RATE]&quot; -metrics_network_sample_rate &quot;[METRICS_NETWORK_SAMPLE_RATE]&quot; -metrics_process_sample_rate &quot;[METRICS_PROCESS_SAMPLE_RATE]&quot;" />
         <CustomAction Id="yamlgen.nriconfig1" Property="nriconfig1" Value="-payload_compression_level &quot;[PAYLOAD_COMPRESSION_LEVEL]&quot;" />
 
@@ -156,7 +156,7 @@
                 Directory="AgentBinaryFolder"
                 ExeCommand="[AgentBinaryFolder]yamlgen.exe [nribase] [nriconfig0] [nriconfig1]"
                 Execute="deferred"
-                Return="ignore"/> -->
+                Return="ignore"/>
 
        <CustomAction Id="CleanupDeprecatedBundledPlugins"
               Directory="AgentBinaryFolder"
