@@ -29,10 +29,9 @@ import (
 	"github.com/newrelic/infrastructure-agent/pkg/backend/commandapi"
 	"github.com/newrelic/infrastructure-agent/pkg/fs/systemd"
 	"github.com/newrelic/infrastructure-agent/pkg/helpers"
+	"github.com/newrelic/infrastructure-agent/pkg/helpers/recover"
 	"github.com/newrelic/infrastructure-agent/pkg/integrations/v4/dm"
 	"github.com/newrelic/infrastructure-agent/pkg/integrations/v4/emitter"
-
-	"github.com/newrelic/infrastructure-agent/pkg/helpers/recover"
 	wlog "github.com/newrelic/infrastructure-agent/pkg/log"
 	"github.com/newrelic/infrastructure-agent/pkg/trace"
 	"github.com/sirupsen/logrus"
