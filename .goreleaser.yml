@@ -31,6 +31,8 @@ builds:
 #    - mips64le
 #    - ppc64le
 #    - s390x
+    hooks:
+      post: cicd/scripts/gpg_sign_binary.sh "{{ dir .Dist}}/linux-newrelic-infra"
   - id: linux-newrelic-infra-ctl
     main: ./cmd/newrelic-infra-ctl
     binary: newrelic-infra-ctl
@@ -51,6 +53,8 @@ builds:
 #    - mips64le
 #    - ppc64le
 #    - s390x
+    hooks:
+      post: cicd/scripts/gpg_sign_binary.sh "{{ dir .Dist}}/linux-newrelic-infra-ctl"
   - id: linux-newrelic-infra-service
     main: ./cmd/newrelic-infra-service
     binary: newrelic-infra-service
@@ -72,6 +76,8 @@ builds:
 #    - mips64le
 #    - ppc64le
 #    - s390x
+    hooks:
+      post: cicd/scripts/gpg_sign_binary.sh "{{ dir .Dist}}/linux-newrelic-infra-service"
 
   - id: linux-go1.9-newrelic-infra # Needed for centos5
     main: ./cmd/newrelic-infra
