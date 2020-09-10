@@ -8,6 +8,8 @@ param (
     [string]$nriFlexVersion,
     #fluent-bit
     [string]$nrfbArtifactVersion,
+    #nri-winservices
+    [string]$nriWinServicesVersion,
     # Signing tool
     [string]$signtool='"C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe"'
 )
@@ -109,6 +111,24 @@ if ($includeYamlGen) {
     Copy-Item -Path "yamlgen.exe" -Destination "..\..\target\bin\windows_$arch\" -Recurse -Force
     Remove-Item -Path "yamlgen.exe" -Force -Recurse
     ls "..\..\target\bin\windows_$arch\"
+}
+
+# embded nri-winservices
+if (-Not [string]::IsNullOrWhitespace($nriWinServicesVersion)) {
+    # download
+    [string]$file="nri-winservices-${nriWinServicesVersion}-$arch.zip"
+    $ProgressPreference = 'SilentlyContinue'
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    Invoke-WebRequest "https://github.com/newrelic/nri-winservices/releases/download/${nriWinServicesVersion}/${file}" -OutFile "target\nri-winservices.zip"
+    # extract
+    $windowsTargetPath = "target\bin\windows_$arch\nri-winservices"
+    New-Item -path $windowsTargetPath -type directory -Force
+    expand-archive -path 'target\nri-winservices.zip' -destinationpath $windowsTargetPath
+    Remove-Item 'target\nri-winservices.zip'
+    if (-Not $skipSigning) {
+        iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'New Relic, Inc.'  $windowsTargetPath\nri-winservices.exe"
+        iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'New Relic, Inc.'  $windowsTargetPath\windows_exporter.exe"
+    }
 }
 
 $msBuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath
