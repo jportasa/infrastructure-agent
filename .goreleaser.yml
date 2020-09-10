@@ -637,6 +637,6 @@ release:
   prerelease: true
 
 signs:
-  - artifacts: checksum
+  - artifacts: source
     cmd: gpg2
     args: ["--batch", '-u', "{{ .Env.GPG_APT_MAIL }}", "--passphrase", "{{ .Env.GPG_APT_PASSPHRASE }}", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
