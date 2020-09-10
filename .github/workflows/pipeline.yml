@@ -506,3 +506,4 @@ jobs:
         slack-bot-user-oauth-access-token: ${{ secrets.SLACK_WEBHOOK }}
         slack-channel: ${{ env.SLACK_CHANNEL }}
         slack-text: ':clap: Repo: ${{ github.event.repository.full_name }}, Whole steps in pipeline finished OK!'
+
