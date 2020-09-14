@@ -6,7 +6,7 @@
 #
 set -e
 echo "===> I'm going to sign RPM's"
-RPM_FILE=newrelic-infra-$1.$2.$3.rpm
+RPM_FILE=dist/newrelic-infra-$1.$2.$3.rpm   #newrelic-infra-$1.$2.$3.rpm
 
 echo "%_gpg_name ${GPG_APT_MAIL}" >> ~/.rpmmacros
 echo "%_signature gpg" >> ~/.rpmmacros
