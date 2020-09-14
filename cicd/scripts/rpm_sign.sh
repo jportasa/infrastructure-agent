@@ -20,9 +20,9 @@ rpm --import RPM-GPG-KEY-${GPG_APT_MAIL}
 
 if [ ${ARTIFACT: -4} == ".rpm" ]; then
   echo "===> Signing $ARTIFACT, called from goreleaser, postinstall"
-  rpm --addsign ./dist/$ARTIFACT
+  rpm --addsign $ARTIFACT
   echo "===> Sign verification $RPM_FILE"
-  rpm -v --checksig ./dist/$ARTIFACT
+  rpm -v --checksig $ARTIFACT
 fi
 
 echo "===> Creating signature checksum"
