@@ -5,6 +5,8 @@
 #
 #
 set -e
+SIGNATURE=$1
+ARTIFACT=$2
 
 echo "%_gpg_name ${GPG_APT_MAIL}" >> ~/.rpmmacros
 echo "%_signature gpg" >> ~/.rpmmacros
@@ -16,11 +18,15 @@ echo "===> Importing GPG signature"
 gpg --export -a ${GPG_APT_MAIL} > RPM-GPG-KEY-${GPG_APT_MAIL}
 rpm --import RPM-GPG-KEY-${GPG_APT_MAIL}
 
-echo "===> Signing ./dist/$RPM_FILE, called from goreleaser, postinstall"
-rpm --addsign ./dist/*.rpm
-echo "===> Sign verification $RPM_FILE"
-rpm -v --checksig ./dist/*.rpm
+if [ ${ARTIFACT: -4} == ".rpm" ]; then
+  echo "===> Signing $ARTIFACT, called from goreleaser, postinstall"
+  rpm --addsign ./dist/$ARTIFACT
+  echo "===> Sign verification $RPM_FILE"
+  rpm -v --checksig ./dist/$ARTIFACT
+fi
 
+echo "===> Creating signature checksum"
+gpg2 --batch -u ${GPG_APT_MAIL} --passphrase ${GPG_APT_PASSPHRASE} --pinentry-mode loopback --output ${SIGNATURE} --detach-sign ${ARTIFACT}
 
 
 
