@@ -6,7 +6,6 @@
 #
 set -e
 
-echo "===> Start signing RPM's"
 RPM_FILE=$1
 
 if [ ${RPM_FILE: -4} == ".rpm" ]; then

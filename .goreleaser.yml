@@ -623,6 +623,9 @@ nfpms:
     replacements:
       amd64: x86_64
 
+checksum:
+  disable: true
+
 release:
   prerelease: true
 
