@@ -6,7 +6,7 @@
 #
 set -e
 
-RPM_FILE=$1
+RPM_FILE="./dist/newrelic-infra-$1.$2.$3.rpm
 
 if [ ${RPM_FILE: -4} == ".rpm" ]; then
   echo "%_gpg_name ${GPG_APT_MAIL}" >> ~/.rpmmacros
