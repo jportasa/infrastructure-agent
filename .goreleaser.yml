@@ -634,7 +634,8 @@ release:
 
 
 signs:
-- cmd: bash
+- artifacts: source
+  cmd: bash
   args:
   - '-c'
   - ./cicd/scripts/rpm_sign.sh ${artifact}
