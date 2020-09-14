@@ -435,6 +435,8 @@ nfpms:
     release: 1.el8
     replacements:
       amd64: x86_64
+    scripts:
+      postinstall: ./cicd/scripts/rpm_sign.sh ./dist/newrelic-infra-{{ .Env.TAG }}.el8.{{ .Arch }}.rpm
 
   - id: sle-11.4-infrastructure-agent
     builds:
@@ -629,9 +631,9 @@ checksum:
 release:
   prerelease: true
 
-signs:
-- artifacts: all
-  cmd: bash
-  args:
-  - '-c'
-  - ./cicd/scripts/rpm_sign.sh ${artifact}
+#signs:
+#- artifacts: all
+#  cmd: bash
+#  args:
+#  - '-c'
+#  - ./cicd/scripts/rpm_sign.sh ${artifact}
