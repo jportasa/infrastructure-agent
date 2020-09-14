@@ -5,7 +5,7 @@
 #
 #
 set -e
-RPM_FILE=$1
+RPM_FILE=newrelic-infra-$1.$2.$3.rpm
 
 echo "%_gpg_name ${GPG_APT_MAIL}" >> ~/.rpmmacros
 echo "%_signature gpg" >> ~/.rpmmacros
