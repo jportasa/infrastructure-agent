@@ -97,15 +97,13 @@ nfpms:
     release: 1.el8
     replacements:
       amd64: x86_64
-    scripts:
-      postinstall: ./cicd/scripts/rpm_sign.sh
 
 release:
   prerelease: true
 
 #signs:
-#- artifacts: all
-#  cmd: bash
-#  args:
-#  - '-c'
-#  - ./cicd/scripts/rpm_sign.sh ${artifact}
+- artifacts: source
+  cmd: bash
+  args:
+  - '-c'
+  - ./cicd/scripts/rpm_sign.sh "${signature}" "${artifact}"
