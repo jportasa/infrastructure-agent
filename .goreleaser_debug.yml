@@ -102,7 +102,7 @@ release:
   prerelease: true
 
 signs:
-- artifacts: source
+- artifacts: all
   cmd: bash
   args:
   - '-c'
