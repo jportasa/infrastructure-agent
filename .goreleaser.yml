@@ -31,8 +31,6 @@ builds:
 #    - mips64le
 #    - ppc64le
 #    - s390x
-    hooks:
-      post: cicd/scripts/gpg_sign_binary.sh "./dist/linux-newrelic-infra"
   - id: linux-newrelic-infra-ctl
     main: ./cmd/newrelic-infra-ctl
     binary: newrelic-infra-ctl
@@ -53,8 +51,6 @@ builds:
 #    - mips64le
 #    - ppc64le
 #    - s390x
-    hooks:
-      post: cicd/scripts/gpg_sign_binary.sh "./dist/linux-newrelic-infra-ctl"
   - id: linux-newrelic-infra-service
     main: ./cmd/newrelic-infra-service
     binary: newrelic-infra-service
@@ -76,8 +72,6 @@ builds:
 #    - mips64le
 #    - ppc64le
 #    - s390x
-    hooks:
-      post: cicd/scripts/gpg_sign_binary.sh "./dist/linux-newrelic-infra-service"
 
   - id: linux-go1.9-newrelic-infra # Needed for centos5
     main: ./cmd/newrelic-infra
@@ -637,7 +631,7 @@ release:
 #    cmd: gpg2
 #    args: ["--batch", '-u', "{{ .Env.GPG_APT_MAIL }}", "--passphrase", "{{ .Env.GPG_APT_PASSPHRASE }}", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
 #
-#
+
 
 signs:
 - cmd: bash
