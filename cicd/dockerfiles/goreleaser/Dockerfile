@@ -11,7 +11,7 @@ RUN apk add --no-cache bash \
                        jq
 # Install Go releases
 COPY --from=golang:1.9-alpine /usr/local/go/ /usr/local/go1.9/
-COPY --from=golang:1.15-alpine /usr/local/go/ /usr/local/go1.15/
+#COPY --from=golang:1.15-alpine /usr/local/go/ /usr/local/go1.15/
 ENV PATH="/usr/local/go1.15/bin:${PATH}"
 
 ## Install Goreleaser

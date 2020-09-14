@@ -2,12 +2,12 @@ name: Pipeline
 
 on:
   push:
-    branches:
-      - '**'
-      - '!master'
-  pull_request:
-    types:
-      - closed
+#    branches:
+#      - '**'
+#      - '!master'
+#  pull_request:
+#    types:
+#      - closed
   release:
     types:
       - prereleased
