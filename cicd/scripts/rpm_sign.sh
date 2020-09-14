@@ -6,7 +6,7 @@
 #
 set -e
 echo "===> I'm going to sign RPM's"
-RPM_FILE=dist/newrelic-infra-$1.$2.$3.rpm   #newrelic-infra-$1.$2.$3.rpm
+RPM_FILE=$1
 
 echo "%_gpg_name ${GPG_APT_MAIL}" >> ~/.rpmmacros
 echo "%_signature gpg" >> ~/.rpmmacros
@@ -21,3 +21,5 @@ echo "===> Signing $RPM_FILE, call from goreleaser, postinstall"
 rpm --addsign $RPM_FILE
 echo "===> Sign verification $RPM_FILE,call from goreleaser, postinstall"
 rpm -v --checksig $RPM_FILE
+
+rm ~/.rpmmacros

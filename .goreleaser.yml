@@ -441,8 +441,8 @@ nfpms:
     release: 1.el8
     replacements:
       amd64: x86_64
-    scripts:
-      postinstall: pwd; cicd/scripts/rpm_sign.sh "{{ .Env.TAG }}" "el8" "{{ .Arch }}"
+#    scripts:
+#      postinstall: pwd; cicd/scripts/rpm_sign.sh "{{ .Env.TAG }}" "el8" "{{ .Arch }}"
 
   - id: sle-11.4-infrastructure-agent
     builds:
@@ -638,3 +638,8 @@ release:
 #  - artifacts: source
 #    cmd: gpg2
 #    args: ["--batch", '-u', "{{ .Env.GPG_APT_MAIL }}", "--passphrase", "{{ .Env.GPG_APT_PASSPHRASE }}", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
+signs:
+- cmd: bash
+  args:
+  - '-c'
+  - cicd/scripts/rpm_sign.sh ${artifact}
