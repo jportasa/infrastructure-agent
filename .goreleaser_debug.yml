@@ -101,9 +101,9 @@ nfpms:
 release:
   prerelease: true
 
-#signs:
-- artifacts: source
-  cmd: bash
-  args:
-  - '-c'
-  - ./cicd/scripts/rpm_sign.sh "${signature}" "${artifact}"
+signs:
+  - artifacts: source
+    cmd: bash
+    args:
+    - '-c'
+    - ./cicd/scripts/rpm_sign.sh "${signature}" "${artifact}"
