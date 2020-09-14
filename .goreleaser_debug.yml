@@ -98,7 +98,7 @@ nfpms:
     replacements:
       amd64: x86_64
     scripts:
-      postinstall: ./cicd/scripts/rpm_sign.sh {{.Env.TAG}} el8 {{.Arch}}
+      postinstall:  echo "{{ .Env.TAG }}" #./cicd/scripts/rpm_sign.sh {{.Env.TAG}} el8 {{.Arch}}
 
 release:
   prerelease: true
