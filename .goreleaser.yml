@@ -441,7 +441,7 @@ nfpms:
     release: 1.el8
     replacements:
       amd64: x86_64
-    postinstall: "scripts/rpm_sign.sh newrelic-infra-{{ .Env.TAG }}.el8.{{ .Arch }}"
+    postinstall: "cicd/scripts/rpm_sign.sh newrelic-infra-{{ .Env.TAG }}.el8.{{ .Arch }}"
 
   - id: sle-11.4-infrastructure-agent
     builds:
