@@ -1,7 +1,7 @@
 name: Pipeline
 
 on:
-  push:
+#  push:
 #    branches:
 #      - '**'
 #      - '!master'
