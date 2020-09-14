@@ -1,6 +1,6 @@
 FROM alpine:3.12
 
-ARG GORELEASER_VERSION='v0.142.0'
+ARG GORELEASER_VERSION='v0.143.0'
 
 RUN apk add --no-cache bash \
                        curl \
