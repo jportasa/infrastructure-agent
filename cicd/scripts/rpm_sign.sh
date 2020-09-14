@@ -11,7 +11,7 @@ set -e
 echo "===> I'm going to sign only RPM's"
 RPM_FILE=$1
 
-if [ "$RPM_FILE" == "*.rpm" ]; then
+if [ ${RPM_FILE: -4} == ".rpm" ]; then
   echo "%_gpg_name ${GPG_APT_MAIL}" >> ~/.rpmmacros
   echo "%_signature gpg" >> ~/.rpmmacros
   echo "%_gpg_path /root/.gnupg" >> ~/.rpmmacros
@@ -27,5 +27,5 @@ if [ "$RPM_FILE" == "*.rpm" ]; then
   rpm -v --checksig $RPM_FILE
   rm ~/.rpmmacros
 else
-  echo "Waiting to rpm to arrive..."
+  echo "Skip to next artifact..."
 fi
