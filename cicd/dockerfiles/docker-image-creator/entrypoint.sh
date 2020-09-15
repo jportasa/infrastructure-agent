@@ -52,9 +52,9 @@ cp -r /${REPO_FULL_NAME}/build/container/workspace/target/nridocker/* /${REPO_FU
 cp /${REPO_FULL_NAME}/build/container/../../target/bin/linux_amd64/* /${REPO_FULL_NAME}/build/container/workspace/
 
 echo "===> Docker build"
-docker build --no-cache --pull -t newrelic/infrastructure:0.0 -t newrelic/infrastructure:latest \
-  --build-arg image_version=0.0 \
-  --build-arg agent_version=0.0 \
+docker build --no-cache --pull -t newrelic/infrastructure:${AGENT_BUILD_NUMBER} -t newrelic/infrastructure:latest \
+  --build-arg image_version=${AGENT_BUILD_NUMBER} \
+  --build-arg agent_version=${AGENT_BUILD_NUMBER} \
   --build-arg version_file=VERSION \
   --build-arg agent_bin=newrelic-infra \
   --build-arg nri_pkg_dir=ohis \
@@ -63,17 +63,16 @@ docker build --no-cache --pull -t newrelic/infrastructure:0.0 -t newrelic/infras
   --target base -f /${REPO_FULL_NAME}/build/container/Dockerfile \
   workspace
 
-######################
-#  PUSH TO DOCKERHUB #
-######################
-
+#######################
+#  PUSH TO DOCKERHUB  #
+#######################
 docker login --username ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD}
 if [ $PIPELINE_ACTION == 'prereleased' ]; then
-  echo "===> Push ${DOCKERHUB_NAMESPACE}/infrastructure:${TAG:1}-rc to dockerhub registry"
-  docker push ${DOCKERHUB_NAMESPACE}/infrastructure:${TAG:1}-rc
+  echo "===> Push ${DOCKERHUB_NAMESPACE}/infrastructure:${AGENT_BUILD_NUMBER} to dockerhub registry"
+  docker push ${DOCKERHUB_NAMESPACE}/infrastructure:${AGENT_BUILD_NUMBER}
 fi
 if [ $PIPELINE_ACTION == 'released' ]; then
   echo "===> Push release image to dockerhub registry"
   docker push ${DOCKERHUB_NAMESPACE}/infrastructure:latest
-  docker push ${DOCKERHUB_NAMESPACE}/infrastructure:${TAG:1}
+  docker push ${DOCKERHUB_NAMESPACE}/infrastructure:${AGENT_BUILD_NUMBER}
 fi
