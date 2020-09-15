@@ -222,12 +222,6 @@ jobs:
         with:
           name: artifacts-and-binaries
           path: dist/**/*
-      - name: Delete .sig files from Release asset (Patch for Goreleaser sign deb/rpm)
-        uses: mknejp/delete-release-assets@v1
-        with:
-          token: ${{ env.GITHUB_TOKEN }} #${{ github.token }}
-          tag: ${{ env.TAG }}# This may also be of the form 'refs/tags/staging'
-          assets: '*.sig'
 
   s3-apt-update-prerelease:
     name: S3 repo APT update prerelease
