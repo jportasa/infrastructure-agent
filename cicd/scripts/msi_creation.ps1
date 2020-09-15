@@ -119,12 +119,12 @@ if (-Not [string]::IsNullOrWhitespace($nriWinServicesVersion)) {
     [string]$file="nri-winservices-${nriWinServicesVersion}-amd64.zip"
     $ProgressPreference = 'SilentlyContinue'
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    Invoke-WebRequest "https://github.com/newrelic/nri-winservices/releases/download/${nriWinServicesVersion}/${file}" -OutFile "target\nri-winservices.zip"
+    Invoke-WebRequest "https://github.com/newrelic/nri-winservices/releases/download/${nriWinServicesVersion}/${file}" -OutFile "nri-winservices.zip"
     # extract
-    $windowsTargetPath = "target\bin\windows_$arch\nri-winservices"
+    $windowsTargetPath = "..\..\target\bin\windows_$arch\nri-winservices"
     New-Item -path $windowsTargetPath -type directory -Force
-    expand-archive -path 'target\nri-winservices.zip' -destinationpath $windowsTargetPath
-    Remove-Item 'target\nri-winservices.zip'
+    expand-archive -path 'nri-winservices.zip' -destinationpath $windowsTargetPath
+    Remove-Item 'nri-winservices.zip'
     if (-Not $skipSigning) {
         iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'New Relic, Inc.'  $windowsTargetPath\nri-winservices.exe"
         iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'New Relic, Inc.'  $windowsTargetPath\windows_exporter.exe"
