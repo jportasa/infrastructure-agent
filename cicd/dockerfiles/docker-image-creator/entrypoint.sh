@@ -52,7 +52,7 @@ cp -r /${REPO_FULL_NAME}/build/container/workspace/target/nridocker/* /${REPO_FU
 cp /${REPO_FULL_NAME}/build/container/../../target/bin/linux_amd64/* /${REPO_FULL_NAME}/build/container/workspace/
 
 echo "===> Docker build"
-docker build --no-cache --pull -t newrelic/infrastructure:${AGENT_BUILD_NUMBER} -t newrelic/infrastructure:latest \
+docker build --no-cache --pull -t ${DOCKERHUB_NAMESPACE}/infrastructure:${AGENT_BUILD_NUMBER} -t ${DOCKERHUB_NAMESPACE}/infrastructure:latest \
   --build-arg image_version=${AGENT_BUILD_NUMBER} \
   --build-arg agent_version=${AGENT_BUILD_NUMBER} \
   --build-arg version_file=VERSION \
