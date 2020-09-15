@@ -5,7 +5,7 @@ set -e
 # Create infrastructure-agent docker image and push it to Registry
 #
 #
-echo "===> Init docker vars fefore build image"
+echo "===> Init docker vars before build image"
 export NS=${DOCKERHUB_NAMESPACE}
 if [ $PIPELINE_ACTION == 'prereleased' ]; then
   export AGENT_BUILD_NUMBER=${TAG:1}-rc
@@ -60,8 +60,9 @@ docker build --no-cache --pull -t newrelic/infrastructure:${AGENT_BUILD_NUMBER} 
   --build-arg nri_pkg_dir=ohis \
   --build-arg nri_docker_version=${NRI_DOCKER_VERSION} \
   --build-arg nri_flex_version=${NRI_FLEX_VERSION} \
-  --target base -f /${REPO_FULL_NAME}/build/container/Dockerfile \
-  workspace
+  --target base \
+  -f /${REPO_FULL_NAME}/build/container/Dockerfile \
+  /${REPO_FULL_NAME}/build/container/workspace/
 
 #######################
 #  PUSH TO DOCKERHUB  #
