@@ -44,12 +44,12 @@ rpm --import /tmp/RPM-GPG-KEY-${GPG_APT_MAIL}
 if $GITHUB_PUSH_PRERELEASE_ASSETS; then
   if [ $download_urls == 'empty' ]; then
     echo "===> No GH Release Assets, so I run Goreleaser and push to GH release assets";
-    goreleaser release --config=.goreleaser.yml --rm-dist
+    goreleaser release --config=.goreleaser_debug.yml --rm-dist
   else
     echo "===> Release assets were already created for this TAG, GH don't allow to overwrite them"
   fi
 else
     echo "===> Run Goreleaser and push them to GH Workflow Cache Assets";
-    goreleaser release --config=.goreleaser.yml --rm-dist --snapshot
+    goreleaser release --config=.goreleaser_debug.yml --rm-dist --snapshot
 fi
 
