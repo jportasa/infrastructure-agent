@@ -30,6 +30,17 @@ download_urls=$(curl --header "authorization: Bearer $GITHUB_TOKEN" --url https:
 echo "===> Strip from TAG v character"
 TAG=`echo ${TAG:1}`
 
+echo "===> Create .rpmmacros to sign rpm's from Goreleaser"
+echo "%_gpg_name ${GPG_APT_MAIL}" >> ~/.rpmmacros
+echo "%_signature gpg" >> ~/.rpmmacros
+echo "%_gpg_path /root/.gnupg" >> ~/.rpmmacros
+echo "%_gpgbin /usr/bin/gpg2" >> ~/.rpmmacros
+echo "%__gpg_sign_cmd   %{__gpg} gpg --no-verbose --no-armor --batch --pinentry-mode loopback --passphrase ${GPG_APT_PASSPHRASE} --no-secmem-warning -u "%{_gpg_name}" -sbo %{__signature_filename} %{__plaintext_filename}" >> ~/.rpmmacros
+
+echo "===> Importing GPG signature, needed from Goreleaser to sign"
+gpg --export -a ${GPG_APT_MAIL} > RPM-GPG-KEY-${GPG_APT_MAIL}
+rpm --import RPM-GPG-KEY-${GPG_APT_MAIL}
+
 if $GITHUB_PUSH_PRERELEASE_ASSETS; then
   if [ $download_urls == 'empty' ]; then
     echo "===> No GH Release Assets, so I run Goreleaser and push to GH release assets";

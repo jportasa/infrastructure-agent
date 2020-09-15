@@ -101,6 +101,9 @@ nfpms:
 release:
   prerelease: true
 
+checksum:
+  disable: true
+
 signs:
   - artifacts: all
     cmd: bash
