@@ -126,8 +126,8 @@ if (-Not [string]::IsNullOrWhitespace($nriWinServicesVersion)) {
     expand-archive -path 'nri-winservices.zip' -destinationpath $windowsTargetPath
     Remove-Item 'nri-winservices.zip'
     if (-Not $skipSigning) {
-        iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'New Relic, Inc.'  $windowsTargetPath\nri-winservices.exe"
-        iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'New Relic, Inc.'  $windowsTargetPath\windows_exporter.exe"
+        iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'Contoso'  $windowsTargetPath\nri-winservices.exe"
+        iex "& $signtool sign /d 'New Relic Infrastructure Agent' /n 'Contoso'  $windowsTargetPath\windows_exporter.exe"
     }
 }
 
