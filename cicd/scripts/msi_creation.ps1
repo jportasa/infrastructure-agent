@@ -116,7 +116,7 @@ if ($includeYamlGen) {
 # embded nri-winservices
 if (-Not [string]::IsNullOrWhitespace($nriWinServicesVersion)) {
     # download
-    [string]$file="nri-winservices-${nriWinServicesVersion}-$arch.zip"
+    [string]$file="nri-winservices-${nriWinServicesVersion}-amd64.zip"
     $ProgressPreference = 'SilentlyContinue'
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     Invoke-WebRequest "https://github.com/newrelic/nri-winservices/releases/download/${nriWinServicesVersion}/${file}" -OutFile "target\nri-winservices.zip"
