@@ -50,6 +50,7 @@ mkdir -p /${REPO_FULL_NAME}/build/container/workspace/ohis/var/db/newrelic-infra
 cp /${REPO_FULL_NAME}/build/container/workspace/target/nriflex/nri-flex /${REPO_FULL_NAME}/build/container/workspace/ohis/var/db/newrelic-infra/newrelic-integrations/bin/
 cp -r /${REPO_FULL_NAME}/build/container/workspace/target/nridocker/* /${REPO_FULL_NAME}/build/container/workspace/ohis
 cp /${REPO_FULL_NAME}/build/container/../../target/bin/linux_amd64/* /${REPO_FULL_NAME}/build/container/workspace/
+
 echo "===> Docker build"
 docker build --no-cache --pull -t newrelic/infrastructure:0.0 -t newrelic/infrastructure:latest \
   --build-arg image_version=0.0 \
@@ -59,7 +60,8 @@ docker build --no-cache --pull -t newrelic/infrastructure:0.0 -t newrelic/infras
   --build-arg nri_pkg_dir=ohis \
   --build-arg nri_docker_version=${NRI_DOCKER_VERSION} \
   --build-arg nri_flex_version=${NRI_FLEX_VERSION} \
-  --target base -f /${REPO_FULL_NAME}/build/container/Dockerfile workspace
+  --target base -f /${REPO_FULL_NAME}/build/container/Dockerfile \
+  workspace
 
 ######################
 #  PUSH TO DOCKERHUB #
