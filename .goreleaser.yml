@@ -19,7 +19,8 @@ builds:
     goos:
     - linux
     ldflags:
-    - -s -w -X main.integrationVersion={{.Version}}
+    - -s -w -X main.version={{.Version}}
+    - -s -w -X main.commit={{.Commit}}
     goarch:
     - amd64
 #    - arm
@@ -39,7 +40,8 @@ builds:
     goos:
     - linux
     ldflags:
-    - -s -w -X main.integrationVersion={{.Version}}
+    - -s -w -X main.version={{.Version}}
+    - -s -w -X main.commit={{.Commit}}
     goarch:
     - amd64
 #    - arm
@@ -81,7 +83,8 @@ builds:
     goos:
     - linux
     ldflags:
-    - -s -w -X main.integrationVersion={{.Version}}
+    - -s -w -X main.version={{.Version}}
+    - -s -w -X main.commit={{.Commit}}
     goarch:
     - amd64
     hooks:
@@ -95,7 +98,8 @@ builds:
     goos:
     - linux
     ldflags:
-    - -s -w -X main.integrationVersion={{.Version}}
+    - -s -w -X main.version={{.Version}}
+    - -s -w -X main.commit={{.Commit}}
     goarch:
     - amd64
     hooks:
