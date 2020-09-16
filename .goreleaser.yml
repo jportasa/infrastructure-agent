@@ -19,8 +19,8 @@ builds:
     goos:
     - linux
     ldflags:
-    - -s -w -X main.version={{.Version}}
-    - -s -w -X main.commit={{.Commit}}
+    - -s -w -X main.buildVersion={{.Version}}
+    - -s -w -X main.gitCommit={{.Commit}}
     goarch:
     - amd64
 #    - arm
@@ -40,8 +40,8 @@ builds:
     goos:
     - linux
     ldflags:
-    - -s -w -X main.version={{.Version}}
-    - -s -w -X main.commit={{.Commit}}
+    - -s -w -X main.buildVersion={{.Version}}
+    - -s -w -X main.gitCommit={{.Commit}}
     goarch:
     - amd64
 #    - arm
@@ -61,8 +61,8 @@ builds:
     goos:
     - linux
     ldflags:
-    - -s -w -X main.version={{.Version}}
-    - -s -w -X main.commit={{.Commit}}
+    - -s -w -X main.buildVersion={{.Version}}
+    - -s -w -X main.gitCommit={{.Commit}}
     goarch:
     - amd64
 #    - arm
@@ -83,8 +83,8 @@ builds:
     goos:
     - linux
     ldflags:
-    - -s -w -X main.version={{.Version}}
-    - -s -w -X main.commit={{.Commit}}
+    - -s -w -X main.buildVersion={{.Version}}
+    - -s -w -X main.gitCommit={{.Commit}}
     goarch:
     - amd64
     hooks:
@@ -98,8 +98,8 @@ builds:
     goos:
     - linux
     ldflags:
-    - -s -w -X main.version={{.Version}}
-    - -s -w -X main.commit={{.Commit}}
+    - -s -w -X main.buildVersion={{.Version}}
+    - -s -w -X main.gitCommit={{.Commit}}
     goarch:
     - amd64
     hooks:
@@ -113,8 +113,8 @@ builds:
     goos:
     - linux
     ldflags:
-    - -s -w -X main.version={{.Version}}
-    - -s -w -X main.commit={{.Commit}}
+    - -s -w -X main.buildVersion={{.Version}}
+    - -s -w -X main.gitCommit={{.Commit}}
     goarch:
     - amd64
     hooks:
@@ -158,8 +158,8 @@ builds:
     goos:
     - windows
     ldflags:
-    - -s -w -X main.version={{.Version}}
-    - -s -w -X main.commit={{.Commit}}
+    - -s -w -X main.buildVersion={{.Version}}
+    - -s -w -X main.gitCommit={{.Commit}}
     goarch:
     - amd64
     - 386
