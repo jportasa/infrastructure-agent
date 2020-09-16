@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 #
-# Create the metadata for the exe file, called by .goreleser as a hook in the build section
+# Create the metadata for the exe's files, called by .goreleser as a hook in the build section
 #
 #
 TAG=$1
@@ -35,7 +35,6 @@ sed \
   -e "s/{AgentMinorVersion}/$AgentMinorVersion/g" \
   -e "s/{AgentPatchVersion}/$AgentPatchVersion/g" \
   -e "s/{AgentBuildVersion}/$AgentBuildVersion/g" cmd/newrelic-infra-service/versioninfo.json.template > cmd/newrelic-infra-service/versioninfo.json
-
 
 echo "===> Adding metadata to exe with Goversioninfo"
 export PATH="$PATH:/go/bin"
