@@ -241,6 +241,16 @@
             Source="$(var.BinariesPath)nri-flex.exe"
               KeyPath="yes" />
       </Component>
+      <Component Id="CMP_WINSERVICEEXP_PLUGIN" Guid="2FCCD294-CE97-4051-8E6C-A6A48D9056B1" Win64="yes">
+        <File Id="FILE_WINSERVICEEXP_PLUGIN"
+            Source="$(var.BinariesPath)\nri-winservices\nri-winservices.exe"
+              KeyPath="yes" />
+      </Component>
+      <Component Id="CMP_WINSERVICE_PLUGIN" Guid="2FCCD294-CE97-4051-8E6C-A6A48D9056B2" Win64="yes">
+        <File Id="FILE_WINSERVICE_PLUGIN"
+            Source="$(var.BinariesPath)\nri-winservices\windows_exporter.exe"
+              KeyPath="yes" />
+      </Component>
     </ComponentGroup>
   </Fragment>
 
