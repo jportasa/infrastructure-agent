@@ -174,6 +174,28 @@
             Source="$(var.ExternalFilesPath)windows\386\winpkg\nr-winpkg.exe"
               KeyPath="yes" />
       </Component>
+      <Component Id="CMP_WINPKG_PLUGIN_DEFINITION" Guid="E1059402-929C-4B79-AEA6-A4F2EB8B9969" Win64="no">
+        <File Id="FILE_WINPKG_PLUGIN_DEFINITION"
+            Source="$(var.ExternalFilesPath)windows\amd64\winpkg\newrelic-infra-winpkg-definition.yml"
+            Name="newrelic-infra-winpkg-definition.yml"
+              KeyPath="yes" />
+      </Component>
+      <!-- FLEX -->
+      <Component Id="CMP_FLEX_PLUGIN" Guid="2FCCD294-CE97-4051-8E6C-A6A48D9056B0" Win64="no">
+        <File Id="FILE_FLEX_PLUGIN"
+            Source="$(var.BinariesPath)nri-flex.exe"
+              KeyPath="yes" />
+      </Component>
+      <Component Id="CMP_WINSERVICEEXP_PLUGIN" Guid="2FCCD294-CE97-4051-8E6C-A6A48D9056B1" Win64="no">
+        <File Id="FILE_WINSERVICEEXP_PLUGIN"
+            Source="$(var.BinariesPath)\nri-winservices\nri-winservices.exe"
+              KeyPath="yes" />
+      </Component>
+      <Component Id="CMP_WINSERVICE_PLUGIN" Guid="2FCCD294-CE97-4051-8E6C-A6A48D9056B2" Win64="no">
+        <File Id="FILE_WINSERVICE_PLUGIN"
+            Source="$(var.BinariesPath)\nri-winservices\windows_exporter.exe"
+              KeyPath="yes" />
+      </Component>
     </ComponentGroup>
   </Fragment>
 
@@ -239,6 +261,12 @@
         <File Id="FILE_WINPKG_PLUGIN_CONFIG"
             Source="$(var.ExternalFilesPath)windows\386\winpkg\winpkg-config.yml"
             Name="newrelic-infra-winpkg-config.yml"
+              KeyPath="yes" />
+      </Component>
+	  <Component Id="CMP_WINSERVICE_PLUGIN_DEFINITION" Guid="65E7FE69-D159-4641-B9E7-8B4B124305A7" Win64="no">
+        <File Id="FILE_WINSERVICE_PLUGIN_DEFINITION"
+            Source="$(var.BinariesPath)\nri-winservices\winservices-config.yml.sample"
+            Name="winservices-config.yml.sample"
               KeyPath="yes" />
       </Component>
     </ComponentGroup>
