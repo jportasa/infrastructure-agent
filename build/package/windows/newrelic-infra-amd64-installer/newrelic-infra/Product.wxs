@@ -231,7 +231,7 @@
       </Component>
       <Component Id="CMP_WINPKG_PLUGIN_DEFINITION" Guid="E1059402-929C-4B79-AEA6-A4F2EB8B9969" Win64="yes">
         <File Id="FILE_WINPKG_PLUGIN_DEFINITION"
-            Source="$(var.ExternalFilesPath)windows\amd64\winpkg\winpkg-definition.yml"
+            Source="$(var.ExternalFilesPath)windows\amd64\winpkg\newrelic-infra-winpkg-definition.yml"
             Name="newrelic-infra-winpkg-definition.yml"
               KeyPath="yes" />
       </Component>
@@ -248,7 +248,7 @@
     <ComponentGroup Id="BundledPluginConfigComponents" Directory="V1PluginConfigsFolder">
 	  <Component Id="CMP_WINPKG_PLUGIN_CONFIG" Guid="65E7FE69-D159-4641-B9E7-8B4B124305A5" Win64="yes">
         <File Id="FILE_WINPKG_PLUGIN_CONFIG"
-            Source="$(var.ExternalFilesPath)windows\amd64\winpkg\winpkg-config.yml"
+            Source="$(var.ExternalFilesPath)windows\amd64\winpkg\newrelic-infra-winpkg-config.yml"
             Name="newrelic-infra-winpkg-config.yml"
               KeyPath="yes" />
       </Component>
