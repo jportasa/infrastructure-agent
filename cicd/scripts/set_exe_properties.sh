@@ -24,6 +24,19 @@ sed \
   -e "s/{AgentPatchVersion}/$AgentPatchVersion/g" \
   -e "s/{AgentBuildVersion}/$AgentBuildVersion/g" cmd/newrelic-infra/versioninfo.json.template > cmd/newrelic-infra/versioninfo.json
 
+sed \
+  -e "s/{AgentMajorVersion}/$AgentMajorVersion/g" \
+  -e "s/{AgentMinorVersion}/$AgentMinorVersion/g" \
+  -e "s/{AgentPatchVersion}/$AgentPatchVersion/g" \
+  -e "s/{AgentBuildVersion}/$AgentBuildVersion/g" cmd/newrelic-infra-ctl/versioninfo.json.template > cmd/newrelic-infra-ctl/versioninfo.json
+
+sed \
+  -e "s/{AgentMajorVersion}/$AgentMajorVersion/g" \
+  -e "s/{AgentMinorVersion}/$AgentMinorVersion/g" \
+  -e "s/{AgentPatchVersion}/$AgentPatchVersion/g" \
+  -e "s/{AgentBuildVersion}/$AgentBuildVersion/g" cmd/newrelic-infra-service/versioninfo.json.template > cmd/newrelic-infra-service/versioninfo.json
+
+
 echo "===> Adding metadata to exe with Goversioninfo"
 export PATH="$PATH:/go/bin"
 go get github.com/josephspurrier/goversioninfo/cmd/goversioninfo
