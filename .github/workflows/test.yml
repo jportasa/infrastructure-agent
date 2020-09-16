@@ -8,12 +8,12 @@ steps:
 - uses: actions/checkout@v1
 
 - name: Install hub
-    uses: geertvdc/setup-hub@master
+  uses: geertvdc/setup-hub@master
 
 - name: run hub commands
-    env:
-      GITHUB_USER: 'jportasa'
-      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-    run: |
-         #hub release
-         hub api -X DELETE 'https://github.com/jportasa/infrastructure-agent/releases/download/v6.0.1/newrelic-infra-6.0.1.el5.x86_64.rpm.sig'
+  env:
+    GITHUB_USER: 'jportasa'
+    GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+  run: |
+    #hub release
+    hub api -X DELETE 'https://github.com/jportasa/infrastructure-agent/releases/download/v6.0.1/newrelic-infra-6.0.1.el5.x86_64.rpm.sig'
