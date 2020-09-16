@@ -263,7 +263,7 @@
               KeyPath="yes" />
       </Component>
 
-	  <Component Id="CMP_WINSERVICE_PLUGIN_DEFINITION" Guid="65E7FE69-D159-4641-B9E7-8B4B124305A5" Win64="yes">
+	  <Component Id="CMP_WINSERVICE_PLUGIN_DEFINITION" Guid="65E7FE69-D159-4641-B9E7-8B4B124305A6" Win64="yes">
         <File Id="FILE_WINSERVICE_PLUGIN_DEFINITION"
             Source="$(var.BinariesPath)\nri-winservices\winservices-config.yml.sample"
             Name="winservices-config.yml.sample"
