@@ -5,6 +5,7 @@ on:
 
 jobs:
   delete_asset:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
 
