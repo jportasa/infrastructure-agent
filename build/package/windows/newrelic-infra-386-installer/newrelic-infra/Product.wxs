@@ -174,12 +174,6 @@
             Source="$(var.ExternalFilesPath)windows\386\winpkg\nr-winpkg.exe"
               KeyPath="yes" />
       </Component>
-      <Component Id="CMP_WINPKG_PLUGIN_DEFINITION" Guid="E1059402-929C-4B79-AEA6-A4F2EB8B9969" Win64="no">
-        <File Id="FILE_WINPKG_PLUGIN_DEFINITION"
-            Source="$(var.ExternalFilesPath)windows\amd64\winpkg\newrelic-infra-winpkg-definition.yml"
-            Name="newrelic-infra-winpkg-definition.yml"
-              KeyPath="yes" />
-      </Component>
       <!-- FLEX -->
       <Component Id="CMP_FLEX_PLUGIN" Guid="2FCCD294-CE97-4051-8E6C-A6A48D9056B0" Win64="no">
         <File Id="FILE_FLEX_PLUGIN"
@@ -201,7 +195,7 @@
 
   <Fragment>
     <ComponentGroup Id="BundledPluginDefinitionComponents" Directory="V1NRPluginsFolder">
-        <Component Id="CMP_WINPKG_PLUGIN_DEFINITION" Guid="E1059402-929C-4B79-AEA6-A4F2EB8B9386" Win64="no">
+        <Component Id="CMP_WINPKG_PLUGIN_DEFINITION" Guid="E1059402-929C-4B79-AEA6-A4F2EB8B9388" Win64="no">
         <File Id="FILE_WINPKG_PLUGIN_DEFINITION"
             Source="$(var.ExternalFilesPath)windows\386\winpkg\winpkg-definition.yml"
             Name="newrelic-infra-winpkg-definition.yml"
