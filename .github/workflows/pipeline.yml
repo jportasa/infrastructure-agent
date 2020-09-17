@@ -222,15 +222,6 @@ jobs:
         with:
           name: artifacts-and-binaries
           path: dist/**/*
-      - name: Install hub
-        if: github.event.pull_request.merged == false
-        uses: geertvdc/setup-hub@master
-      - name: run hub commands
-        env:
-          GITHUB_USER: ${{ secrets.GITHUB_USER }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-             hub release
 
   s3-apt-update-prerelease:
     name: S3 repo APT update prerelease
