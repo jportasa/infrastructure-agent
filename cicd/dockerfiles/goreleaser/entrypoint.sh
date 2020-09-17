@@ -41,8 +41,11 @@ echo "===> Importing GPG signature, needed from Goreleaser to sign"
 gpg --export -a ${GPG_APT_MAIL} > /tmp/RPM-GPG-KEY-${GPG_APT_MAIL}
 rpm --import /tmp/RPM-GPG-KEY-${GPG_APT_MAIL}
 
+goreleaser release --config=.goreleaser_debug.yml --rm-dist --snapshot
 
-goreleaser release --config=.goreleaser.yml --rm-dist --snapshot
+##################
+#   Sign RPM's   #
+##################
 
 cd dist
 for rpm_file in $(find -regex ".*\.\(rpm\)");do
@@ -50,7 +53,11 @@ for rpm_file in $(find -regex ".*\.\(rpm\)");do
   rpm --addsign $rpm_file
   echo "===> Sign verification $rpm_file"
   rpm -v --checksig $rpm_file
-fi
+done
+
+###############################
+#  Push to GH Release Assets  #
+###############################
 
 if $GITHUB_PUSH_PRERELEASE_ASSETS; then
   for artifact in $(find -regex ".*\.\(msi\|rpm\|deb\|zip\|tar.gz\)");do
