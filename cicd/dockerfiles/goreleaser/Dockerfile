@@ -9,6 +9,10 @@ RUN apk add --no-cache bash \
                        rpm \
                        gnupg \
                        jq
+
+# To upload assets to GH
+apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing hub
+
 # Install Go releases
 COPY --from=golang:1.9-alpine /usr/local/go/ /usr/local/go1.9/
 COPY --from=golang:1.15-alpine /usr/local/go/ /usr/local/go1.15/

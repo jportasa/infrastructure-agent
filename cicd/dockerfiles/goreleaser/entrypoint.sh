@@ -41,15 +41,16 @@ echo "===> Importing GPG signature, needed from Goreleaser to sign"
 gpg --export -a ${GPG_APT_MAIL} > /tmp/RPM-GPG-KEY-${GPG_APT_MAIL}
 rpm --import /tmp/RPM-GPG-KEY-${GPG_APT_MAIL}
 
+
+goreleaser release --config=.goreleaser.yml --rm-dist --snapshot
+
 if $GITHUB_PUSH_PRERELEASE_ASSETS; then
-  if [ $download_urls == 'empty' ]; then
-    echo "===> No GH Release Assets, so I run Goreleaser and push to GH release assets";
-    goreleaser release --config=.goreleaser.yml --rm-dist
-  else
-    echo "===> Release assets were already created for this TAG, GH don't allow to overwrite them"
-  fi
-else
-    echo "===> Run Goreleaser and push them to GH Workflow Cache Assets";
-    goreleaser release --config=.goreleaser.yml --rm-dist --snapshot
+  cd dist
+  for artifact in $(find -regex ".*\.\(msi\|rpm\|deb\|zip\|tar.gz\)");do
+    echo "===> Pushing to GH $TAG asset: $artifact"
+    hub release edit --attach $artifact $TAG --message "$TAG"
+  done
 fi
+
+
 
