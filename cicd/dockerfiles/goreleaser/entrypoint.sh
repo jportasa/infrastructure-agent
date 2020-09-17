@@ -44,8 +44,15 @@ rpm --import /tmp/RPM-GPG-KEY-${GPG_APT_MAIL}
 
 goreleaser release --config=.goreleaser.yml --rm-dist --snapshot
 
+cd dist
+for rpm_file in $(find -regex ".*\.\(rpm\)");do
+  echo "===> Signing $rpm_file"
+  rpm --addsign $rpm_file
+  echo "===> Sign verification $rpm_file"
+  rpm -v --checksig $rpm_file
+fi
+
 if $GITHUB_PUSH_PRERELEASE_ASSETS; then
-  cd dist
   for artifact in $(find -regex ".*\.\(msi\|rpm\|deb\|zip\|tar.gz\)");do
     echo "===> Pushing to GH $TAG asset: $artifact"
     hub release edit --attach $artifact v${TAG} --message "v${TAG}"

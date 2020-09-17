@@ -633,9 +633,9 @@ release:
 checksum:
   disable: true
 
-signs:
-  - artifacts: all
-    cmd: bash
-    args:
-    - '-c'
-    - ./cicd/scripts/rpm_sign.sh "${signature}" "${artifact}"
+#signs:
+#  - artifacts: all
+#    cmd: bash
+#    args:
+#    - '-c'
+#    - ./cicd/scripts/rpm_sign.sh "${signature}" "${artifact}"
