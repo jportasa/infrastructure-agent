@@ -224,7 +224,7 @@ jobs:
           path: dist/**/*
 
   s3-apt-update-prerelease:
-    name: S3 repo APT update prerelease
+    name: S3 repo APT update prerelease (tests dir)
     if: github.event.action == 'prereleased'
     needs: [goreleaser]
     runs-on: ubuntu-latest
