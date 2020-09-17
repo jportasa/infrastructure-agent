@@ -87,7 +87,7 @@ func main() {
 	wlog.SetOutput(memLog)
 
 	if showVersion {
-		fmt.Printf("New Relic Infrastructure Agent version: %s, GoVersion: %s, GitCommit: %s\n", buildVersion, runtime.Version(), gitCommit)
+		fmt.Printf("New Relic Infrastructure Agent version: %s\n GoVersion: %s\n GitCommit: %s\n", buildVersion, runtime.Version(), gitCommit)
 		os.Exit(0)
 	}
 
