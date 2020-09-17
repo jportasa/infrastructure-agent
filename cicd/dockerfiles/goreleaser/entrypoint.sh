@@ -48,7 +48,7 @@ if $GITHUB_PUSH_PRERELEASE_ASSETS; then
   cd dist
   for artifact in $(find -regex ".*\.\(msi\|rpm\|deb\|zip\|tar.gz\)");do
     echo "===> Pushing to GH $TAG asset: $artifact"
-    hub release edit --attach $artifact $TAG --message "$TAG"
+    hub release edit --attach $artifact v${TAG} --message "v${TAG}"
   done
 fi
 
