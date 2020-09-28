@@ -128,7 +128,8 @@ builds:
     goos:
     - windows
     ldflags:
-    - -s -w -X main.integrationVersion={{.Version}}
+    - -s -w -X main.buildVersion={{.Version}}
+    - -s -w -X main.gitCommit={{.Commit}}
     goarch:
     - amd64
     - 386
@@ -143,7 +144,8 @@ builds:
     goos:
     - windows
     ldflags:
-    - -s -w -X main.integrationVersion={{.Version}}
+    - -s -w -X main.buildVersion={{.Version}}
+    - -s -w -X main.gitCommit={{.Commit}}
     goarch:
     - amd64
     - 386
