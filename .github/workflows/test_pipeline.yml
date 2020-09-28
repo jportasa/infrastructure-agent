@@ -1,0 +1,30 @@
+name: Pipeline
+
+on: push
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: mkdir -p nix_tarball
+    - uses: actions/upload-artifact@v2
+      with:
+        name: nix_tarball
+        path: nix_tarball
+
+  download:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/download-artifact@v2
+      with:
+        name: nix_tarball
+        path: nix_tarball
+      working-directory: nix_tarball
+    - name: Make tarball
+      run: |
+        build/nix_tarball.sh $TAG amd64
+    - name: Push tarball to GHA release assets
+        hub ....
+
