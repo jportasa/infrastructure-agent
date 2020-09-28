@@ -43,6 +43,7 @@ rpm --import /tmp/RPM-GPG-KEY-${GPG_APT_MAIL}
 
 goreleaser release --config=.goreleaser.yml --rm-dist
 
+
 ##################
 #   Sign RPM's   #
 ##################
