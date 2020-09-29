@@ -244,6 +244,58 @@ jobs:
         docker-compose --file docker_compose_apt_updater.yml run release
         release_lock
 
+  s3-yum-update-prerelease:
+    name: S3 YUM update
+    if: github.event.action == 'released'
+    runs-on: ubuntu-latest
+    env:
+      BASE_PATH: "/infrastructure_agent/test/linux/yum/el"
+      LOCK_REPO_TYPE: 'yum'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Upload & update YUM repo
+      run: |
+        cd cicd
+        source scripts/pipeline_functions.sh # import functions
+        create_dynamo_table
+        wait_free_lock
+        lock
+        docker-compose --file docker_compose_yum_updater.yml run release
+        release_lock
+    - name: Notify failure via Slack
+      if: ${{ failure() }}
+      uses: archive/github-actions-slack@master
+      with:
+        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_WEBHOOK }}
+        slack-channel: ${{ env.SLACK_CHANNEL }}
+        slack-text: ':shit: Repo: ${{ github.event.repository.full_name }}, S3 TEST YUM update FAILURE!'
+
+  s3-zypp-update:
+    name: S3 ZYPP update
+    if: github.event.action == 'released'
+    runs-on: ubuntu-latest
+    env:
+      BASE_PATH: "/infrastructure_agent/test/linux/zypp/sles"
+      LOCK_REPO_TYPE: 'zypp'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Upload & update ZYPP repo
+      run: |
+        cd cicd
+        source scripts/pipeline_functions.sh # import functions
+        create_dynamo_table
+        wait_free_lock
+        lock
+        docker-compose --file docker_compose_zypp_updater.yml run release
+        release_lock
+    - name: Notify failure via Slack
+      if: ${{ failure() }}
+      uses: archive/github-actions-slack@master
+      with:
+        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_WEBHOOK }}
+        slack-channel: ${{ env.SLACK_CHANNEL }}
+        slack-text: ':shit: Repo: ${{ github.event.repository.full_name }}, S3 TEST ZYPP update FAILURE!'
+
   tarballs:
     name: Tarballs for Linux/Win creation & push to GH
     if: github.event.action == 'prereleased'
