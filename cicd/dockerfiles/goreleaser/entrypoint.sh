@@ -41,7 +41,7 @@ echo "===> Importing GPG signature, needed from Goreleaser to sign"
 gpg --export -a ${GPG_APT_MAIL} > /tmp/RPM-GPG-KEY-${GPG_APT_MAIL}
 rpm --import /tmp/RPM-GPG-KEY-${GPG_APT_MAIL}
 
-goreleaser release --config=.goreleaser.yml --rm-dist --debug
+goreleaser release --config=.goreleaser.yml --rm-dist
 
 
 ##################
