@@ -245,8 +245,9 @@ jobs:
         release_lock
 
   s3-yum-update-prerelease:
-    name: S3 YUM update
+    name: S3 YUM update prerelease (tests dir)
     if: github.event.action == 'released'
+    needs: [goreleaser]
     runs-on: ubuntu-latest
     env:
       BASE_PATH: "/infrastructure_agent/test/linux/yum/el"
@@ -271,9 +272,10 @@ jobs:
         slack-text: ':shit: Repo: ${{ github.event.repository.full_name }}, S3 TEST YUM update FAILURE!'
 
   s3-zypp-update-prerelease:
-    name: S3 ZYPP update
+    name: S3 ZYPP update prerelease (tests dir)
     if: github.event.action == 'released'
     runs-on: ubuntu-latest
+    needs: [goreleaser]
     env:
       BASE_PATH: "/infrastructure_agent/test/linux/zypp/sles"
       LOCK_REPO_TYPE: 'zypp'
