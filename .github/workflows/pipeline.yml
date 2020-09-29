@@ -270,7 +270,7 @@ jobs:
         slack-channel: ${{ env.SLACK_CHANNEL }}
         slack-text: ':shit: Repo: ${{ github.event.repository.full_name }}, S3 TEST YUM update FAILURE!'
 
-  s3-zypp-update:
+  s3-zypp-update-prerelease:
     name: S3 ZYPP update
     if: github.event.action == 'released'
     runs-on: ubuntu-latest
