@@ -629,8 +629,9 @@ nfpms:
     replacements:
       amd64: x86_64
 
+# we use custom publisher for fixing archives and signing them
 release:
-  prerelease: true
+  disable: true
 
 checksum:
   disable: true
