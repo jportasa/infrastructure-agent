@@ -329,7 +329,7 @@ jobs:
     name: S3 Windows .msi update prerelease (tests dir)
     if: github.event.action == 'prereleased'
     runs-on: ubuntu-latest
-    needs: [goreleaser]
+    needs: [goreleaser, msi]
     env:
       BASE_PATH: "/infrastructure_agent/test"
       LOCK_REPO_TYPE: 'win'
