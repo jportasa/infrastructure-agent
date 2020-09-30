@@ -58,19 +58,19 @@ for os_version in "${OS_VERSIONS[@]}"; do
 
   echo "===> Creating local directory if not exists ${LOCAL_REPO_PATH}/repodata"
   [ -d "${LOCAL_REPO_PATH}/repodata" ] || mkdir -p "${LOCAL_REPO_PATH}/repodata"
-  sleep 2
+  sleep 3
 
   echo "===> Uploading ${package_name} to S3 in ${BASE_PATH}/${os_version}/${ARCH}"
   cp ${package_name} ${LOCAL_REPO_PATH}
 
   echo "===> Updating metadata for $package_name"
   find ${LOCAL_REPO_PATH} -regex '^.*repodata' | xargs -n 1 rm -rf
-  sleep 2
+  sleep 3
   time createrepo --update -s sha "${LOCAL_REPO_PATH}"
   FILE="${LOCAL_REPO_PATH}/repodata/repomd.xml"
   while [ ! -f $FILE ];do
      echo "===> Waiting repomd.xml exists..."
-     sleep 2
+     sleep 5
   done
 
   echo "===>Updating GPG metadata dettached signature in ${BASE_PATH}/${os_version}/${ARCH}"
