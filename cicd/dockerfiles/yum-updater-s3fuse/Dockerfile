@@ -1,6 +1,6 @@
 FROM centos:8
 
-ARG S3_FUSE_VERSION=v1.86
+ARG S3_FUSE_VERSION=v1.87
 
 # Add S3Fuse https://github.com/s3fs-fuse/s3fs-fuse/wiki/Installation-Notes
 RUN yum update -y
